@@ -13,8 +13,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import AppLogo from "@/assets/icons/AppLogoBlack.png";
-import { ModeToggle } from "../theme-toggle";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import useAuth from "@/hooks/use-auth";
 import { DoorOpen } from "lucide-react";
 import {
@@ -22,7 +21,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "./ui/tooltip";
 
 export default function Layout() {
   const router = useRouterState();
@@ -130,7 +129,6 @@ export default function Layout() {
         </MenubarMenu>
       </div>
       <div className="flex items-center gap-1">
-        <ModeToggle />
         <TooltipProvider disableHoverableContent>
           <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>
