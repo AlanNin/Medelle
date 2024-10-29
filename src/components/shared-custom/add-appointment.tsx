@@ -9,11 +9,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
@@ -24,32 +22,35 @@ import {
 } from "@/components/ui/select";
 import { SearchPatientComponent } from "./search-patient";
 import { useQuery } from "@tanstack/react-query";
-import Cookies from "js-cookie";
 import { PatientProps } from "@/types/patient";
 import { toast } from "sonner";
 
 type Props = {
   refetchUserAppointments: () => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 };
 
-export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
-  const [isOpen, setIsOpen] = React.useState(false);
-
+export function AddAppointmentComponent({
+  refetchUserAppointments,
+  isOpen,
+  setIsOpen,
+}: Props) {
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
   >(() => {
     const date = new Date();
-    date.setHours(0, 0, 0, 0);
+    date.setHours(1, 0, 0, 0);
     return date;
   });
-  const [appointmentHour, setAppointmentHour] = React.useState<string>("00");
+  const [appointmentHour, setAppointmentHour] = React.useState<string>("01");
   const [appointmentMinute, setAppointmentMinute] = React.useState<string>(
     "00"
   );
   const [amPm, setAmPm] = React.useState<string>("AM");
 
   const hours = Array.from({ length: 12 }, (_, i) =>
-    i.toString().padStart(2, "0")
+    (i + 1).toString().padStart(2, "0")
   );
   const minutes = Array.from({ length: 60 }, (_, i) =>
     i.toString().padStart(2, "0")
@@ -73,10 +74,16 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
     setAppointmentHour(hour);
     if (appointmentDate) {
       const newDate = new Date(appointmentDate);
-      const hour24 =
-        parseInt(hour, 10) + (amPm === "PM" && hour !== "12" ? 12 : 0);
+      let hour24 = parseInt(hour, 10);
+
+      if (amPm === "AM") {
+        hour24 = hour24 === 12 ? 0 : hour24;
+      } else {
+        hour24 = hour24 === 12 ? 12 : hour24 + 12;
+      }
+
       newDate.setSeconds(0);
-      newDate.setHours(hour24 % 24);
+      newDate.setHours(hour24);
       setAppointmentDate(newDate);
     }
   };
@@ -95,11 +102,16 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
     setAmPm(period);
     if (appointmentDate) {
       const newDate = new Date(appointmentDate);
-      const hour24 =
-        parseInt(appointmentHour, 10) +
-        (period === "PM" && appointmentHour !== "12" ? 12 : 0);
+      let hour24 = parseInt(appointmentHour, 10) % 12;
+
+      if (period === "AM") {
+        hour24 = hour24 === 12 ? 0 : hour24;
+      } else {
+        hour24 = hour24 === 12 ? 12 : hour24 + 12;
+      }
+
       newDate.setSeconds(0);
-      newDate.setHours(hour24 % 24);
+      newDate.setHours(hour24);
       setAppointmentDate(newDate);
     }
   };
@@ -112,7 +124,7 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
     queryKey: ["user_patients"],
     queryFn: async () => {
       return await window.ipcRenderer.invoke("patient-get-from-user", {
-        token: Cookies.get("session_token"),
+        token: localStorage.getItem("session_token"),
       });
     },
     refetchOnWindowFocus: false,
@@ -120,7 +132,7 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
 
   const createPatient = async (data: PatientProps) => {
     const result = await window.ipcRenderer.invoke("patient-add", {
-      token: Cookies.get("session_token"),
+      token: localStorage.getItem("session_token"),
       data,
     });
     if (result) {
@@ -131,21 +143,21 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
   const [reason, setReason] = React.useState<string | undefined>(undefined);
 
   const [status, setStatus] = React.useState<
-    "waiting" | "confirmed" | "completed" | "canceled" | undefined
-  >(undefined);
+    "waiting" | "confirmed" | "completed" | "canceled"
+  >("waiting");
 
   const clearInputs = () => {
     setAppointmentDate(() => {
       const date = new Date();
-      date.setHours(0, 0, 0, 0);
+      date.setHours(1, 0, 0, 0);
       return date;
     });
-    setAppointmentHour("00");
+    setAppointmentHour("01");
     setAppointmentMinute("00");
     setAmPm("AM");
     setSelectedPatient("");
     setReason(undefined);
-    setStatus(undefined);
+    setStatus("waiting");
   };
 
   const createAppointment = async () => {
@@ -154,20 +166,24 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
       return;
     }
 
-    const result = await window.ipcRenderer.invoke("appointment-add", {
-      token: Cookies.get("session_token"),
-      data: {
-        date_time: appointmentDate,
-        patient_id: selectedPatient,
-        reason: reason,
-        status: status,
-      },
-    });
-    if (result) {
-      setIsOpen(false);
-      clearInputs();
-      refetchUserAppointments();
-      toast.success("Cita guardada");
+    try {
+      const result = await window.ipcRenderer.invoke("appointment-add", {
+        token: localStorage.getItem("session_token"),
+        data: {
+          date_time: appointmentDate,
+          patient_id: selectedPatient,
+          reason: reason,
+          status: status,
+        },
+      });
+      if (result) {
+        setIsOpen(false);
+        clearInputs();
+        refetchUserAppointments();
+        toast.success("Cita guardada");
+      }
+    } catch (error) {
+      toast.error("Ocurrio un error al crear la cita");
     }
   };
 
@@ -181,12 +197,6 @@ export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
         }
       }}
     >
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Añadir Cita
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-full w-max">
         <DialogHeader>
           <DialogTitle>Añadir cita</DialogTitle>

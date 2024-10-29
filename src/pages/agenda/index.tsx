@@ -4,8 +4,8 @@ import * as React from "react";
 import CalendarComponent from "./calendar";
 import SelectedDayAppointmentsComponent from "./selected-day-appointments";
 import UpcomingDaysAppointmentsComponent from "./upcoming-days-appointments";
-import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { AppointmentProps } from "@/types/appointment";
 
 export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
@@ -29,19 +29,19 @@ export default function AgendaPage() {
     queryKey: ["user_appointments"],
     queryFn: async () => {
       return await window.ipcRenderer.invoke("appointment-get-from-user", {
-        token: Cookies.get("session_token"),
+        token: localStorage.getItem("session_token"),
       });
     },
     refetchOnWindowFocus: false,
   });
 
   const selectedDayAppointments = fetchedUserAppointments?.data?.filter(
-    (appointment: any) =>
+    (appointment: AppointmentProps) =>
       isSameDay(new Date(appointment.date_time), selectedDate)
   );
 
   const upcomingAppointments = fetchedUserAppointments?.data?.filter(
-    (appointment: any) => {
+    (appointment: AppointmentProps) => {
       const appointmentDate = new Date(appointment.date_time);
       return (
         appointmentDate > selectedDate &&
@@ -70,6 +70,7 @@ export default function AgendaPage() {
         </div>
         <UpcomingDaysAppointmentsComponent
           upcomingAppointments={upcomingAppointments}
+          refetchUserAppointments={refetchUserAppointments}
         />
       </main>
     </div>

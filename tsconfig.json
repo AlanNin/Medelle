@@ -24,6 +24,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "electron"],
+  "include": ["src", "electron", "computer/manage-token-file.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

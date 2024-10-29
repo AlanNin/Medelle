@@ -1,7 +1,6 @@
 "use client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logout } from "@/providers/react-redux/slices/user";
-import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -9,6 +8,16 @@ import { useNavigate } from "@tanstack/react-router";
 function useAuth() {
   const dispatch = useDispatch();
   const navigate = useNavigate({ from: "/" });
+  const { currentUser } = useSelector((state: any) => state.user);
+  const session_token_ls = localStorage.getItem("session_token");
+  const session_exists = session_token_ls && currentUser;
+
+  const handlePersistentSession = () => {
+    if (!session_exists) {
+      return;
+    }
+    navigate({ to: "/agenda" });
+  };
 
   const handleLogin = async (
     email: string,
@@ -28,7 +37,7 @@ function useAuth() {
         return;
       }
 
-      Cookies.set("session_token", response.data.token!);
+      localStorage.setItem("session_token", response.data.token);
       dispatch(loginSuccess(response.data.user));
       navigate({ to: "/agenda" });
       toast.success("Sesión Iniciada");
@@ -40,7 +49,7 @@ function useAuth() {
   const handleLogout = () => {
     try {
       dispatch(logout());
-      Cookies.remove("session_token");
+      localStorage.removeItem("session_token");
       navigate({ to: "/" });
       toast.success("Sesión Terminada");
     } catch (error) {
@@ -51,6 +60,8 @@ function useAuth() {
   return {
     handleLogin,
     handleLogout,
+    session_exists,
+    handlePersistentSession,
   };
 }
 

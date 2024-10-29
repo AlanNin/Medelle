@@ -17,7 +17,12 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { handleLogin } = useAuth();
+  const { handleLogin, session_exists, handlePersistentSession } = useAuth();
+
+  if (session_exists) {
+    handlePersistentSession();
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-white p-8">
