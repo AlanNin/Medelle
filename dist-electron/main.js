@@ -16329,13 +16329,61 @@ axios.formToJSON = (thing) => formDataToJSON(utils$1.isHTMLForm(thing) ? new For
 axios.getAdapter = adapters.getAdapter;
 axios.HttpStatusCode = HttpStatusCode;
 axios.default = axios;
-const base = "auth";
-ipcMain.handle(`${base}-sign-up`, async (event, data) => {
+const base$2 = "auth";
+ipcMain.handle(`${base$2}-sign-up`, async (event, data) => {
   const success = { message: "Data saved", data };
   return success;
 });
-ipcMain.handle(`${base}-sign-in`, async (event, data) => {
+ipcMain.handle(`${base$2}-sign-in`, async (event, data) => {
   const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
+  return result.data;
+});
+const base$1 = "patient";
+ipcMain.handle(`${base$1}-get-from-user`, async (event, data) => {
+  const result = await axios.get(
+    `${process.env.API_URL}patient/get-from-user`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
+  return result.data;
+});
+ipcMain.handle(`${base$1}-add`, async (event, data) => {
+  const result = await axios.post(
+    `${process.env.API_URL}patient/create`,
+    data.data,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
+  return result.data;
+});
+const base = "appointment";
+ipcMain.handle(`${base}-add`, async (event, data) => {
+  const result = await axios.post(
+    `${process.env.API_URL}appointment/create`,
+    data.data,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
+  return result.data;
+});
+ipcMain.handle(`${base}-get-from-user`, async (event, data) => {
+  const result = await axios.get(
+    `${process.env.API_URL}appointment/get-from-user`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
   return result.data;
 });
 dotenv.config();

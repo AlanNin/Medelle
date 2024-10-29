@@ -59,6 +59,7 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="transition-all duration-200 focus:ring-2 focus:ring-black"
+                  autoComplete="off"
                 />
               </div>
               <div className="space-y-2">
@@ -78,6 +79,7 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="transition-all duration-200 focus:ring-2 focus:ring-black"
+                  autoComplete="off"
                 />
               </div>
               <Button

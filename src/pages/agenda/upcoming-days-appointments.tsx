@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import formatTime from "@/lib/format-time";
+import formatDate from "@/lib/format-date";
 
 type Props = {
   upcomingAppointments: any[];
@@ -57,14 +59,14 @@ export default function UpcomingDaysAppointmentsComponent({
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          {upcomingAppointments.length > 0 ? (
+          {upcomingAppointments && upcomingAppointments.length > 0 ? (
             <>
               {viewMode === "list" ? (
                 <ul className="space-y-4">
                   {upcomingAppointments.map((appointment, index) => (
                     <motion.li
-                      key={appointment.id}
-                      className="bg-card rounded-lg shadow-sm hover:bg-muted/50 transition-shadow cursor-pointer"
+                      key={appointment._id}
+                      className="bg-card rounded-lg shadow-sm hover:bg-muted/50 transition-all cursor-pointer duration-150"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -72,30 +74,42 @@ export default function UpcomingDaysAppointmentsComponent({
                       <div className="flex items-center p-4 space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={appointment.avatar}
-                            alt={appointment.patient}
+                            src={appointment.patient_id.photo_url}
+                            alt={appointment.patient_id.name}
                           />
                           <AvatarFallback>
-                            {appointment.patient.charAt(0)}
+                            {appointment.patient_id.name.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 space-y-1">
                           <p className="font-medium text-lg">
-                            {appointment.patient}
+                            {appointment.patient_id.name}
                           </p>
                           <div className="flex items-center text-sm text-muted-foreground">
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {appointment.date} - {appointment.time}
+                            <CalendarIcon className="mr-1.5 h-4 w-4" />
+                            {formatDate(appointment.date_time)} -{" "}
+                            {formatTime(appointment.date_time)} -{" "}
+                            {appointment.reason}
                           </div>
                         </div>
                         <Badge
                           variant={
-                            appointment.status === "Confirmado"
+                            appointment.status === "waiting"
+                              ? "secondary"
+                              : appointment.status === "confirmed"
+                              ? "outline"
+                              : appointment.status === "completed"
                               ? "default"
-                              : "secondary"
+                              : "destructive"
                           }
                         >
-                          {appointment.status}
+                          {appointment.status === "waiting"
+                            ? "En espera"
+                            : appointment.status === "confirmed"
+                            ? "Confirmado"
+                            : appointment.status === "completed"
+                            ? "Completado"
+                            : "Cancelado"}
                         </Badge>
                         <Button variant="ghost" size="sm">
                           Ver detalles
@@ -109,7 +123,7 @@ export default function UpcomingDaysAppointmentsComponent({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {upcomingAppointments.map((appointment, index) => (
                     <motion.div
-                      key={appointment.id}
+                      key={appointment._id}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -120,32 +134,43 @@ export default function UpcomingDaysAppointmentsComponent({
                           <div className="flex flex-col items-center text-center space-y-4">
                             <Avatar className="h-20 w-20">
                               <AvatarImage
-                                src={appointment.avatar}
-                                alt={appointment.patient}
+                                src={appointment.patient_id.photo_url}
+                                alt={appointment.patient_id.name}
                               />
                               <AvatarFallback>
-                                {appointment.patient.charAt(0)}
+                                {appointment.patient_id.name.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
                             <div>
                               <h3 className="font-semibold text-lg">
-                                {appointment.patient}
+                                {appointment.patient_id.name}
                               </h3>
                               <p className="text-sm text-muted-foreground">
-                                {appointment.date} - {appointment.time}
+                                {formatDate(appointment.date_time)} -{" "}
+                                {formatTime(appointment.date_time)}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {appointment.type}
+                                {appointment.reason}
                               </p>
                             </div>
                             <Badge
                               variant={
-                                appointment.status === "Confirmado"
+                                appointment.status === "waiting"
+                                  ? "secondary"
+                                  : appointment.status === "confirmed"
+                                  ? "outline"
+                                  : appointment.status === "completed"
                                   ? "default"
-                                  : "secondary"
+                                  : "destructive"
                               }
                             >
-                              {appointment.status}
+                              {appointment.status === "waiting"
+                                ? "En espera"
+                                : appointment.status === "confirmed"
+                                ? "Confirmado"
+                                : appointment.status === "completed"
+                                ? "Completado"
+                                : "Cancelado"}
                             </Badge>
                             <Button
                               variant="outline"

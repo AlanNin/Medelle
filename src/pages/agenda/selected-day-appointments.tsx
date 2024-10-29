@@ -5,19 +5,28 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { AddAppointmentComponent } from "./add-appointment";
+import { AddAppointmentComponent } from "@/components/shared-custom/add-appointment";
+import formatTime from "@/lib/format-time";
 
 type Props = {
   isSameDay: (date_1: Date | undefined, date_2: Date) => boolean;
-  todayAppointments: any[];
+  selectedDayAppointments: any[];
   selectedDate: Date;
+  refetchUserAppointments: () => void;
 };
 
 export default function SelectedDayAppointmentsComponent({
   isSameDay,
-  todayAppointments,
+  selectedDayAppointments,
   selectedDate,
+  refetchUserAppointments,
 }: Props) {
+  const isSelectedDateInThePast = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
   return (
     <motion.div
       className="w-full lg:h-[427px] lg:w-auto lg:flex-grow"
@@ -45,16 +54,18 @@ export default function SelectedDayAppointmentsComponent({
                     )}`}
               </span>
             </div>
-            <AddAppointmentComponent />
+            <AddAppointmentComponent
+              refetchUserAppointments={refetchUserAppointments}
+            />
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 h-full w-full ">
-          {todayAppointments.length > 0 ? (
+          {selectedDayAppointments && selectedDayAppointments.length > 0 ? (
             <ScrollArea className="h-[342px]">
               <ul className="divide-y divide-border ">
-                {todayAppointments.map((appointment, index) => (
+                {selectedDayAppointments.map((appointment, index) => (
                   <motion.li
-                    key={appointment.id}
+                    key={appointment._id}
                     className="p-4 hover:bg-muted/50 transition-colors cursor-pointer"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -63,30 +74,41 @@ export default function SelectedDayAppointmentsComponent({
                     <div className="flex items-center space-x-4">
                       <Avatar className="h-12 w-12">
                         <AvatarImage
-                          src={appointment.avatar}
-                          alt={appointment.patient}
+                          src={appointment.patient_id.photo_url}
+                          alt={appointment.patient_id.name}
                         />
                         <AvatarFallback>
-                          {appointment.patient.charAt(0)}
+                          {appointment.patient_id.name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 space-y-1">
                         <p className="font-medium text-lg">
-                          {appointment.patient}
+                          {appointment.patient_id.name}
                         </p>
                         <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="mr-2 h-4 w-4" />
-                          {appointment.time} - {appointment.type}
+                          <Clock className="mr-1.5 h-4 w-4" />
+                          {formatTime(appointment.date_time)} -{" "}
+                          {appointment.reason}
                         </div>
                       </div>
                       <Badge
                         variant={
-                          appointment.status === "Confirmado"
+                          appointment.status === "waiting"
+                            ? "secondary"
+                            : appointment.status === "confirmed"
+                            ? "outline"
+                            : appointment.status === "completed"
                             ? "default"
-                            : "secondary"
+                            : "destructive"
                         }
                       >
-                        {appointment.status}
+                        {appointment.status === "waiting"
+                          ? "En espera"
+                          : appointment.status === "confirmed"
+                          ? "Confirmado"
+                          : appointment.status === "completed"
+                          ? "Completado"
+                          : "Cancelado"}
                       </Badge>
                       <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </div>
@@ -102,7 +124,9 @@ export default function SelectedDayAppointmentsComponent({
                   strokeWidth={1.2}
                 />
                 <Label className="text-center text-xl font-medium">
-                  ¡Día libre! Relájate, no tienes citas pendientes.
+                  {isSelectedDateInThePast(selectedDate)
+                    ? "¡Woah, cero estrés! No tuviste citas este día"
+                    : "¡Día libre! Relájate, no tienes citas pendientes."}
                 </Label>
               </div>
             </div>

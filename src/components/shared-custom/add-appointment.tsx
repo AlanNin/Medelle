@@ -22,19 +22,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchPatientComponent } from "./search-patient";
+import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { PatientProps } from "@/types/patient";
+import { toast } from "sonner";
 
-export function AddAppointmentComponent() {
+type Props = {
+  refetchUserAppointments: () => void;
+};
+
+export function AddAppointmentComponent({ refetchUserAppointments }: Props) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
-  >(new Date());
-  const [appointmentHour, setAppointmentHour] = React.useState<string>("12");
+  >(() => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+  });
+  const [appointmentHour, setAppointmentHour] = React.useState<string>("00");
   const [appointmentMinute, setAppointmentMinute] = React.useState<string>(
     "00"
   );
   const [amPm, setAmPm] = React.useState<string>("AM");
 
   const hours = Array.from({ length: 12 }, (_, i) =>
-    (i + 1).toString().padStart(2, "0")
+    i.toString().padStart(2, "0")
   );
   const minutes = Array.from({ length: 60 }, (_, i) =>
     i.toString().padStart(2, "0")
@@ -89,11 +104,85 @@ export function AddAppointmentComponent() {
     }
   };
 
-  console.log(appointmentDate);
+  const [selectedPatient, setSelectedPatient] = React.useState<
+    string | undefined
+  >("");
+
+  const { data: fetchedUserPatients, refetch: refetchUserPatients } = useQuery({
+    queryKey: ["user_patients"],
+    queryFn: async () => {
+      return await window.ipcRenderer.invoke("patient-get-from-user", {
+        token: Cookies.get("session_token"),
+      });
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const createPatient = async (data: PatientProps) => {
+    const result = await window.ipcRenderer.invoke("patient-add", {
+      token: Cookies.get("session_token"),
+      data,
+    });
+    if (result) {
+      refetchUserPatients();
+    }
+  };
+
+  const [reason, setReason] = React.useState<string | undefined>(undefined);
+
+  const [status, setStatus] = React.useState<
+    "waiting" | "confirmed" | "completed" | "canceled" | undefined
+  >(undefined);
+
+  const clearInputs = () => {
+    setAppointmentDate(() => {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      return date;
+    });
+    setAppointmentHour("00");
+    setAppointmentMinute("00");
+    setAmPm("AM");
+    setSelectedPatient("");
+    setReason(undefined);
+    setStatus(undefined);
+  };
+
+  const createAppointment = async () => {
+    if (!selectedPatient) {
+      toast.error("Por favor selecciona un paciente");
+      return;
+    }
+
+    const result = await window.ipcRenderer.invoke("appointment-add", {
+      token: Cookies.get("session_token"),
+      data: {
+        date_time: appointmentDate,
+        patient_id: selectedPatient,
+        reason: reason,
+        status: status,
+      },
+    });
+    if (result) {
+      setIsOpen(false);
+      clearInputs();
+      refetchUserAppointments();
+      toast.success("Cita guardada");
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          clearInputs();
+        }
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Añadir Cita
         </Button>
@@ -162,21 +251,36 @@ export function AddAppointmentComponent() {
             {/* to-do: change input for a select with find for patients */}
             <div className="items-start gap-2 flex flex-col">
               <Label htmlFor="name" className="text-right">
-                Paciente
+                Paciente <span className="text-red-500">*</span>
               </Label>
-              <Input id="name" placeholder="Ej: John Doe" />
+              <SearchPatientComponent
+                patients={fetchedUserPatients?.data}
+                createPatient={createPatient}
+                selectedPatient={selectedPatient}
+                setSelectedPatient={setSelectedPatient}
+              />
             </div>
             <div className="items-start gap-2 flex flex-col">
               <Label htmlFor="username" className="text-right">
                 Motivo
               </Label>
-              <Input id="username" placeholder="Ej: Examen físico" />
+              <Input
+                id="username"
+                placeholder="Ej: Examen físico"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
             </div>
             <div className="items-start gap-2 flex flex-col">
               <Label htmlFor="status" className="text-right">
                 Estado
               </Label>
-              <Select name="status">
+              <Select
+                name="status"
+                defaultValue="waiting"
+                value={status}
+                onValueChange={(value) => setStatus(value as typeof status)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona un estado" />
                 </SelectTrigger>
@@ -191,7 +295,9 @@ export function AddAppointmentComponent() {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Guardar cita</Button>
+          <Button type="submit" onClick={createAppointment}>
+            Guardar cita
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

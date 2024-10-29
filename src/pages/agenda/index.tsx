@@ -4,6 +4,8 @@ import * as React from "react";
 import CalendarComponent from "./calendar";
 import SelectedDayAppointmentsComponent from "./selected-day-appointments";
 import UpcomingDaysAppointmentsComponent from "./upcoming-days-appointments";
+import Cookies from "js-cookie";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
@@ -20,80 +22,35 @@ export default function AgendaPage() {
     );
   };
 
-  const todayAppointments = isSameDay(selectedDate, new Date())
-    ? [
-        {
-          id: 1,
-          time: "09:00",
-          patient: "Juan Pérez",
-          type: "Consulta general",
-          avatar: "/avatars/juan.png",
-          status: "Confirmado",
-        },
-        {
-          id: 2,
-          time: "11:30",
-          patient: "María García",
-          type: "Seguimiento",
-          avatar: "/avatars/maria.png",
-          status: "En espera",
-        },
-        {
-          id: 3,
-          time: "14:00",
-          patient: "Carlos Rodríguez",
-          type: "Examen físico",
-          avatar: "/avatars/carlos.png",
-          status: "Confirmado",
-        },
-        {
-          id: 4,
-          time: "14:00",
-          patient: "Pedrito Alimaña",
-          type: "Examen físico",
-          avatar: "/avatars/carlos.png",
-          status: "Confirmado",
-        },
-        {
-          id: 4,
-          time: "14:00",
-          patient: "Pedrito Alimaña",
-          type: "Examen físico",
-          avatar: "/avatars/carlos.png",
-          status: "Confirmado",
-        },
-      ]
-    : [];
+  const {
+    data: fetchedUserAppointments,
+    refetch: refetchUserAppointments,
+  } = useQuery({
+    queryKey: ["user_appointments"],
+    queryFn: async () => {
+      return await window.ipcRenderer.invoke("appointment-get-from-user", {
+        token: Cookies.get("session_token"),
+      });
+    },
+    refetchOnWindowFocus: false,
+  });
 
-  const upcomingAppointments = [
-    {
-      id: 4,
-      date: "2024-10-22",
-      time: "10:00",
-      patient: "Ana Martínez",
-      type: "Primera visita",
-      avatar: "/avatars/ana.png",
-      status: "Confirmado",
-    },
-    {
-      id: 5,
-      date: "2024-10-23",
-      time: "16:30",
-      patient: "Luis Sánchez",
-      type: "Consulta de rutina",
-      avatar: "/avatars/luis.png",
-      status: "En espera",
-    },
-    {
-      id: 6,
-      date: "2024-10-25",
-      time: "13:00",
-      patient: "Elena López",
-      type: "Revisión de resultados",
-      avatar: "/avatars/elena.png",
-      status: "Confirmado",
-    },
-  ];
+  const selectedDayAppointments = fetchedUserAppointments?.data?.filter(
+    (appointment: any) =>
+      isSameDay(new Date(appointment.date_time), selectedDate)
+  );
+
+  const upcomingAppointments = fetchedUserAppointments?.data?.filter(
+    (appointment: any) => {
+      const appointmentDate = new Date(appointment.date_time);
+      return (
+        appointmentDate > selectedDate &&
+        !selectedDayAppointments.some((selected: any) =>
+          isSameDay(appointmentDate, new Date(selected.date_time))
+        )
+      );
+    }
+  );
 
   return (
     <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
@@ -106,8 +63,9 @@ export default function AgendaPage() {
           />
           <SelectedDayAppointmentsComponent
             isSameDay={isSameDay}
-            todayAppointments={todayAppointments}
+            selectedDayAppointments={selectedDayAppointments}
             selectedDate={selectedDate}
+            refetchUserAppointments={refetchUserAppointments}
           />
         </div>
         <UpcomingDaysAppointmentsComponent

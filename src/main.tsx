@@ -5,6 +5,7 @@ import { routeTree } from "./routes/routes";
 import { Toaster } from "@/components/ui/sonner";
 import "./global.css";
 import ReactReduxProvider from "./providers/react-redux";
+import ReactQueryProvider from "./providers/react-query";
 // import { ThemeProvider } from "./providers/theme-provider";
 
 const router = createRouter({ routeTree, defaultPreload: "intent" });
@@ -20,12 +21,14 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
-      <ReactReduxProvider>
-        <RouterProvider router={router} />
-      </ReactReduxProvider>
-      <Toaster />
-      {/* </ThemeProvider> */}
+      <ReactQueryProvider>
+        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
+        <ReactReduxProvider>
+          <RouterProvider router={router} />
+        </ReactReduxProvider>
+        <Toaster />
+        {/* </ThemeProvider> */}
+      </ReactQueryProvider>
     </StrictMode>
   );
 }
