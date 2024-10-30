@@ -127,7 +127,6 @@ export function AddAppointmentComponent({
         token: localStorage.getItem("session_token"),
       });
     },
-    refetchOnWindowFocus: false,
   });
 
   const createPatient = async (data: PatientProps) => {

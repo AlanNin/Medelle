@@ -87,9 +87,9 @@ export default function Layout() {
               Pacientes
             </MenubarTrigger>
             <MenubarContent>
-              <Link to="/">
+              <Link to="/patients">
                 <MenubarItem className="cursor-pointer">
-                  Lista <MenubarShortcut>Ctrl+P</MenubarShortcut>
+                  Ver <MenubarShortcut>Ctrl+P</MenubarShortcut>
                 </MenubarItem>
               </Link>
               <MenubarItem disabled>Otros</MenubarItem>

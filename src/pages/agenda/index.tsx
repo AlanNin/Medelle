@@ -32,7 +32,6 @@ export default function AgendaPage() {
         token: localStorage.getItem("session_token"),
       });
     },
-    refetchOnWindowFocus: false,
   });
 
   const selectedDayAppointments = fetchedUserAppointments?.data?.filter(
@@ -53,8 +52,8 @@ export default function AgendaPage() {
   );
 
   return (
-    <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
-      <main className="space-y-8">
+    <main className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
+      <div className="space-y-8">
         <div className="flex flex-wrap lg:flex-auto gap-8 max-lg:justify-center">
           <CalendarComponent
             isSameDay={isSameDay}
@@ -72,7 +71,7 @@ export default function AgendaPage() {
           upcomingAppointments={upcomingAppointments}
           refetchUserAppointments={refetchUserAppointments}
         />
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

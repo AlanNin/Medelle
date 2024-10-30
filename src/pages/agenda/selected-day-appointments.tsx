@@ -72,7 +72,7 @@ export default function SelectedDayAppointmentsComponent({
               <>
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="default"
                   onClick={() => setIsAdding(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -110,8 +110,11 @@ export default function SelectedDayAppointmentsComponent({
                             src={appointment.patient_id.photo_url}
                             alt={appointment.patient_id.name}
                           />
-                          <AvatarFallback>
-                            {appointment.patient_id.name.charAt(0)}
+                          <AvatarFallback className="uppercase">
+                            {appointment.patient_id.name
+                              .split(" ")
+                              .map((name: string) => name.charAt(0))
+                              .join("")}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 space-y-1">

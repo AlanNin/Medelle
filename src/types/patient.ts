@@ -1,3 +1,5 @@
+import { AppointmentProps } from "./appointment";
+
 export type PatientProps = {
   _id?: string;
   name: string;
@@ -14,4 +16,6 @@ export type PatientProps = {
   height?: string;
   weight?: string;
   doctor_notes?: string;
+  appointments?: AppointmentProps[];
+  next_appointment?: AppointmentProps;
 };

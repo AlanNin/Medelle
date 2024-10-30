@@ -52,6 +52,8 @@ export function UpdateAppointmentComponent({
 }: Props) {
   const previous_date_time = new Date(appointment.date_time);
   let previous_hours = previous_date_time.getHours();
+  console.log("🚀 ~ previous_hours:", previous_hours);
+  const previous_hours_standard = previous_hours;
   previous_hours = previous_hours % 12 || 12;
   let formattedHours =
     previous_hours < 10 ? "0" + previous_hours : previous_hours.toString();
@@ -60,7 +62,8 @@ export function UpdateAppointmentComponent({
     previous_minutes < 10
       ? "0" + previous_minutes
       : previous_minutes.toString();
-  const previous_amPm = previous_hours >= 12 ? "PM" : "AM";
+  console.log("🚀 ~ previous_hours_standard:", previous_hours_standard);
+  const previous_amPm = previous_hours_standard >= 12 ? "PM" : "AM";
 
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
@@ -151,7 +154,6 @@ export function UpdateAppointmentComponent({
         token: localStorage.getItem("session_token"),
       });
     },
-    refetchOnWindowFocus: false,
   });
 
   const createPatient = async (data: PatientProps) => {

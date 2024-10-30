@@ -92,8 +92,11 @@ export default function UpcomingDaysAppointmentsComponent({
                               src={appointment.patient_id.photo_url}
                               alt={appointment.patient_id.name}
                             />
-                            <AvatarFallback>
-                              {appointment.patient_id.name.charAt(0)}
+                            <AvatarFallback className="uppercase">
+                              {appointment.patient_id.name
+                                .split(" ")
+                                .map((name: string) => name.charAt(0))
+                                .join("")}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 space-y-1">
@@ -149,8 +152,11 @@ export default function UpcomingDaysAppointmentsComponent({
                                   src={appointment.patient_id.photo_url}
                                   alt={appointment.patient_id.name}
                                 />
-                                <AvatarFallback>
-                                  {appointment.patient_id.name.charAt(0)}
+                                <AvatarFallback className="uppercase">
+                                  {appointment.patient_id.name
+                                    .split(" ")
+                                    .map((name: string) => name.charAt(0))
+                                    .join("")}
                                 </AvatarFallback>
                               </Avatar>
                               <div>

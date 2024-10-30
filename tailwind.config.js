@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      minHeight: {
+        page: "calc(100vh - 50px)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
