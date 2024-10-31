@@ -117,14 +117,14 @@ export default function SelectedDayAppointmentsComponent({
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1  space-y-1">
                           <p className="font-medium text-lg">
                             {appointment.patient_id.name}
                           </p>
                           <div className="flex items-center text-sm text-muted-foreground">
                             <Clock className="mr-1.5 h-4 w-4" />
-                            {formatTime(appointment.date_time)} -{" "}
-                            {appointment.reason}
+                            {formatTime(appointment.date_time)}
+                            {appointment.reason && ` - ${appointment.reason}`}
                           </div>
                         </div>
                         <Badge

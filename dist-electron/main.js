@@ -16362,6 +16362,30 @@ ipcMain.handle(`${base$1}-add`, async (event, data) => {
   );
   return result.data;
 });
+ipcMain.handle(`${base$1}-update`, async (event, data) => {
+  const { patient_id, ...restData } = data.data;
+  const result = await axios.put(
+    `${process.env.API_URL}patient/update/${patient_id}`,
+    restData,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
+  return result.data;
+});
+ipcMain.handle(`${base$1}-delete`, async (event, data) => {
+  const result = await axios.delete(
+    `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
+    }
+  );
+  return result.data;
+});
 const base = "appointment";
 ipcMain.handle(`${base}-add`, async (event, data) => {
   const result = await axios.post(

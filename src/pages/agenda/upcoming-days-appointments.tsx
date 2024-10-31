@@ -14,10 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import formatTime from "@/lib/format-time";
-import formatDate from "@/lib/format-date";
 import { AppointmentProps } from "@/types/appointment";
 import { UpdateAppointmentComponent } from "@/components/shared-custom/update-appointment";
+import formatDateShort from "@/lib/format-date-short";
 
 type Props = {
   upcomingAppointments: any[];
@@ -105,9 +104,8 @@ export default function UpcomingDaysAppointmentsComponent({
                             </p>
                             <div className="flex items-center text-sm text-muted-foreground">
                               <CalendarIcon className="mr-1.5 h-4 w-4" />
-                              {formatDate(appointment.date_time)} -{" "}
-                              {formatTime(appointment.date_time)} -{" "}
-                              {appointment.reason}
+                              {formatDateShort(appointment.date_time)}
+                              {appointment.reason && ` - ${appointment.reason}`}
                             </div>
                           </div>
                           <Badge
@@ -159,13 +157,12 @@ export default function UpcomingDaysAppointmentsComponent({
                                     .join("")}
                                 </AvatarFallback>
                               </Avatar>
-                              <div>
+                              <div className="flex flex-col gap-1">
                                 <h3 className="font-semibold text-lg">
                                   {appointment.patient_id.name}
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
-                                  {formatDate(appointment.date_time)} -{" "}
-                                  {formatTime(appointment.date_time)}
+                                  {formatDateShort(appointment.date_time)}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                   {appointment.reason}

@@ -19,25 +19,6 @@ import {
 } from "@/components/ui/popover";
 import { PatientProps } from "@/types/patient";
 
-const mock_data = [
-  {
-    _id: "1a",
-    name: "Pedrito",
-  },
-  {
-    _id: "1b",
-    name: "Juanito",
-  },
-  {
-    _id: "2a",
-    name: "HezzTia",
-  },
-  {
-    _id: "2b",
-    name: "Hermes",
-  },
-];
-
 type Props = {
   patients: PatientProps[];
   createPatient: (patient: PatientProps) => void;
@@ -46,7 +27,7 @@ type Props = {
 };
 
 export function SearchPatientComponent({
-  patients = mock_data,
+  patients,
   createPatient,
   selectedPatient,
   setSelectedPatient,

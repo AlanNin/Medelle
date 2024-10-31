@@ -52,7 +52,6 @@ export function UpdateAppointmentComponent({
 }: Props) {
   const previous_date_time = new Date(appointment.date_time);
   let previous_hours = previous_date_time.getHours();
-  console.log("🚀 ~ previous_hours:", previous_hours);
   const previous_hours_standard = previous_hours;
   previous_hours = previous_hours % 12 || 12;
   let formattedHours =
@@ -62,7 +61,6 @@ export function UpdateAppointmentComponent({
     previous_minutes < 10
       ? "0" + previous_minutes
       : previous_minutes.toString();
-  console.log("🚀 ~ previous_hours_standard:", previous_hours_standard);
   const previous_amPm = previous_hours_standard >= 12 ? "PM" : "AM";
 
   const [appointmentDate, setAppointmentDate] = React.useState<

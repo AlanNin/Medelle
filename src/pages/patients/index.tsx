@@ -21,7 +21,6 @@ export default function Component() {
   const {
     data: fetchedUserPatients,
     isLoading: isLoadingUserPatients,
-    refetch: refetchUserPatients,
   } = useQuery({
     queryKey: ["user_patients"],
     queryFn: async () => {
