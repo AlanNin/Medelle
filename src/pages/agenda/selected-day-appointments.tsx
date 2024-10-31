@@ -17,14 +17,12 @@ type Props = {
   isSameDay: (date_1: Date | undefined, date_2: Date) => boolean;
   selectedDayAppointments: any[];
   selectedDate: Date;
-  refetchUserAppointments: () => void;
 };
 
 export default function SelectedDayAppointmentsComponent({
   isSameDay,
   selectedDayAppointments,
   selectedDate,
-  refetchUserAppointments,
 }: Props) {
   const isSelectedDateInThePast = (date: Date) => {
     const today = new Date();
@@ -40,6 +38,9 @@ export default function SelectedDayAppointmentsComponent({
     selectedAppointmentToUpdate,
     setSelectedAppointmentToUpdate,
   ] = React.useState<AppointmentProps>({} as AppointmentProps);
+
+  const isLate = (appointmentDate: Date) =>
+    new Date(appointmentDate) < new Date();
 
   return (
     <>
@@ -80,7 +81,6 @@ export default function SelectedDayAppointmentsComponent({
                 </Button>
                 {isAdding && (
                   <AddAppointmentComponent
-                    refetchUserAppointments={refetchUserAppointments}
                     isOpen={isAdding}
                     setIsOpen={setIsAdding}
                   />
@@ -139,9 +139,13 @@ export default function SelectedDayAppointmentsComponent({
                           }
                         >
                           {appointment.status === "waiting"
-                            ? "En espera"
+                            ? isLate(appointment.date_time)
+                              ? "En espera - Atrasado"
+                              : "En espera"
                             : appointment.status === "confirmed"
-                            ? "Confirmado"
+                            ? isLate(appointment.date_time)
+                              ? "Confirmado - Atrasado"
+                              : "Confirmado"
                             : appointment.status === "completed"
                             ? "Completado"
                             : "Cancelado"}
@@ -173,7 +177,6 @@ export default function SelectedDayAppointmentsComponent({
       {isUpdating && (
         <UpdateAppointmentComponent
           appointment={selectedAppointmentToUpdate}
-          refetchUserAppointments={refetchUserAppointments}
           isOpen={isUpdating}
           setIsOpen={setIsUpdating}
         />

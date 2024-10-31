@@ -25,7 +25,6 @@ type Props = {
 
 export default function UpcomingDaysAppointmentsComponent({
   upcomingAppointments,
-  refetchUserAppointments,
 }: Props) {
   const [viewMode, setViewMode] = React.useState<"list" | "grid">("list");
 
@@ -34,6 +33,8 @@ export default function UpcomingDaysAppointmentsComponent({
     selectedAppointmentToUpdate,
     setSelectedAppointmentToUpdate,
   ] = React.useState<AppointmentProps>({} as AppointmentProps);
+  const isLate = (appointmentDate: Date) =>
+    new Date(appointmentDate) < new Date();
 
   return (
     <>
@@ -226,7 +227,6 @@ export default function UpcomingDaysAppointmentsComponent({
       {isUpdating && (
         <UpdateAppointmentComponent
           appointment={selectedAppointmentToUpdate}
-          refetchUserAppointments={refetchUserAppointments}
           isOpen={isUpdating}
           setIsOpen={setIsUpdating}
         />

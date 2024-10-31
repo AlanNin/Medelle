@@ -24,10 +24,9 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { AddAppointmentComponent } from "./shared-custom/add-appointment";
-import { useQueryClient } from "@tanstack/react-query";
+import AddPatientComponent from "./shared-custom/add-patient";
 
 export default function Layout() {
-  const queryClient = useQueryClient();
   const router = useRouterState();
 
   if (router.location.pathname === "/") {
@@ -40,9 +39,10 @@ export default function Layout() {
     false
   );
 
-  const handleRefetchAgenda = async () => {
-    await queryClient.refetchQueries({ queryKey: ["user_appointments"] });
-  };
+  const [
+    isPatientNewRegisterOpen,
+    setIsPatientNewRegisterOpen,
+  ] = React.useState(false);
 
   return (
     <>
@@ -99,7 +99,10 @@ export default function Layout() {
                   Acceso Rápido
                 </MenubarSubTrigger>
                 <MenubarSubContent>
-                  <MenubarItem className="cursor-pointer">
+                  <MenubarItem
+                    className="cursor-pointer"
+                    onClick={() => setIsPatientNewRegisterOpen(true)}
+                  >
                     Nuevo Paciente
                   </MenubarItem>
                 </MenubarSubContent>
@@ -171,9 +174,14 @@ export default function Layout() {
       </Menubar>
       {isAgendaNewRegisterOpen && (
         <AddAppointmentComponent
-          refetchUserAppointments={handleRefetchAgenda}
           isOpen={isAgendaNewRegisterOpen}
           setIsOpen={setIsAgendaNewRegisterOpen}
+        />
+      )}
+      {isPatientNewRegisterOpen && (
+        <AddPatientComponent
+          isOpen={isPatientNewRegisterOpen}
+          setIsOpen={setIsPatientNewRegisterOpen}
         />
       )}
     </>

@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchPatientComponent } from "./search-patient";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PatientProps } from "@/types/patient";
 import { toast } from "sonner";
 import { AppointmentProps } from "@/types/appointment";
@@ -39,17 +39,17 @@ import {
 
 type Props = {
   appointment: AppointmentProps;
-  refetchUserAppointments: () => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 };
 
 export function UpdateAppointmentComponent({
   appointment,
-  refetchUserAppointments,
   isOpen,
   setIsOpen,
 }: Props) {
+  const queryClient = useQueryClient();
+
   const previous_date_time = new Date(appointment.date_time);
   let previous_hours = previous_date_time.getHours();
   const previous_hours_standard = previous_hours;
@@ -153,6 +153,10 @@ export function UpdateAppointmentComponent({
       });
     },
   });
+
+  const refetchUserAppointments = async () => {
+    await queryClient.refetchQueries({ queryKey: ["user_appointments"] });
+  };
 
   const createPatient = async (data: PatientProps) => {
     const result = await window.ipcRenderer.invoke("patient-add", {
@@ -298,7 +302,6 @@ export function UpdateAppointmentComponent({
                   </Select>
                 </div>
               </div>
-              {/* to-do: change input for a select with find for patients */}
               <div className="items-start gap-2 flex flex-col">
                 <Label htmlFor="name" className="text-right">
                   Paciente <span className="text-red-500">*</span>

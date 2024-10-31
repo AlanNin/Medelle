@@ -21,21 +21,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchPatientComponent } from "./search-patient";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PatientProps } from "@/types/patient";
 import { toast } from "sonner";
 
 type Props = {
-  refetchUserAppointments: () => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 };
 
-export function AddAppointmentComponent({
-  refetchUserAppointments,
-  isOpen,
-  setIsOpen,
-}: Props) {
+export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
+  const queryClient = useQueryClient();
+
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
   >(() => {
@@ -159,6 +156,10 @@ export function AddAppointmentComponent({
     setStatus("waiting");
   };
 
+  const refetchUserAppointments = async () => {
+    await queryClient.refetchQueries({ queryKey: ["user_appointments"] });
+  };
+
   const createAppointment = async () => {
     if (!selectedPatient) {
       toast.error("Por favor selecciona un paciente");
@@ -257,7 +258,6 @@ export function AddAppointmentComponent({
                 </Select>
               </div>
             </div>
-            {/* to-do: change input for a select with find for patients */}
             <div className="items-start gap-2 flex flex-col">
               <Label htmlFor="name" className="text-right">
                 Paciente <span className="text-red-500">*</span>

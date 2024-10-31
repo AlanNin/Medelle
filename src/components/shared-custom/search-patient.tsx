@@ -45,7 +45,7 @@ export function SearchPatientComponent({
           className="w-full justify-between"
         >
           {selectedPatient
-            ? patients.find(
+            ? patients?.find(
                 (patient: PatientProps) => patient._id === selectedPatient
               )?.name
             : "Seleccionar paciente..."}
@@ -72,7 +72,7 @@ export function SearchPatientComponent({
               )}
             </CommandEmpty>
             <CommandGroup>
-              {patients.map((patient: PatientProps) => (
+              {patients?.map((patient: PatientProps) => (
                 <CommandItem
                   key={patient._id}
                   value={patient.name}
