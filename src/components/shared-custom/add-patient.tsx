@@ -1,14 +1,7 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import DatePickerComponent from "./date-picker";
@@ -33,6 +26,14 @@ import { PatientProps } from "@/types/patient";
 import { differenceInYears, isBefore, setYear } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 type Props = {
   isOpen: boolean;
@@ -195,15 +196,18 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-full w-max h-[80%] p-0">
-        <DialogHeader className="pt-6 px-6">
-          <DialogTitle>Añadir paciente</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogContent
+        disableAnimation
+        className="max-w-full w-max h-[80%] p-0"
+      >
+        <AlertDialogHeader className="pt-6 px-6 space-y-0">
+          <AlertDialogTitle>Añadir paciente</AlertDialogTitle>
+          <AlertDialogDescription>
             Añade un nuevo paciente a tu registro. Al terminar haz click en
             guardar.
-          </DialogDescription>
-        </DialogHeader>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
         <ScrollArea className="h-full w-full ">
           <div className="px-6 py-2">
             {/* grid 1 */}
@@ -551,12 +555,19 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
             </div>
           </div>
         </ScrollArea>
-        <DialogFooter className="pb-6 px-6 ">
+        <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
+          <Button
+            variant="outline"
+            type="submit"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancelar
+          </Button>
           <Button type="submit" onClick={createPatient}>
             Guardar paciente
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

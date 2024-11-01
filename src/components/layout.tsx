@@ -111,6 +111,30 @@ export default function Layout() {
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
+              Consultas
+            </MenubarTrigger>
+            <MenubarContent>
+              <Link to="/consultations">
+                <MenubarItem className="cursor-pointer">
+                  Ver <MenubarShortcut>Ctrl+O</MenubarShortcut>
+                </MenubarItem>
+              </Link>
+              <MenubarItem disabled>Otros</MenubarItem>
+              <MenubarSeparator />
+              <MenubarSub>
+                <MenubarSubTrigger className="cursor-pointer">
+                  Acceso Rápido
+                </MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarItem className="cursor-pointer" onClick={() => {}}>
+                    Nueva Consulta
+                  </MenubarItem>
+                </MenubarSubContent>
+              </MenubarSub>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
               Vista
             </MenubarTrigger>
             <MenubarContent>

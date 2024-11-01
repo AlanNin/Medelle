@@ -2,14 +2,6 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
@@ -239,15 +231,15 @@ export function UpdateAppointmentComponent({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-full w-max">
-          <DialogHeader>
-            <DialogTitle>Actualizar cita</DialogTitle>
-            <DialogDescription>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent disableAnimation className="max-w-full w-max">
+          <AlertDialogHeader className="space-y-0">
+            <AlertDialogTitle>Actualizar cita</AlertDialogTitle>
+            <AlertDialogDescription>
               Actualiza la cita de tu agenda. Al terminar haz click en
               actualizar.
-            </DialogDescription>
-          </DialogHeader>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           <div className="flex gap-8 py-4">
             <Calendar
               mode="single"
@@ -347,7 +339,7 @@ export function UpdateAppointmentComponent({
               </div>
             </div>
           </div>
-          <DialogFooter className="flex items-center gap-4">
+          <AlertDialogFooter className="flex items-center gap-4">
             <Button
               variant="destructive"
               onClick={() => setIsDeleting(true)}
@@ -355,12 +347,19 @@ export function UpdateAppointmentComponent({
             >
               <Trash className="h-10 w-10 group-hover:rotate-12 transition-all duration-150" />
             </Button>
+            <Button
+              variant="outline"
+              type="submit"
+              onClick={() => setIsOpen(false)}
+            >
+              Cancelar
+            </Button>
             <Button type="submit" onClick={updateAppointment}>
               Actualizar cita
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
         <AlertDialogContent>
           <AlertDialogHeader>

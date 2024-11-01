@@ -3,13 +3,13 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { SearchPatientComponent } from "./search-patient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { PatientProps } from "@/types/patient";
 import { toast } from "sonner";
 
 type Props = {
@@ -117,7 +116,7 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
     string | undefined
   >("");
 
-  const { data: fetchedUserPatients, refetch: refetchUserPatients } = useQuery({
+  const { data: fetchedUserPatients } = useQuery({
     queryKey: ["user_patients"],
     queryFn: async () => {
       return await window.ipcRenderer.invoke("patient-get-from-user", {
@@ -125,16 +124,6 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
       });
     },
   });
-
-  const createPatient = async (data: PatientProps) => {
-    const result = await window.ipcRenderer.invoke("patient-add", {
-      token: localStorage.getItem("session_token"),
-      data,
-    });
-    if (result) {
-      refetchUserPatients();
-    }
-  };
 
   const [reason, setReason] = React.useState<string | undefined>(undefined);
 
@@ -188,22 +177,22 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
   };
 
   return (
-    <Dialog
+    <AlertDialog
       open={isOpen}
-      onOpenChange={(open) => {
+      onOpenChange={(open: boolean) => {
         setIsOpen(open);
         if (!open) {
           clearInputs();
         }
       }}
     >
-      <DialogContent className="max-w-full w-max">
-        <DialogHeader>
-          <DialogTitle>Añadir cita</DialogTitle>
-          <DialogDescription>
+      <AlertDialogContent disableAnimation className="max-w-full w-max">
+        <AlertDialogHeader className="space-y-0">
+          <AlertDialogTitle>Añadir cita</AlertDialogTitle>
+          <AlertDialogDescription>
             Añade un cita a tu agenda. Al terminar haz click en guardar.
-          </DialogDescription>
-        </DialogHeader>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
         <div className="flex gap-8 py-4">
           <Calendar
             mode="single"
@@ -264,7 +253,6 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
               </Label>
               <SearchPatientComponent
                 patients={fetchedUserPatients?.data}
-                createPatient={createPatient}
                 selectedPatient={selectedPatient}
                 setSelectedPatient={setSelectedPatient}
               />
@@ -303,12 +291,19 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
             </div>
           </div>
         </div>
-        <DialogFooter>
+        <AlertDialogFooter className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            type="submit"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancelar
+          </Button>
           <Button type="submit" onClick={createAppointment}>
             Guardar cita
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

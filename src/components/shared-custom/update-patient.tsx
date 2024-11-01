@@ -1,14 +1,6 @@
 "use client";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import DatePickerComponent from "./date-picker";
@@ -232,15 +224,18 @@ export default function UpdatePatientComponent({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-full w-max h-[80%] p-0">
-          <DialogHeader className="pt-6 px-6">
-            <DialogTitle>Actualizar paciente</DialogTitle>
-            <DialogDescription>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent
+          disableAnimation
+          className="max-w-full w-max h-[80%] p-0"
+        >
+          <AlertDialogHeader className="pt-6 px-6 space-y-0">
+            <AlertDialogTitle>Actualizar paciente</AlertDialogTitle>
+            <AlertDialogDescription>
               Actualiza el paciente seleccionado. Al terminar haz click en
               guardar.
-            </DialogDescription>
-          </DialogHeader>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           <ScrollArea className="h-full w-full ">
             <div className="px-6 py-2">
               {/* grid 1 */}
@@ -598,7 +593,7 @@ export default function UpdatePatientComponent({
               </div>
             </div>
           </ScrollArea>
-          <DialogFooter className="pb-6 px-6 flex items-center gap-4">
+          <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
             <Button
               variant="destructive"
               onClick={() => setIsDeleting(true)}
@@ -606,12 +601,19 @@ export default function UpdatePatientComponent({
             >
               <Trash className="h-10 w-10 group-hover:rotate-12 transition-all duration-150" />
             </Button>
+            <Button
+              variant="outline"
+              type="submit"
+              onClick={() => setIsOpen(false)}
+            >
+              Cancelar
+            </Button>
             <Button type="submit" onClick={updatePatient}>
               Actualizar paciente
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={isDeleting} onOpenChange={setIsDeleting}>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -33,6 +33,6 @@ export type PatientProps = {
   appointments?: AppointmentProps[];
   user_id?: string;
   next_appointment?: AppointmentProps;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

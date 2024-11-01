@@ -18,22 +18,36 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { PatientProps } from "@/types/patient";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   patients: PatientProps[];
-  createPatient: (patient: PatientProps) => void;
   selectedPatient: string | undefined;
   setSelectedPatient: (patient: string | undefined) => void;
 };
 
 export function SearchPatientComponent({
   patients,
-  createPatient,
   selectedPatient,
   setSelectedPatient,
 }: Props) {
+  const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
   const [patientName, setPatientName] = React.useState<string>("");
+
+  const refetchUserPatients = async () => {
+    await queryClient.refetchQueries({ queryKey: ["user_patients"] });
+  };
+
+  const createPatient = async (data: PatientProps) => {
+    const result = await window.ipcRenderer.invoke("patient-add", {
+      token: localStorage.getItem("session_token"),
+      data,
+    });
+    if (result) {
+      refetchUserPatients();
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

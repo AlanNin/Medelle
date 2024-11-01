@@ -22,17 +22,7 @@ import { CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type Props = {
   patient: PatientProps;
@@ -253,7 +243,7 @@ export default function PatientCardComponent({
                 </div>
               </div>
 
-              <Separator className="my-8" />
+              <Separator className="mt-10 mb-8" />
               <div className="space-y-2">
                 <h4 className="text-xs font-semibold uppercase text-muted-foreground">
                   Notas del doctor
@@ -272,7 +262,11 @@ export default function PatientCardComponent({
       </AnimatePresence>
       {isShowing && viewMode === "grid" && (
         <Dialog open={isShowing} onOpenChange={setIsShowing}>
-          <DialogContent onClick={(e) => e.stopPropagation()} hideClose>
+          <DialogContent
+            disableAnimation
+            onClick={(e) => e.stopPropagation()}
+            hideClose
+          >
             <CardContent className="w-full py-4 px-0">
               <div className="w-full gap-4 gap-y-8 flex flex-col">
                 <div className="flex justify-between">

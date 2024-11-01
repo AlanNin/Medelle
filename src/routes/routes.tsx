@@ -4,6 +4,7 @@ import SignInPage from "@/pages/sign-in";
 import AgendaPage from "@/pages/agenda";
 import SignUpPage from "@/pages/sign-up";
 import PatientsPage from "@/pages/patients";
+import ConsultationsPage from "@/pages/consultations";
 
 const signInRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -29,9 +30,16 @@ const patientsRoute = createRoute({
   component: PatientsPage,
 });
 
+const consultationsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/consultations",
+  component: ConsultationsPage,
+});
+
 export const routeTree = rootRoute.addChildren([
   signInRoute,
   signUpRoute,
   agendaRoute,
   patientsRoute,
+  consultationsRoute,
 ]);

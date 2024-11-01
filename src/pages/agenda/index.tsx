@@ -6,6 +6,7 @@ import SelectedDayAppointmentsComponent from "./selected-day-appointments";
 import UpcomingDaysAppointmentsComponent from "./upcoming-days-appointments";
 import { useQuery } from "@tanstack/react-query";
 import { AppointmentProps } from "@/types/appointment";
+import { motion } from "framer-motion";
 
 export default function AgendaPage() {
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
@@ -55,22 +56,43 @@ export default function AgendaPage() {
     <main className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
       <div className="space-y-8">
         <div className="flex flex-wrap lg:flex-auto gap-8 max-lg:justify-center">
-          <CalendarComponent
-            isSameDay={isSameDay}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-          <SelectedDayAppointmentsComponent
-            isSameDay={isSameDay}
-            selectedDayAppointments={selectedDayAppointments}
-            selectedDate={selectedDate}
+          <motion.div
+            key="calendar"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <CalendarComponent
+              isSameDay={isSameDay}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </motion.div>
+          <motion.div
+            className="w-full lg:h-[427px] lg:w-auto lg:flex-grow"
+            key="today-appointments"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <SelectedDayAppointmentsComponent
+              isSameDay={isSameDay}
+              selectedDayAppointments={selectedDayAppointments}
+              selectedDate={selectedDate}
+            />
+          </motion.div>
+        </div>
+        <motion.div
+          key="upcoming-appointment"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <UpcomingDaysAppointmentsComponent
+            upcomingAppointments={upcomingAppointments}
             refetchUserAppointments={refetchUserAppointments}
           />
-        </div>
-        <UpcomingDaysAppointmentsComponent
-          upcomingAppointments={upcomingAppointments}
-          refetchUserAppointments={refetchUserAppointments}
-        />
+        </motion.div>
       </div>
     </main>
   );

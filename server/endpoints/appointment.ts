@@ -56,3 +56,15 @@ ipcMain.handle(`${base}-get-from-user`, async (event, data) => {
   );
   return result.data;
 });
+
+ipcMain.handle(`${base}-get-from-patient`, async (event, data) => {
+  const result = await axios.get(
+    `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+      },
+    }
+  );
+  return result.data;
+});
