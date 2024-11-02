@@ -8,8 +8,11 @@ export type UserProps = {
   email: string;
   password?: string;
   photo_url?: string;
-  phone?: string;
-  address?: string;
+  work_logo_url?: string;
+  personal_phone?: string;
+  work_phone?: string;
+  speciality?: string;
+  work_address?: string;
   gender?: "male" | "female" | "other";
   role?: "user" | "administrator" | "privileged";
   subscription?: {

@@ -6,3 +6,4 @@ export * from "./endpoints/consultation";
 export * from "./computer/export";
 export * from "./computer/print";
 export * from "./computer/converter";
+export * from "./computer/file-explorer";

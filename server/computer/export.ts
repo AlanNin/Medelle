@@ -11,10 +11,12 @@ import fs from "fs";
 import { PdfDataProps, PdfResultProps } from "@/types/pdf";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import Store from "electron-store";
 
 // get the current file path and directory path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const store = new Store<StoreProps>();
 const base = "export";
 
 // function to safely clean temporary files
@@ -75,18 +77,22 @@ ipcMain.handle(
       // generate PDF
       const pdfBuffer = await win.webContents.printToPDF(pdfOptions);
 
+      // get last path used
+      const lastPath = store.get("lastSavePath") || app.getPath("documents");
+
       // show dialog to save file
       const { canceled, filePath } = await dialog.showSaveDialog({
-        defaultPath: path.join(
-          app.getPath("documents"),
-          `Prescription - Patient Care.pdf`
-        ),
+        defaultPath: path.join(lastPath, "Prescription - Patient Care.pdf"),
         filters: [{ name: "PDF", extensions: ["pdf"] }],
         properties: ["createDirectory"],
       });
 
       if (canceled || !filePath) {
         return { success: false, canceled: true };
+      }
+
+      if (!canceled && filePath) {
+        store.set("lastSavePath", path.dirname(filePath));
       }
 
       // save the PDF in the selected location

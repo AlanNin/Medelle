@@ -22,6 +22,7 @@ import { generatePrescriptionTemplate } from "@/components/exports/prescription"
 import { PrintNotSilentProps } from "@/types/print";
 import { toast } from "sonner";
 import { PdfDataProps } from "@/types/pdf";
+import debounce from "@/lib/debouce";
 
 type Props = {
   isOpen: boolean;
@@ -44,9 +45,11 @@ export default function ConsultationDetailsComponent({
   const [isShowingImage, setIsShowingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  async function handleExportPDFPrescription() {
-    console.log("Ejecutando función de impresión - consulta");
+  const handleOpenPDF = async (path: string) => {
+    await window.ipcRenderer.invoke("file-explorer-open-file", path);
+  };
 
+  async function handleExportPDFPrescription() {
     const template = await generatePrescriptionTemplate(consultation);
 
     const handlePrintPrescription: PdfResult = await window.ipcRenderer.invoke(
@@ -68,6 +71,7 @@ export default function ConsultationDetailsComponent({
       toast.success("PDF generado con éxito", {
         description: `Ubicación: "${handlePrintPrescription.path}"`,
       });
+      handleOpenPDF(handlePrintPrescription.path!);
     } else {
       if (handlePrintPrescription.canceled) {
         toast.error("Generación de PDF cancelada");
@@ -76,6 +80,11 @@ export default function ConsultationDetailsComponent({
       }
     }
   }
+
+  const debouncedHandleExportPDFPrescription = debounce(
+    handleExportPDFPrescription,
+    800
+  );
 
   async function handlePrintNotSilent() {
     const template = await generatePrescriptionTemplate(consultation);
@@ -98,6 +107,8 @@ export default function ConsultationDetailsComponent({
       toast.error("Error al imprimir");
     }
   }
+
+  const debouncedHandlePrintNotSilent = debounce(handlePrintNotSilent, 800);
 
   // async function handleLoadPrintersList() {
   //   const printersList: any[] = await window.ipcRenderer.invoke(
@@ -130,7 +141,7 @@ export default function ConsultationDetailsComponent({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={setIsOpen} modal={true}>
         <DialogContent disableAnimation className=" h-[85%] p-0">
           <DialogHeader className="pt-6 px-6 space-y-0">
             <DialogTitle>Detalles de la consulta</DialogTitle>
@@ -367,7 +378,7 @@ export default function ConsultationDetailsComponent({
           <DialogFooter className="pb-6 px-6 ">
             <Button
               variant="outline"
-              onClick={handleExportPDFPrescription}
+              onClick={debouncedHandleExportPDFPrescription}
               className="w-full flex items-center gap-3"
             >
               <Download className="h-4 w-4" />
@@ -375,7 +386,7 @@ export default function ConsultationDetailsComponent({
             </Button>
             <Button
               variant="outline"
-              onClick={handlePrintNotSilent}
+              onClick={debouncedHandlePrintNotSilent}
               className="w-full flex items-center gap-3"
             >
               <Printer className="h-4 w-4" />

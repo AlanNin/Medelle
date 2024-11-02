@@ -56,6 +56,7 @@
     "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
+    "electron-store": "^10.0.0",
     "framer-motion": "^11.11.9",
     "he": "^1.2.0",
     "lucide-react": "^0.453.0",

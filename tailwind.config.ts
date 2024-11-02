@@ -18,6 +18,13 @@ const tailwindConfig: Config = {
       },
     },
     extend: {
+      zIndex: {
+        "60": "60",
+        "70": "70",
+        "80": "80",
+        "90": "90",
+        "100": "100",
+      },
       minHeight: {
         page: "calc(100vh - 50px)",
       },

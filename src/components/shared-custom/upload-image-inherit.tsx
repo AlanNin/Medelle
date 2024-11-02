@@ -3,15 +3,17 @@ import { Pencil } from "lucide-react";
 
 type Props = {
   children: React.ReactNode;
-  pencil_style?: string;
-  pencil_bg_style?: string;
+  show_pencil?: boolean;
+  pencil_width?: number;
+  pencil_height?: number;
   onComplete: (image_url: string) => void;
 };
 
 export default function UploadImageInheritComponent({
   children,
-  pencil_style,
-  pencil_bg_style,
+  show_pencil = true,
+  pencil_width = 4,
+  pencil_height = 4,
   onComplete,
 }: Props) {
   const handleUploadImage = async (file: File | null) => {
@@ -34,23 +36,19 @@ export default function UploadImageInheritComponent({
           }
         }}
       />
+
       <div
         onClick={() => document.getElementById("imageUpload")?.click()}
         className="cursor-pointer relative group"
       >
-        <div
-          className={`${
-            pencil_style
-              ? pencil_bg_style
-              : "absolute right-0 top-0 z-10 p-1.5 bg-white/90 group-hover:bg-white/60 rounded-full transition-all duration-300 group-hover:shadow-xl flex items-center justify-center"
-          }`}
-        >
-          <Pencil
-            className={`${
-              pencil_style ? pencil_style : "h-4 w-4 text-muted-foreground "
-            }`}
-          />
-        </div>
+        {show_pencil && (
+          <div className="absolute right-0 top-0 z-10 p-1.5 bg-white/90 group-hover:bg-white/60 rounded-full transition-all duration-300 group-hover:shadow-xl flex items-center justify-center">
+            <Pencil
+              className={`w-${pencil_width} h-${pencil_height} text-muted-foreground`}
+            />
+          </div>
+        )}
+
         {children}
       </div>
     </>

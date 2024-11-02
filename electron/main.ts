@@ -25,20 +25,23 @@ function createWindow() {
   win = new BrowserWindow({
     icon: path.join(__dirname, "../build/icon.png"),
     frame: true,
-    show: true,
+    show: false,
     resizable: true,
     fullscreenable: true,
     autoHideMenuBar: true,
-    width: 800,
-    height: 600,
-    minWidth: 800,
-    minHeight: 600,
+    width: 1040,
+    height: 807,
+    minWidth: 1040,
+    minHeight: 807,
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
     },
   });
 
-  // Test active push message to Renderer-process.
+  win.maximize();
+  win.show();
+
+  // test active push message to Renderer-process.
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });

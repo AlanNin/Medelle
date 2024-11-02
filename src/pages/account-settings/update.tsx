@@ -51,9 +51,11 @@ export default function AccountSettingsUpdateComponent({
 
   const [inputs, setInputs] = React.useState<UserProps>({
     name: user?.name,
+    speciality: user?.speciality,
     email: user?.email,
-    phone: user?.phone,
-    address: user?.address,
+    personal_phone: user?.personal_phone,
+    work_phone: user?.work_phone,
+    work_address: user?.work_address,
     gender: user?.gender,
   });
 
@@ -184,21 +186,30 @@ export default function AccountSettingsUpdateComponent({
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Teléfono</Label>
+                    <Label className="text-right">Teléfono personal</Label>
                     <Input
-                      name="phone"
-                      value={inputs.phone}
+                      name="personal_phone"
+                      value={inputs.personal_phone}
                       onChange={(e) => handleInputChange(e)}
                       placeholder="Ej: +1 (555) 555-5555"
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Ubicación</Label>
+                    <Label className="text-right">Teléfono laboral</Label>
                     <Input
-                      name="address"
-                      value={inputs.address}
+                      name="work_phone"
+                      value={inputs.work_phone}
                       onChange={(e) => handleInputChange(e)}
-                      placeholder="Escribe la ubicación aquí..."
+                      placeholder="Ej: +1 (555) 555-5555"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2.5 items-start">
+                    <Label className="text-right">Ubicación laboral</Label>
+                    <Input
+                      name="work_address"
+                      value={inputs.work_address}
+                      onChange={(e) => handleInputChange(e)}
+                      placeholder="Escribe aquí..."
                     />
                   </div>
                 </div>
@@ -223,6 +234,15 @@ export default function AccountSettingsUpdateComponent({
                         <SelectItem value="other">Otro</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                  <div className="flex flex-col gap-2.5 items-start">
+                    <Label className="text-right">Especialidad</Label>
+                    <Input
+                      name="speciality"
+                      value={inputs.speciality}
+                      onChange={(e) => handleInputChange(e)}
+                      placeholder="Escribe aquí..."
+                    />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
                     <Label className="text-right">Contraseña actual </Label>{" "}

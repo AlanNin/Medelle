@@ -4,8 +4,9 @@ import formatDate from "@/lib/format-date";
 
 export const PrescriptionComponent: React.FC<{
   prescription: ConsultationProps;
-  logo: string;
-}> = ({ prescription, logo }) => {
+  RxLogo: string;
+  SiteLogo: string;
+}> = ({ prescription, RxLogo, SiteLogo }) => {
   const patientName =
     typeof prescription.patient_id === "object"
       ? prescription.patient_id.name
@@ -45,6 +46,26 @@ export const PrescriptionComponent: React.FC<{
         ? "Dra."
         : "Dr/a."
       : "Dr/a.";
+  const doctorSpeciality =
+    typeof prescription.user_id === "object"
+      ? prescription.user_id.speciality
+      : "...";
+  const doctorWorkPhone =
+    typeof prescription.user_id === "object"
+      ? prescription.user_id.work_phone
+      : "...";
+  const doctorPersonalPhone =
+    typeof prescription.user_id === "object"
+      ? prescription.user_id.personal_phone
+      : "...";
+  const doctorEmail =
+    typeof prescription.user_id === "object"
+      ? prescription.user_id.email
+      : "...";
+  const doctorWorkAddress =
+    typeof prescription.user_id === "object"
+      ? prescription.user_id.work_address
+      : "...";
 
   return (
     <html lang="es">
@@ -106,12 +127,21 @@ export const PrescriptionComponent: React.FC<{
             margin-top: 0.75rem;
           }
 
-          .header-logo {
+           .header-logo-left {
             position: absolute;
-            top: 15mm;
+            top: 12mm;
             left: 15mm;
-            width: 25px;
+            width: 65px;
             height: auto;
+          }
+
+          .header-logo-right {
+            position: absolute;
+            top: 13mm;
+            right: 15mm;
+            width: 45px;
+            height: auto;
+            opacity: 0.5;
           }
 
           .patient-info {
@@ -203,25 +233,23 @@ export const PrescriptionComponent: React.FC<{
       </head>
       <body>
         <div className="prescription">
-          <img src={logo} alt="Logo" className="header-logo" />
+          <img src={SiteLogo} alt="Logo" className="header-logo-left" />
+          <img src={RxLogo} alt="Logo" className="header-logo-right" />
 
           <div className="letterhead">
             <div className="doctor-name">
               {doctorTitle} {doctorName}
             </div>
-            <div className="specialty">
-              Ginecóloga-Obstetra. Colposcopista. Reproducción Humana Asistida
-            </div>
+            <div className="specialty">{doctorSpeciality}</div>
             <div className="contact-info">
-              <span>Tel. 809.788.2323 Ext 332</span>
-              <span>Cel. 829.669.0777</span>
-              <span>giannimmedina@hotmail.com</span>
+              <span>{doctorWorkPhone}</span>
+              <span>{doctorPersonalPhone}</span>
+              <span>{doctorEmail}</span>
             </div>
             <div
               style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.5rem" }}
             >
-              Calle Guayubin Olivo No. 1, Urb. Vista Hermosa, Carr. Mella Km 7
-              ½, Santo Domingo Este, Rep. Dom.
+              {doctorWorkAddress}
             </div>
           </div>
 
@@ -330,8 +358,18 @@ export const PrescriptionComponent: React.FC<{
 export async function generatePrescriptionTemplate(
   prescription: ConsultationProps
 ) {
-  const logo = await window.ipcRenderer.invoke("converter-image-64");
+  const RxLogo = await window.ipcRenderer.invoke("converter-RxLogo-image-64");
+  const SiteLogo = await window.ipcRenderer.invoke(
+    "converter-image-64",
+    typeof prescription.user_id === "object" &&
+      prescription.user_id.work_logo_url
+  );
+
   return ReactDOMServer.renderToStaticMarkup(
-    <PrescriptionComponent prescription={prescription} logo={logo} />
+    <PrescriptionComponent
+      prescription={prescription}
+      RxLogo={RxLogo}
+      SiteLogo={SiteLogo}
+    />
   );
 }
