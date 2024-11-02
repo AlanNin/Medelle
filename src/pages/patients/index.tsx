@@ -16,7 +16,7 @@ export default function Component() {
     "all" | "with-appointment" | "without-appointment"
   >("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 10;
+  let itemsPerPage = 12;
 
   const {
     data: fetchedUserPatients,

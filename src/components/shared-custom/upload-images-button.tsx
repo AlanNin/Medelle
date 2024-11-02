@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Check, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import uploadImages from "@/lib/cloudinary";
+import uploadImage from "@/lib/cloudinary";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +43,7 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
     const urls = files.map((file) => URL.createObjectURL(file));
     setPreviewUrls(urls);
   };
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -81,7 +82,7 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
   const handleUpload = async () => {
     setIsUploading(true);
     try {
-      const uploadPromises = selectedImages.map((image) => uploadImages(image));
+      const uploadPromises = selectedImages.map((image) => uploadImage(image));
       const uploadedUrls = await Promise.all(uploadPromises);
       setImages([...images, ...uploadedUrls]);
       await Promise.all(uploadPromises);
@@ -157,7 +158,7 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
               {images.map((image: any, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-2 px-4 border rounded-lg"
+                  className="flex items-center justify-between p-2 px-4 border rounded-lg w-full"
                 >
                   <div className="flex items-center gap-3">
                     <img
@@ -166,7 +167,7 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
                       className="h-10 w-10 object-cover rounded-sm"
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium ">
+                      <span className="text-sm font-medium max-w-[200px] truncate">
                         {`Image - ${index + 1}`}{" "}
                       </span>
                       <span className="text-xs text-green-600 flex items-center gap-1">
@@ -192,7 +193,7 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
               {selectedImages.map((file, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-2 px-4 border rounded-lg"
+                  className="flex items-center justify-between p-2 px-4 border rounded-lg w-full"
                 >
                   <div className="flex items-center gap-3">
                     <img
@@ -201,7 +202,9 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
                       className="h-10 w-10 object-cover rounded-sm"
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium">{file.name}</span>
+                      <span className="text-sm font-medium max-w-[200px] truncate">
+                        {file.name}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         ({Math.round(file.size / 1024)} KB)
                       </span>

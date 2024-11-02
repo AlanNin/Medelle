@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { SearchPatientComponent } from "./search-patient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { PatientProps } from "@/types/patient";
 import { toast } from "sonner";
 import { AppointmentProps } from "@/types/appointment";
 import { Trash } from "lucide-react";
@@ -137,7 +136,7 @@ export function UpdateAppointmentComponent({
     string | undefined
   >(appointment.patient_id._id);
 
-  const { data: fetchedUserPatients, refetch: refetchUserPatients } = useQuery({
+  const { data: fetchedUserPatients } = useQuery({
     queryKey: ["user_patients"],
     queryFn: async () => {
       return await window.ipcRenderer.invoke("patient-get-from-user", {
@@ -148,16 +147,6 @@ export function UpdateAppointmentComponent({
 
   const refetchUserAppointments = async () => {
     await queryClient.refetchQueries({ queryKey: ["user_appointments"] });
-  };
-
-  const createPatient = async (data: PatientProps) => {
-    const result = await window.ipcRenderer.invoke("patient-add", {
-      token: localStorage.getItem("session_token"),
-      data,
-    });
-    if (result) {
-      refetchUserPatients();
-    }
   };
 
   const [reason, setReason] = React.useState<string | undefined>(
@@ -300,7 +289,6 @@ export function UpdateAppointmentComponent({
                 </Label>
                 <SearchPatientComponent
                   patients={fetchedUserPatients?.data}
-                  createPatient={createPatient}
                   selectedPatient={selectedPatient}
                   setSelectedPatient={setSelectedPatient}
                 />
@@ -339,11 +327,11 @@ export function UpdateAppointmentComponent({
               </div>
             </div>
           </div>
-          <AlertDialogFooter className="flex items-center gap-4">
+          <AlertDialogFooter className="flex items-center">
             <Button
               variant="destructive"
               onClick={() => setIsDeleting(true)}
-              className="group"
+              className="group mr-auto"
             >
               <Trash className="h-10 w-10 group-hover:rotate-12 transition-all duration-150" />
             </Button>
@@ -355,7 +343,7 @@ export function UpdateAppointmentComponent({
               Cancelar
             </Button>
             <Button type="submit" onClick={updateAppointment}>
-              Actualizar cita
+              Actualizar
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -13,17 +13,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FileImage } from "lucide-react";
+import { Download, FileImage, Printer } from "lucide-react";
 import { ConsultationProps } from "@/types/consultation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import formatDateShort from "@/lib/format-date-short";
+import { generatePrescriptionTemplate } from "@/components/exports/prescription";
+import { PrintNotSilentProps } from "@/types/print";
+import { toast } from "sonner";
+import { PdfDataProps } from "@/types/pdf";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   consultation: ConsultationProps;
 };
+
+interface PdfResult {
+  success: boolean;
+  path?: string;
+  error?: string;
+  canceled?: boolean;
+}
 
 export default function ConsultationDetailsComponent({
   isOpen,
@@ -33,14 +44,94 @@ export default function ConsultationDetailsComponent({
   const [isShowingImage, setIsShowingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  async function handleExportPDFPrescription() {
+    console.log("Ejecutando función de impresión - consulta");
+
+    const template = await generatePrescriptionTemplate(consultation);
+
+    const handlePrintPrescription: PdfResult = await window.ipcRenderer.invoke(
+      "export-pdf",
+      {
+        template,
+        config: {
+          margin: {
+            marginType: "none" as const,
+          },
+          pageSize: "A4",
+          landscape: false,
+          printBackground: true,
+        },
+      } as PdfDataProps
+    );
+
+    if (handlePrintPrescription.success && handlePrintPrescription.path) {
+      toast.success("PDF generado con éxito", {
+        description: `Ubicación: "${handlePrintPrescription.path}"`,
+      });
+    } else {
+      if (handlePrintPrescription.canceled) {
+        toast.error("Generación de PDF cancelada");
+      } else {
+        toast.error("Error al generar PDF");
+      }
+    }
+  }
+
+  async function handlePrintNotSilent() {
+    const template = await generatePrescriptionTemplate(consultation);
+
+    const response = await window.ipcRenderer.invoke("print-not-silent", {
+      template,
+      config: {
+        margin: {
+          marginType: "none" as const,
+        },
+        Size: "A4",
+        landscape: false,
+        printBackground: true,
+      },
+    } as PrintNotSilentProps);
+
+    if (response.success) {
+      toast.success("Impresión exitosa");
+    } else {
+      toast.error("Error al imprimir");
+    }
+  }
+
+  // async function handleLoadPrintersList() {
+  //   const printersList: any[] = await window.ipcRenderer.invoke(
+  //     "print-load-printers"
+  //   );
+  // }
+
+  // async function handlePrintSilent() {
+  //   const template = await generatePrescriptionTemplate(consultation);
+
+  //   const response = await window.ipcRenderer.invoke("print-silent", {
+  //     printer: "EPSON L220 Series",
+  //     template,
+  //     config: {
+  //       pageSize: "A4",
+  //       margin: {
+  //         marginType: "none" as const,
+  //       },
+  //       landscape: false,
+  //       printBackground: true,
+  //     },
+  //   } as PrintSilentProps);
+
+  //   if (response.success) {
+  //     toast.success("Impresión exitosa");
+  //   } else {
+  //     toast.error("Error al imprimir");
+  //   }
+  // }
+
   return (
     <>
-      {" "}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent
-          disableAnimation
-          className=" md:h-[80%] lg:h-[80%] xl:h-[75%] 2xl:h-[65%] p-0"
-        >
+        <DialogContent disableAnimation className=" h-[85%] p-0">
           <DialogHeader className="pt-6 px-6 space-y-0">
             <DialogTitle>Detalles de la consulta</DialogTitle>
             <DialogDescription>
@@ -194,7 +285,7 @@ export default function ConsultationDetailsComponent({
                                 <img
                                   src={image}
                                   alt={`Estudio de imagen ${index + 1}`}
-                                  className="object-cover rounded-lg "
+                                  className="object-cover rounded-lg w-full h-full"
                                 />
                               </div>
                             )
@@ -223,7 +314,38 @@ export default function ConsultationDetailsComponent({
                     {consultation.treatment}
                   </p>
                 </div>
+
                 <Separator />
+                {typeof consultation.patient_id === "object" &&
+                  consultation.patient_id.gender !== "male" && (
+                    <>
+                      <div className="flex flex-col mb-2 gap-1.5">
+                        <Label className="text-base">Datos ginecológicos</Label>
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                          Fecha de última menstruación:{" "}
+                          {consultation.gynecological_information
+                            ?.last_menstrual_period
+                            ? formatDateShort(
+                                consultation.gynecological_information
+                                  .last_menstrual_period
+                              )
+                            : "Sin información"}
+                        </p>
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                          Fecha de parto previsto:{" "}
+                          {consultation.gynecological_information
+                            ?.estimated_due_date
+                            ? formatDateShort(
+                                consultation.gynecological_information
+                                  .estimated_due_date
+                              )
+                            : "Sin información"}
+                        </p>
+                      </div>
+
+                      <Separator />
+                    </>
+                  )}
 
                 <div className="flex flex-col mb-2 gap-1">
                   <p className=" text-sm text-center text-muted-foreground whitespace-pre-wrap  ">
@@ -245,10 +367,19 @@ export default function ConsultationDetailsComponent({
           <DialogFooter className="pb-6 px-6 ">
             <Button
               variant="outline"
-              onClick={() => setIsOpen(false)}
-              className="w-full"
+              onClick={handleExportPDFPrescription}
+              className="w-full flex items-center gap-3"
             >
-              Cerrar
+              <Download className="h-4 w-4" />
+              Guardar como PDF
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handlePrintNotSilent}
+              className="w-full flex items-center gap-3"
+            >
+              <Printer className="h-4 w-4" />
+              Imprimir
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,6 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { UserProps } from "@/types/user";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+type UserState = {
+  currentUser: UserProps | null;
+  loading: boolean;
+  error: boolean;
+};
+
+const initialState: UserState = {
   currentUser: null,
   loading: false,
   error: false,
@@ -13,7 +20,7 @@ export const userSlice = createSlice({
     loginStart: (state) => {
       state.loading = true;
     },
-    loginSuccess: (state, action) => {
+    loginSuccess: (state, action: PayloadAction<UserProps>) => {
       state.loading = false;
       state.currentUser = action.payload;
     },
@@ -26,7 +33,7 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
-    userUpdated: (state, action) => {
+    userUpdated: (state, action: PayloadAction<UserProps>) => {
       state.currentUser = action.payload;
     },
   },

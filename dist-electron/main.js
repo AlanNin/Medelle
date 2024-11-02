@@ -1,17 +1,17 @@
-import { ipcMain, app, BrowserWindow } from "electron";
-import { fileURLToPath } from "node:url";
-import path$2 from "node:path";
-import require$$0$1 from "fs";
-import require$$1 from "path";
+import { ipcMain, BrowserWindow, app, dialog } from "electron";
+import { fileURLToPath as fileURLToPath$1 } from "node:url";
+import path$3 from "node:path";
+import fs$2 from "fs";
+import path$2, { dirname } from "path";
 import require$$2 from "os";
 import require$$3 from "crypto";
-import require$$1$1, { TextEncoder as TextEncoder$1 } from "util";
+import require$$1, { TextEncoder as TextEncoder$1 } from "util";
 import stream, { Readable } from "stream";
 import require$$3$1 from "http";
 import require$$4$1 from "https";
-import require$$0$2 from "url";
+import require$$0$1, { fileURLToPath } from "url";
 import require$$4$2 from "assert";
-import require$$1$2 from "tty";
+import require$$1$1 from "tty";
 import zlib from "zlib";
 import { EventEmitter } from "events";
 function getDefaultExportFromCjs(x) {
@@ -98,8 +98,8 @@ const require$$4 = {
   engines,
   browser: browser$1
 };
-const fs$1 = require$$0$1;
-const path$1 = require$$1;
+const fs$1 = fs$2;
+const path$1 = path$2;
 const os = require$$2;
 const crypto = require$$3;
 const packageJson = require$$4;
@@ -816,7 +816,7 @@ AxiosError.from = (error, code, config2, request, response, customProps) => {
   return axiosError;
 };
 var Stream$2 = stream.Stream;
-var util$2 = require$$1$1;
+var util$2 = require$$1;
 var delayed_stream = DelayedStream$1;
 function DelayedStream$1() {
   this.source = null;
@@ -900,7 +900,7 @@ DelayedStream$1.prototype._checkIfMaxDataSizeExceeded = function() {
   var message = "DelayedStream#maxDataSize of " + this.maxDataSize + " bytes exceeded.";
   this.emit("error", new Error(message));
 };
-var util$1 = require$$1$1;
+var util$1 = require$$1;
 var Stream$1 = stream.Stream;
 var DelayedStream = delayed_stream;
 var combined_stream = CombinedStream$1;
@@ -11781,7 +11781,7 @@ var mimeDb = require$$0;
  */
 (function(exports2) {
   var db = mimeDb;
-  var extname = require$$1.extname;
+  var extname = path$2.extname;
   var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
   var TEXT_TYPE_REGEXP = /^text\//i;
   exports2.charset = charset;
@@ -12016,12 +12016,12 @@ var populate$1 = function(dst, src2) {
   return dst;
 };
 var CombinedStream = combined_stream;
-var util = require$$1$1;
-var path = require$$1;
+var util = require$$1;
+var path = path$2;
 var http$1 = require$$3$1;
 var https$1 = require$$4$1;
-var parseUrl$2 = require$$0$2.parse;
-var fs = require$$0$1;
+var parseUrl$2 = require$$0$1.parse;
+var fs = fs$2;
 var Stream = stream.Stream;
 var mime = mimeTypes;
 var asynckit = asynckit$1;
@@ -12553,7 +12553,7 @@ const transitionalDefaults = {
   forcedJSONParsing: true,
   clarifyTimeoutError: false
 };
-const URLSearchParams = require$$0$2.URLSearchParams;
+const URLSearchParams = require$$0$1.URLSearchParams;
 const platform$1 = {
   isNode: true,
   classes: {
@@ -13058,7 +13058,7 @@ function buildFullPath(baseURL, requestedURL) {
   }
   return requestedURL;
 }
-var parseUrl$1 = require$$0$2.parse;
+var parseUrl$1 = require$$0$1.parse;
 var DEFAULT_PORTS = {
   ftp: 21,
   gopher: 70,
@@ -13597,7 +13597,7 @@ function requireSupportsColor() {
   if (hasRequiredSupportsColor) return supportsColor_1;
   hasRequiredSupportsColor = 1;
   const os2 = require$$2;
-  const tty = require$$1$2;
+  const tty = require$$1$1;
   const hasFlag2 = requireHasFlag();
   const { env } = process;
   let forceColor;
@@ -13698,8 +13698,8 @@ function requireNode() {
   if (hasRequiredNode) return node.exports;
   hasRequiredNode = 1;
   (function(module, exports2) {
-    const tty = require$$1$2;
-    const util2 = require$$1$1;
+    const tty = require$$1$1;
+    const util2 = require$$1;
     exports2.init = init;
     exports2.log = log;
     exports2.formatArgs = formatArgs;
@@ -13894,7 +13894,7 @@ var debug_1 = function() {
   }
   debug$1.apply(null, arguments);
 };
-var url = require$$0$2;
+var url = require$$0$1;
 var URL$1 = url.URL;
 var http = require$$3$1;
 var https = require$$4$1;
@@ -14943,7 +14943,7 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter2(config2) {
       headers.set(data.getHeaders());
       if (!headers.hasContentLength()) {
         try {
-          const knownLength = await require$$1$1.promisify(data.getLength).call(data);
+          const knownLength = await require$$1.promisify(data.getLength).call(data);
           Number.isFinite(knownLength) && knownLength >= 0 && headers.setContentLength(knownLength);
         } catch (e) {
         }
@@ -16329,19 +16329,34 @@ axios.formToJSON = (thing) => formDataToJSON(utils$1.isHTMLForm(thing) ? new For
 axios.getAdapter = adapters.getAdapter;
 axios.HttpStatusCode = HttpStatusCode;
 axios.default = axios;
-const base$3 = "auth";
-ipcMain.handle(`${base$3}-sign-up`, async (event, data) => {
+const base$7 = "auth";
+ipcMain.handle(`${base$7}-sign-up`, async (event, data) => {
   const success = { message: "Data saved", data };
   return success;
 });
-ipcMain.handle(`${base$3}-sign-in`, async (event, data) => {
+ipcMain.handle(`${base$7}-sign-in`, async (event, data) => {
   const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
   return result.data;
 });
-const base$2 = "patient";
-ipcMain.handle(`${base$2}-get-from-user`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}patient/get-from-user`,
+ipcMain.handle(
+  `${base$7}-verify-session`,
+  async (event, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}auth/verify-session`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`
+        }
+      }
+    );
+    return result.data;
+  }
+);
+const base$6 = "user";
+ipcMain.handle(`${base$6}-update`, async (event, data) => {
+  const result = await axios.put(
+    `${process.env.API_URL}user/update`,
+    data.data,
     {
       headers: {
         Authorization: `Bearer ${data.token}`
@@ -16350,7 +16365,30 @@ ipcMain.handle(`${base$2}-get-from-user`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$2}-add`, async (event, data) => {
+ipcMain.handle(`${base$6}-delete`, async (event, data) => {
+  const result = await axios.delete(`${process.env.API_URL}user/delete`, {
+    headers: {
+      Authorization: `Bearer ${data.token}`
+    }
+  });
+  return result.data;
+});
+const base$5 = "patient";
+ipcMain.handle(
+  `${base$5}-get-from-user`,
+  async (event, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}patient/get-from-user`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`
+        }
+      }
+    );
+    return result.data;
+  }
+);
+ipcMain.handle(`${base$5}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}patient/create`,
     data.data,
@@ -16362,7 +16400,7 @@ ipcMain.handle(`${base$2}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$2}-update`, async (event, data) => {
+ipcMain.handle(`${base$5}-update`, async (event, data) => {
   const { patient_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}patient/update/${patient_id}`,
@@ -16375,7 +16413,7 @@ ipcMain.handle(`${base$2}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$2}-delete`, async (event, data) => {
+ipcMain.handle(`${base$5}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
     {
@@ -16386,8 +16424,8 @@ ipcMain.handle(`${base$2}-delete`, async (event, data) => {
   );
   return result.data;
 });
-const base$1 = "appointment";
-ipcMain.handle(`${base$1}-add`, async (event, data) => {
+const base$4 = "appointment";
+ipcMain.handle(`${base$4}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}appointment/create`,
     data.data,
@@ -16399,7 +16437,7 @@ ipcMain.handle(`${base$1}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$1}-update`, async (event, data) => {
+ipcMain.handle(`${base$4}-update`, async (event, data) => {
   const { appointment_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}appointment/update/${appointment_id}`,
@@ -16412,7 +16450,7 @@ ipcMain.handle(`${base$1}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$1}-delete`, async (event, data) => {
+ipcMain.handle(`${base$4}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}appointment/delete/${data.data.appointment_id}`,
     {
@@ -16423,41 +16461,50 @@ ipcMain.handle(`${base$1}-delete`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$1}-get-from-user`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}appointment/get-from-user`,
-    {
-      headers: {
-        Authorization: `Bearer ${data.token}`
+ipcMain.handle(
+  `${base$4}-get-from-user`,
+  async (event, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}appointment/get-from-user`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`
+        }
       }
-    }
-  );
-  return result.data;
-});
-ipcMain.handle(`${base$1}-get-from-patient`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${data.token}`
+    );
+    return result.data;
+  }
+);
+ipcMain.handle(
+  `${base$4}-get-from-patient`,
+  async (event, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`
+        }
       }
-    }
-  );
-  return result.data;
-});
-const base = "consultation";
-ipcMain.handle(`${base}-get-from-user`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}consultation/get-from-user`,
-    {
-      headers: {
-        Authorization: `Bearer ${data.token}`
+    );
+    return result.data;
+  }
+);
+const base$3 = "consultation";
+ipcMain.handle(
+  `${base$3}-get-from-user`,
+  async (event, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}consultation/get-from-user`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`
+        }
       }
-    }
-  );
-  return result.data;
-});
-ipcMain.handle(`${base}-add`, async (event, data) => {
+    );
+    return result.data;
+  }
+);
+ipcMain.handle(`${base$3}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}consultation/create`,
     data.data,
@@ -16469,7 +16516,7 @@ ipcMain.handle(`${base}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base}-update`, async (event, data) => {
+ipcMain.handle(`${base$3}-update`, async (event, data) => {
   const { consultation_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}consultation/update/${consultation_id}`,
@@ -16482,7 +16529,7 @@ ipcMain.handle(`${base}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base}-delete`, async (event, data) => {
+ipcMain.handle(`${base$3}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}consultation/delete/${data.data.consultation_id}`,
     {
@@ -16493,17 +16540,191 @@ ipcMain.handle(`${base}-delete`, async (event, data) => {
   );
   return result.data;
 });
+const __filename$1 = fileURLToPath(import.meta.url);
+const __dirname$2 = dirname(__filename$1);
+const base$2 = "export";
+const safeCleanup = async (filePath) => {
+  if (fs$2.existsSync(filePath)) {
+    try {
+      await fs$2.promises.unlink(filePath);
+    } catch (error) {
+      console.warn("error during cleanup:", error);
+    }
+  }
+};
+ipcMain.handle(
+  `${base$2}-pdf`,
+  async (event, data) => {
+    const tempDirPath = path$2.join(__dirname$2, "temp");
+    const tempFilePath = path$2.join(tempDirPath, "temporal-template.html");
+    fs$2.mkdirSync(tempDirPath, { recursive: true });
+    fs$2.writeFileSync(tempFilePath, data.template);
+    let win2 = null;
+    let tempPath = "";
+    try {
+      win2 = new BrowserWindow({
+        width: 595,
+        // a4 size
+        height: 842,
+        show: false,
+        webPreferences: { nodeIntegration: true }
+      });
+      const tempDir = path$2.join(app.getPath("temp"), "pdf-exports");
+      await fs$2.promises.mkdir(tempDir, { recursive: true });
+      tempPath = path$2.join(tempDir, `temp-${Date.now()}.html`);
+      await fs$2.promises.copyFile(tempFilePath, tempPath);
+      await win2.loadFile(tempPath);
+      await new Promise((resolve) => setTimeout(resolve, 1e3));
+      const pdfOptions = {
+        printBackground: true,
+        ...data == null ? void 0 : data.config
+      };
+      const pdfBuffer = await win2.webContents.printToPDF(pdfOptions);
+      const { canceled, filePath } = await dialog.showSaveDialog({
+        defaultPath: path$2.join(
+          app.getPath("documents"),
+          `Prescription - Patient Care.pdf`
+        ),
+        filters: [{ name: "PDF", extensions: ["pdf"] }],
+        properties: ["createDirectory"]
+      });
+      if (canceled || !filePath) {
+        return { success: false, canceled: true };
+      }
+      await fs$2.promises.writeFile(filePath, pdfBuffer);
+      return { success: true, path: filePath };
+    } catch (error) {
+      console.error("error generating PDF:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "unknown error"
+      };
+    } finally {
+      fs$2.unlinkSync(tempFilePath);
+      await safeCleanup(tempPath);
+      if (win2) win2.destroy();
+    }
+  }
+);
+const base$1 = "print";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname$1 = dirname(__filename);
+ipcMain.handle(
+  `${base$1}-load-printers`,
+  async (event) => {
+    return new Promise((resolve) => {
+      const win2 = new BrowserWindow({
+        show: false,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false
+        }
+      });
+      win2.loadURL("about:blank");
+      win2.webContents.on("did-finish-load", async () => {
+        try {
+          const printerList = await win2.webContents.getPrintersAsync();
+          resolve(printerList);
+        } catch (error) {
+          console.error("Error getting printers:", error);
+          resolve([]);
+        } finally {
+          win2.close();
+        }
+      });
+    });
+  }
+);
+ipcMain.handle(
+  `${base$1}-silent`,
+  async (event, data) => {
+    if (!data.template || !data.printer)
+      return { success: false, error: "No template or printer provided" };
+    const tempDirPath = path$2.join(__dirname$1, "temp");
+    const tempFilePath = path$2.join(tempDirPath, "temporal-template.html");
+    if (!fs$2.existsSync(tempDirPath)) {
+      fs$2.mkdirSync(tempDirPath, { recursive: true });
+    }
+    fs$2.writeFileSync(tempFilePath, data.template);
+    const win2 = new BrowserWindow({
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    });
+    if (!win2) return;
+    win2.loadURL(tempFilePath);
+    win2.webContents.on("did-finish-load", async () => {
+      win2.webContents.print(
+        {
+          silent: true,
+          printBackground: true,
+          deviceName: data == null ? void 0 : data.printer,
+          ...data == null ? void 0 : data.config
+        },
+        (success, errorType) => {
+          if (success) {
+            return { success: false, error: errorType };
+          }
+          fs$2.unlinkSync(tempFilePath);
+          return { success: true };
+        }
+      );
+    });
+  }
+);
+ipcMain.handle(
+  `${base$1}-not-silent`,
+  async (event, data) => {
+    if (!data.template) return { success: false, error: "No template" };
+    const tempDirPath = path$2.join(__dirname$1, "temp");
+    const tempFilePath = path$2.join(tempDirPath, "temporal-template.html");
+    if (!fs$2.existsSync(tempDirPath)) {
+      fs$2.mkdirSync(tempDirPath, { recursive: true });
+    }
+    fs$2.writeFileSync(tempFilePath, data.template);
+    const win2 = new BrowserWindow({
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    });
+    if (!win2) return;
+    win2.loadURL(tempFilePath);
+    win2.webContents.on("did-finish-load", async () => {
+      win2.webContents.print(
+        { silent: false, printBackground: true, ...data == null ? void 0 : data.config },
+        (success, errorType) => {
+          if (success) {
+            return { success: false, error: errorType };
+          }
+          fs$2.unlinkSync(tempFilePath);
+          return { success: true };
+        }
+      );
+    });
+  }
+);
+const base = "converter";
+ipcMain.handle(`${base}-image-64`, async (event) => {
+  const image = fs$2.readFileSync(
+    path$2.join(process.cwd(), "public", "RxLogo.png")
+  );
+  return `data:image/png;base64,${image.toString("base64")}`;
+});
 dotenv.config();
-const __dirname = path$2.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path$2.join(__dirname, "..");
+const __dirname = path$3.dirname(fileURLToPath$1(import.meta.url));
+process.env.APP_ROOT = path$3.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path$2.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path$2.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$2.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
+const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");
+const RENDERER_DIST = path$3.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$3.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
 function createWindow() {
   win = new BrowserWindow({
-    icon: path$2.join(__dirname, "../build/icon.png"),
+    icon: path$3.join(__dirname, "../build/icon.png"),
     frame: true,
     show: true,
     resizable: true,
@@ -16514,7 +16735,7 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
-      preload: path$2.join(__dirname, "preload.mjs")
+      preload: path$3.join(__dirname, "preload.mjs")
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -16523,9 +16744,8 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path$2.join(RENDERER_DIST, "index.html"));
+    win.loadFile(path$3.join(RENDERER_DIST, "index.html"));
   }
-  win.webContents.openDevTools();
 }
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

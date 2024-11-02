@@ -1,9 +1,9 @@
-import { ipcMain } from "electron";
+import { IpcMainInvokeEvent, ipcMain } from "electron";
 import axios from "axios";
 
 const base = "appointment";
 
-ipcMain.handle(`${base}-add`, async (event, data) => {
+ipcMain.handle(`${base}-add`, async (event: IpcMainInvokeEvent, data) => {
   const result = await axios.post(
     `${process.env.API_URL}appointment/create`,
     data.data,
@@ -16,7 +16,7 @@ ipcMain.handle(`${base}-add`, async (event, data) => {
   return result.data;
 });
 
-ipcMain.handle(`${base}-update`, async (event, data) => {
+ipcMain.handle(`${base}-update`, async (event: IpcMainInvokeEvent, data) => {
   const { appointment_id, ...restData } = data.data;
 
   const result = await axios.put(
@@ -32,7 +32,7 @@ ipcMain.handle(`${base}-update`, async (event, data) => {
   return result.data;
 });
 
-ipcMain.handle(`${base}-delete`, async (event, data) => {
+ipcMain.handle(`${base}-delete`, async (event: IpcMainInvokeEvent, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}appointment/delete/${data.data.appointment_id}`,
     {
@@ -45,26 +45,32 @@ ipcMain.handle(`${base}-delete`, async (event, data) => {
   return result.data;
 });
 
-ipcMain.handle(`${base}-get-from-user`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}appointment/get-from-user`,
-    {
-      headers: {
-        Authorization: `Bearer ${data.token}`,
-      },
-    }
-  );
-  return result.data;
-});
+ipcMain.handle(
+  `${base}-get-from-user`,
+  async (event: IpcMainInvokeEvent, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}appointment/get-from-user`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+    return result.data;
+  }
+);
 
-ipcMain.handle(`${base}-get-from-patient`, async (event, data) => {
-  const result = await axios.get(
-    `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${data.token}`,
-      },
-    }
-  );
-  return result.data;
-});
+ipcMain.handle(
+  `${base}-get-from-patient`,
+  async (event: IpcMainInvokeEvent, data) => {
+    const result = await axios.get(
+      `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+    return result.data;
+  }
+);

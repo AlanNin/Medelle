@@ -24,12 +24,16 @@ type Props = {
   date: Date | undefined;
   setDate: (date: Date) => void;
   untilCurrent?: boolean;
+  disabled?: boolean;
+  placeholder?: string;
 };
 
 export default function DatePickerComponent({
   date,
   setDate,
   untilCurrent,
+  disabled,
+  placeholder,
 }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const today = new Date();
@@ -81,12 +85,13 @@ export default function DatePickerComponent({
             "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
+          disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
             format(date, "PPP", { locale: es })
           ) : (
-            <span>Selecciona una fecha</span>
+            <span>{placeholder ?? "Selecciona una fecha"}</span>
           )}
         </Button>
       </PopoverTrigger>

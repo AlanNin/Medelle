@@ -2,7 +2,8 @@ export default function formatDateShort(dateTime: Date) {
   const date = new Date(dateTime);
 
   const day = String(date.getDate()).padStart(2, "0");
-  const month = date.toLocaleString("default", { month: "short" });
+  const month = date.toLocaleString("es-ES", { month: "short" });
+  const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
   const year = date.getFullYear();
 
   const hours = date.getHours();
@@ -10,5 +11,5 @@ export default function formatDateShort(dateTime: Date) {
   const amPm = hours >= 12 ? "P.M." : "A.M.";
   const formattedHours = hours % 12 || 12;
 
-  return `${day} ${month} ${year}, ${formattedHours}:${minutes} ${amPm}`;
+  return `${day} ${capitalizedMonth} ${year}, ${formattedHours}:${minutes} ${amPm}`;
 }

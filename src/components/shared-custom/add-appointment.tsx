@@ -291,7 +291,7 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
             </div>
           </div>
         </div>
-        <AlertDialogFooter className="flex items-center gap-4">
+        <AlertDialogFooter className="flex items-center">
           <Button
             variant="outline"
             type="submit"
@@ -300,7 +300,7 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
             Cancelar
           </Button>
           <Button type="submit" onClick={createAppointment}>
-            Guardar cita
+            Guardar
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

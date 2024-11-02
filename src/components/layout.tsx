@@ -2,7 +2,6 @@ import * as React from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
@@ -25,6 +24,8 @@ import {
 } from "./ui/tooltip";
 import { AddAppointmentComponent } from "./shared-custom/add-appointment";
 import AddPatientComponent from "./shared-custom/add-patient";
+import AddConsultationComponent from "./shared-custom/add-consultation";
+import useKeyboardShortcuts from "@/lib/keyboard-shortcuts";
 
 export default function Layout() {
   const router = useRouterState();
@@ -44,9 +45,24 @@ export default function Layout() {
     setIsPatientNewRegisterOpen,
   ] = React.useState(false);
 
+  const [
+    isConsultationNewRegisterOpen,
+    setIsConsultationNewRegisterOpen,
+  ] = React.useState(false);
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  const handleForceReload = () => {
+    window.location.href = window.location.href;
+  };
+
+  useKeyboardShortcuts();
+
   return (
     <>
-      <Menubar className="rounded-none h-11 flex items-center justify-between p-4 py-6">
+      <Menubar className="rounded-none h-11 flex items-center justify-between p-4 py-6 fixed top-0 left-0 right-0 z-10">
         <div className="flex items-center gap-1">
           <Link to="/agenda">
             <img
@@ -62,7 +78,7 @@ export default function Layout() {
             <MenubarContent>
               <Link to="/agenda">
                 <MenubarItem className="cursor-pointer">
-                  Ver <MenubarShortcut>Ctrl+A</MenubarShortcut>
+                  Ver <MenubarShortcut>Ctrl+1</MenubarShortcut>
                 </MenubarItem>
               </Link>
               <MenubarItem disabled>Otros</MenubarItem>
@@ -89,7 +105,7 @@ export default function Layout() {
             <MenubarContent>
               <Link to="/patients">
                 <MenubarItem className="cursor-pointer">
-                  Ver <MenubarShortcut>Ctrl+P</MenubarShortcut>
+                  Ver <MenubarShortcut>Ctrl+2</MenubarShortcut>
                 </MenubarItem>
               </Link>
               <MenubarItem disabled>Otros</MenubarItem>
@@ -116,7 +132,7 @@ export default function Layout() {
             <MenubarContent>
               <Link to="/consultations">
                 <MenubarItem className="cursor-pointer">
-                  Ver <MenubarShortcut>Ctrl+O</MenubarShortcut>
+                  Ver <MenubarShortcut>Ctrl+3</MenubarShortcut>
                 </MenubarItem>
               </Link>
               <MenubarItem disabled>Otros</MenubarItem>
@@ -126,7 +142,10 @@ export default function Layout() {
                   Acceso Rápido
                 </MenubarSubTrigger>
                 <MenubarSubContent>
-                  <MenubarItem className="cursor-pointer" onClick={() => {}}>
+                  <MenubarItem
+                    className="cursor-pointer"
+                    onClick={() => setIsConsultationNewRegisterOpen(true)}
+                  >
                     Nueva Consulta
                   </MenubarItem>
                 </MenubarSubContent>
@@ -138,15 +157,15 @@ export default function Layout() {
               Vista
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarCheckboxItem className="cursor-pointer">
-                Siempre Mostrar ...
-              </MenubarCheckboxItem>
-              <MenubarSeparator />
-              <MenubarItem className="cursor-pointer" inset>
-                Recargar <MenubarShortcut>⌘R</MenubarShortcut>
+              <MenubarItem className="cursor-pointer" onClick={handleReload}>
+                Recargar <MenubarShortcut>Ctrl+R</MenubarShortcut>
               </MenubarItem>
-              <MenubarItem disabled inset>
-                Forzar Recarga <MenubarShortcut>⇧⌘R</MenubarShortcut>
+              <MenubarItem
+                className="cursor-pointer"
+                onClick={handleForceReload}
+              >
+                Forzar Recarga
+                <MenubarShortcut className="ml-3">Ctrl+⇧+R</MenubarShortcut>
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
@@ -155,9 +174,11 @@ export default function Layout() {
               Mi cuenta
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem className="cursor-pointer">Ajustes</MenubarItem>
+              <Link to="/account-settings">
+                <MenubarItem className="cursor-pointer">Ajustes</MenubarItem>
+              </Link>
               <MenubarSeparator />
-              <MenubarItem className="cursor-pointer">
+              <MenubarItem className="cursor-pointer" onClick={handleLogout}>
                 Cerrar Sesión
               </MenubarItem>
             </MenubarContent>
@@ -167,13 +188,16 @@ export default function Layout() {
               Configuración
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem className="cursor-pointer">General</MenubarItem>
+              <MenubarItem className="cursor-pointer" disabled>
+                General
+              </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem className="cursor-pointer">
+              <MenubarItem className="cursor-pointer" disabled>
                 Actualizaciones
               </MenubarItem>
-
-              <MenubarItem className="cursor-pointer">Acerca De</MenubarItem>
+              <Link to="/about">
+                <MenubarItem className="cursor-pointer">Acerca De</MenubarItem>
+              </Link>
             </MenubarContent>
           </MenubarMenu>
         </div>
@@ -206,6 +230,12 @@ export default function Layout() {
         <AddPatientComponent
           isOpen={isPatientNewRegisterOpen}
           setIsOpen={setIsPatientNewRegisterOpen}
+        />
+      )}
+      {isConsultationNewRegisterOpen && (
+        <AddConsultationComponent
+          isOpen={isConsultationNewRegisterOpen}
+          setIsOpen={setIsConsultationNewRegisterOpen}
         />
       )}
     </>

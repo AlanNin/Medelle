@@ -1,5 +1,6 @@
 import { AppointmentProps } from "./appointment";
 import { PatientProps } from "./patient";
+import { UserProps } from "./user";
 
 export type ConsultationProps = {
   _id?: string;
@@ -15,10 +16,13 @@ export type ConsultationProps = {
     images?: string[];
   };
   treatment: string;
+  gynecological_information?: {
+    last_menstrual_period?: Date;
+    estimated_due_date?: Date;
+  };
   patient_id: PatientProps | string;
-  user_id?: string;
+  user_id?: UserProps | string;
   appointment_id?: AppointmentProps | string;
   createdAt?: Date;
-  updatedAt?:   Date;
-  ;
+  updatedAt?: Date;
 };

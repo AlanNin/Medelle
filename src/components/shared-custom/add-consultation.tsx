@@ -31,6 +31,8 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import UploadImagesButtonComponent from "./upload-images-button";
+import DatePickerComponent from "./date-picker";
+import { PatientProps } from "@/types/patient";
 
 type Props = {
   isOpen: boolean;
@@ -51,6 +53,10 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     images_studies: {
       description: undefined,
       images: undefined,
+    },
+    gynecological_information: {
+      last_menstrual_period: undefined,
+      estimated_due_date: undefined,
     },
     treatment: "",
     patient_id: "",
@@ -103,12 +109,33 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
       },
     }));
   };
+
   const handleImagesStudiesImagesChange = (images: string[]) => {
     setInputs((prevInputs) => ({
       ...prevInputs,
       images_studies: {
         ...prevInputs.laboratory_studies,
         images: images,
+      },
+    }));
+  };
+
+  const calculateDueDate = (LMP: Date): Date | undefined => {
+    if (LMP) {
+      const dueDate = new Date(LMP);
+      dueDate.setDate(dueDate.getDate() + 280);
+      return dueDate;
+    }
+
+    return undefined;
+  };
+
+  const handleInputLMPChange = (value: Date) => {
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      gynecological_information: {
+        last_menstrual_period: value,
+        estimated_due_date: calculateDueDate(value),
       },
     }));
   };
@@ -187,7 +214,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
         disableAnimation
-        className="max-w-full w-max md:h-[80%] lg:h-[80%] xl:h-[75%] 2xl:h-[65%] p-0"
+        className="max-w-full w-max h-[85%] p-0"
       >
         <AlertDialogHeader className="pt-6 px-6 space-y-0">
           <AlertDialogTitle>Añadir consulta</AlertDialogTitle>
@@ -318,9 +345,39 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
                 placeholder="Escribe aquí..."
               />
             </div>
+            {inputs.patient_id &&
+              fetchedUserPatients?.data.find(
+                (patient: PatientProps) => patient._id === inputs.patient_id
+              )?.gender !== "male" && (
+                <div className="grid grid-cols-2 gap-4 items-start mb-2">
+                  <div className="flex flex-col gap-2.5 items-start">
+                    <Label className="text-right">Última menstruación</Label>
+                    <DatePickerComponent
+                      date={
+                        inputs.gynecological_information?.last_menstrual_period
+                      }
+                      setDate={handleInputLMPChange}
+                      untilCurrent={true}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2.5 items-start">
+                    <Label className="text-right">
+                      Fecha probable de parto
+                    </Label>
+                    <DatePickerComponent
+                      date={
+                        inputs.gynecological_information?.estimated_due_date
+                      }
+                      setDate={() => {}}
+                      disabled
+                      placeholder="Seleccionar FUR / LMP"
+                    />
+                  </div>
+                </div>
+              )}
           </div>
         </ScrollArea>
-        <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
+        <AlertDialogFooter className="pb-6 px-6 flex items-center">
           <Button
             variant="outline"
             type="submit"
@@ -329,7 +386,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
             Cancelar
           </Button>
           <Button type="submit" onClick={createConsultation}>
-            Guardar consulta
+            Guardar
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

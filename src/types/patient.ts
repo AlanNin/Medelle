@@ -1,4 +1,5 @@
 import { AppointmentProps } from "./appointment";
+import { ConsultationProps } from "./consultation";
 
 export type PatientProps = {
   _id?: string;
@@ -31,6 +32,7 @@ export type PatientProps = {
   };
   doctor_notes?: string;
   appointments?: AppointmentProps[];
+  consultations?: ConsultationProps[];
   user_id?: string;
   next_appointment?: AppointmentProps;
   createdAt?: Date;

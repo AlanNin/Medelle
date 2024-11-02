@@ -189,7 +189,7 @@ export default function UpdatePatientComponent({
   };
 
   const updatePatient = async () => {
-    if (!inputs.name || inputs.name.length === 0) {
+    if (!inputs.name || inputs.name.length === 0 || !inputs.gender) {
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
@@ -272,12 +272,12 @@ export default function UpdatePatientComponent({
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Dirección</Label>
+                    <Label className="text-right">Ubicación</Label>
                     <Input
                       name="address"
                       value={inputs.address}
                       onChange={(e) => handleInputChange(e)}
-                      placeholder="Escribe la dirección aquí..."
+                      placeholder="Escribe la ubicación aquí..."
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
@@ -352,7 +352,9 @@ export default function UpdatePatientComponent({
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Género</Label>
+                    <Label className="text-right">
+                      Género <span className="text-red-500">*</span>
+                    </Label>
                     <Select
                       name="gender"
                       value={inputs.gender}
@@ -593,11 +595,11 @@ export default function UpdatePatientComponent({
               </div>
             </div>
           </ScrollArea>
-          <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
+          <AlertDialogFooter className="pb-6 px-6 flex items-center">
             <Button
               variant="destructive"
               onClick={() => setIsDeleting(true)}
-              className="group"
+              className="group mr-auto"
             >
               <Trash className="h-10 w-10 group-hover:rotate-12 transition-all duration-150" />
             </Button>
@@ -609,7 +611,7 @@ export default function UpdatePatientComponent({
               Cancelar
             </Button>
             <Button type="submit" onClick={updatePatient}>
-              Actualizar paciente
+              Actualizar
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

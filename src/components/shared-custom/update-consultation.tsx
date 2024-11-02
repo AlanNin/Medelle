@@ -33,6 +33,10 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import UploadImagesButtonComponent from "./upload-images-button";
+import DatePickerComponent from "./date-picker";
+import { Input } from "../ui/input";
+import formatDate from "@/lib/format-date";
+import { PatientProps } from "@/types/patient";
 
 type Props = {
   consultation: ConsultationProps;
@@ -58,6 +62,12 @@ export default function UpdateConsultationComponent({
     images_studies: {
       description: consultation.images_studies?.description,
       images: consultation.images_studies?.images,
+    },
+    gynecological_information: {
+      last_menstrual_period:
+        consultation.gynecological_information?.last_menstrual_period,
+      estimated_due_date:
+        consultation.gynecological_information?.estimated_due_date,
     },
     treatment: consultation.treatment,
     patient_id: consultation.patient_id,
@@ -110,12 +120,33 @@ export default function UpdateConsultationComponent({
       },
     }));
   };
+
   const handleImagesStudiesImagesChange = (images: string[]) => {
     setInputs((prevInputs) => ({
       ...prevInputs,
       images_studies: {
         ...prevInputs.laboratory_studies,
         images: images,
+      },
+    }));
+  };
+
+  const calculateDueDate = (LMP: Date): Date | undefined => {
+    if (LMP) {
+      const dueDate = new Date(LMP);
+      dueDate.setDate(dueDate.getDate() + 280);
+      return dueDate;
+    }
+
+    return undefined;
+  };
+
+  const handleInputLMPChange = (value: Date) => {
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      gynecological_information: {
+        last_menstrual_period: value,
+        estimated_due_date: calculateDueDate(value),
       },
     }));
   };
@@ -221,7 +252,7 @@ export default function UpdateConsultationComponent({
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent
           disableAnimation
-          className="max-w-full w-max md:h-[80%] lg:h-[80%] xl:h-[75%] 2xl:h-[75%] p-0"
+          className="max-w-full w-max h-[85%] p-0"
         >
           <AlertDialogHeader className="pt-6 px-6 space-y-0">
             <AlertDialogTitle>Actualizar consulta</AlertDialogTitle>
@@ -354,13 +385,44 @@ export default function UpdateConsultationComponent({
                   placeholder="Escribe aquí..."
                 />
               </div>
+              {patientId &&
+                fetchedUserPatients?.data.find(
+                  (patient: PatientProps) => patient._id === patientId
+                )?.gender !== "male" && (
+                  <div className="grid grid-cols-2 gap-4 items-start mb-2">
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">Última menstruación</Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information
+                            ?.last_menstrual_period
+                        }
+                        setDate={handleInputLMPChange}
+                        untilCurrent={true}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">
+                        Fecha probable de parto
+                      </Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information?.estimated_due_date
+                        }
+                        setDate={() => {}}
+                        disabled
+                        placeholder="Seleccionar FUR / LMP"
+                      />
+                    </div>
+                  </div>
+                )}
             </div>
           </ScrollArea>
-          <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
+          <AlertDialogFooter className="pb-6 px-6 flex items-center">
             <Button
               variant="destructive"
               onClick={() => setIsDeleting(true)}
-              className="group"
+              className="group mr-auto"
             >
               <Trash className="h-10 w-10 group-hover:rotate-12 transition-all duration-150" />
             </Button>
@@ -372,7 +434,7 @@ export default function UpdateConsultationComponent({
               Cancelar
             </Button>
             <Button type="submit" onClick={updateConsultation}>
-              Actualizar consulta
+              Actualizar
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

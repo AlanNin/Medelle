@@ -180,7 +180,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
   };
 
   const createPatient = async () => {
-    if (!inputs.name || inputs.name.length === 0) {
+    if (!inputs.name || inputs.name.length === 0 || !inputs.gender) {
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
@@ -244,12 +244,12 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
-                  <Label className="text-right">Dirección</Label>
+                  <Label className="text-right">Ubicación</Label>
                   <Input
                     name="address"
                     value={inputs.address}
                     onChange={(e) => handleInputChange(e)}
-                    placeholder="Escribe la dirección aquí..."
+                    placeholder="Escribe la ubicación aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
@@ -324,7 +324,9 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
-                  <Label className="text-right">Género</Label>
+                  <Label className="text-right">
+                    Género <span className="text-red-500">*</span>
+                  </Label>
                   <Select
                     name="gender"
                     value={inputs.gender}
@@ -555,7 +557,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
             </div>
           </div>
         </ScrollArea>
-        <AlertDialogFooter className="pb-6 px-6 flex items-center gap-4">
+        <AlertDialogFooter className="pb-6 px-6 flex items-center">
           <Button
             variant="outline"
             type="submit"
@@ -564,7 +566,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
             Cancelar
           </Button>
           <Button type="submit" onClick={createPatient}>
-            Guardar paciente
+            Guardar
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

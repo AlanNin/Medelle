@@ -7,6 +7,7 @@ import { useMemo, useRef, useState } from "react";
 import normalizeString from "@/lib/normalize-string";
 import { ConsultationProps } from "@/types/consultation";
 import ConsultationsContentComponent from "./content";
+import { useMQBreakpoint } from "@/hooks/use-mq-breakpoint";
 
 export default function ConsultationsPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -14,7 +15,17 @@ export default function ConsultationsPage() {
     "all" | "today" | "last-week" | "last-month"
   >("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 10;
+  let itemsPerPage = 10;
+
+  const { is2xl } = useMQBreakpoint("2xl");
+  const { isXl } = useMQBreakpoint("xl");
+  const { isLg } = useMQBreakpoint("lg");
+
+  if (is2xl) {
+    itemsPerPage = 8;
+  } else if (isXl || isLg) {
+    itemsPerPage = 6;
+  }
 
   const {
     data: fetchedUserConsultations,
@@ -34,7 +45,6 @@ export default function ConsultationsPage() {
     return fetchedUserConsultations?.data?.filter(
       (consultation: ConsultationProps) => {
         const createdAt = new Date(consultation.updatedAt!);
-        console.log(consultation);
         const matchesSearch =
           normalizeString(consultation.reason).includes(
             normalizeString(searchQuery)

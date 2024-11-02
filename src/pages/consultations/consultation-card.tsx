@@ -102,7 +102,7 @@ export default function ConsultationCardComponent({ consultation }: Props) {
                 setSelectedConsultationToUpdate(consultation);
               }}
             >
-              Actualizar consulta
+              Actualizar
             </Button>
           </div>
         </CardContent>

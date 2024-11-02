@@ -228,7 +228,7 @@ export default function PatientCardComponent({
                             <span>
                               {formatDateShort(appointment.date_time)}
                             </span>
-                            <span className="text-muted-foreground">
+                            <span className="text-muted-foreground max-w-[120px] truncate">
                               {appointment.reason}
                             </span>
                           </div>
@@ -238,6 +238,40 @@ export default function PatientCardComponent({
                   ) : (
                     <p className="text-sm text-muted-foreground">
                       No hay citas programadas
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                  <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                    Consultas
+                  </h4>
+                  {patient.consultations && patient.consultations.length > 0 ? (
+                    <ScrollArea
+                      className={`${
+                        patient.consultations.length > 1
+                          ? "h-[86px]"
+                          : "h-[54px]"
+                      } w-max rounded-md border p-4`}
+                    >
+                      <div className="space-y-3">
+                        {patient.consultations.map((consultation, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-between text-sm gap-4"
+                          >
+                            <span>
+                              {formatDateShort(consultation.updatedAt!)}
+                            </span>
+                            <span className="text-muted-foreground max-w-[120px] truncate">
+                              {consultation.reason}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No existen consultas aún
                     </p>
                   )}
                 </div>
@@ -266,138 +300,178 @@ export default function PatientCardComponent({
             disableAnimation
             onClick={(e) => e.stopPropagation()}
             hideClose
+            className="p-0 max-h-[80vh] overflow-auto"
           >
-            <CardContent className="w-full py-4 px-0">
-              <div className="w-full gap-4 gap-y-8 flex flex-col">
-                <div className="flex justify-between">
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                      Información de contacto
-                    </h4>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {patient.email ?? "Sin registro"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {patient.phone ?? "Sin registro"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground max-w-[180px]">
-                          {patient.address ?? "Sin registro"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                      Información personal
-                    </h4>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Cake className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {patient.date_of_birth
-                            ? formatDateShort(patient.date_of_birth)
-                            : "Sin registro"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">
-                          {patient.gender
-                            ? patient.gender === "male"
-                              ? "Masculino"
-                              : patient.gender === "female"
-                              ? "Femenino"
-                              : "Otro"
-                            : "Sin registro"}
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 text-sm max-w-[180px]">
-                        <Badge
-                          variant="outline"
-                          className="text-xs text-muted-foreground flex items-center gap-2"
-                        >
-                          <HeartPulse className="h-3 w-3 text-muted-foreground" />
-                          {patient.blood_group ?? "?"}
-                        </Badge>
-                        <div className="flex items-center gap-1">
-                          <Ruler className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {patient.height
-                              ? `${patient.height} cm`
-                              : "Sin registro"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Weight className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {patient.weight
-                              ? `${patient.weight} cm`
-                              : "Sin registro"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4 md:col-span-2 lg:col-span-1">
-                  <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                    Citas
-                  </h4>
-                  {patient.appointments && patient.appointments.length > 0 ? (
-                    <ScrollArea
-                      className={`${
-                        patient.appointments.length > 1
-                          ? "h-[86px]"
-                          : "h-[54px]"
-                      } w-full rounded-md border p-4`}
-                    >
+            <ScrollArea className="p-6 m-0 w-full ">
+              <CardContent className="w-full py-4 px-0">
+                <div className="w-full gap-4 gap-y-8 flex flex-col">
+                  <div className="flex justify-between">
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                        Información de contacto
+                      </h4>
                       <div className="space-y-3">
-                        {patient.appointments.map((appointment, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between text-sm gap-4"
+                        <div className="flex items-center gap-2 text-sm">
+                          <Mail className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {patient.email ?? "Sin registro"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {patient.phone ?? "Sin registro"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground max-w-[180px]">
+                            {patient.address ?? "Sin registro"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                        Información personal
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Cake className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {patient.date_of_birth
+                              ? formatDateShort(patient.date_of_birth)
+                              : "Sin registro"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {patient.gender
+                              ? patient.gender === "male"
+                                ? "Masculino"
+                                : patient.gender === "female"
+                                ? "Femenino"
+                                : "Otro"
+                              : "Sin registro"}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-sm max-w-[180px]">
+                          <Badge
+                            variant="outline"
+                            className="text-xs text-muted-foreground flex items-center gap-2"
                           >
-                            <span>
-                              {formatDateShort(appointment.date_time)}
-                            </span>
+                            <HeartPulse className="h-3 w-3 text-muted-foreground" />
+                            {patient.blood_group ?? "?"}
+                          </Badge>
+                          <div className="flex items-center gap-1">
+                            <Ruler className="h-4 w-4 text-muted-foreground" />
                             <span className="text-muted-foreground">
-                              {appointment.reason}
+                              {patient.height
+                                ? `${patient.height} cm`
+                                : "Sin registro"}
                             </span>
                           </div>
-                        ))}
+                          <div className="flex items-center gap-1">
+                            <Weight className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground">
+                              {patient.weight
+                                ? `${patient.weight} cm`
+                                : "Sin registro"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </ScrollArea>
+                    </div>
+                  </div>
+                  <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                    <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                      Citas
+                    </h4>
+                    {patient.appointments && patient.appointments.length > 0 ? (
+                      <ScrollArea
+                        className={`${
+                          patient.appointments.length > 1
+                            ? "h-[86px]"
+                            : "h-[54px]"
+                        } w-full rounded-md border p-4`}
+                      >
+                        <div className="space-y-3">
+                          {patient.appointments.map((appointment, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-between text-sm gap-4"
+                            >
+                              <span>
+                                {formatDateShort(appointment.date_time)}
+                              </span>
+                              <span className="text-muted-foreground max-w-[200px] truncate">
+                                {appointment.reason}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No hay citas programadas
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                    <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                      Consultas
+                    </h4>
+                    {patient.consultations &&
+                    patient.consultations.length > 0 ? (
+                      <ScrollArea
+                        className={`${
+                          patient.consultations.length > 1
+                            ? "h-[86px]"
+                            : "h-[54px]"
+                        } w-full rounded-md border p-4`}
+                      >
+                        <div className="space-y-3">
+                          {patient.consultations.map((consultation, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-between text-sm gap-4"
+                            >
+                              <span>
+                                {formatDateShort(consultation.updatedAt!)}
+                              </span>
+                              <span className="text-muted-foreground max-w-[200px] truncate">
+                                {consultation.reason}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No existen consultas aún
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <Separator className="my-8" />
+                <div className="space-y-2">
+                  <h4 className="text-xs font-semibold uppercase text-muted-foreground">
+                    Notas del doctor
+                  </h4>
+                  {patient.doctor_notes ? (
+                    <p className="text-sm text-muted-foreground">
+                      {patient.doctor_notes}
+                    </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No hay citas programadas
+                      Sin notas...
                     </p>
                   )}
                 </div>
-              </div>
-
-              <Separator className="my-8" />
-              <div className="space-y-2">
-                <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                  Notas del doctor
-                </h4>
-                {patient.doctor_notes ? (
-                  <p className="text-sm text-muted-foreground">
-                    {patient.doctor_notes}
-                  </p>
-                ) : (
-                  <p className="text-sm text-muted-foreground">Sin notas...</p>
-                )}
-              </div>
-            </CardContent>
+              </CardContent>
+            </ScrollArea>
           </DialogContent>
         </Dialog>
       )}
