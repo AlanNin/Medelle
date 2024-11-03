@@ -16352,8 +16352,24 @@ ipcMain.handle(`${base$9}-sign-up`, async (_event, data) => {
   return success;
 });
 ipcMain.handle(`${base$9}-sign-in`, async (_event, data) => {
-  const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
-  return result.data;
+  try {
+    const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
+    return result.data;
+  } catch (error2) {
+    if (axios.isAxiosError(error2) && error2.response) {
+      const status = error2.response.status;
+      if (status >= 400 && status < 500) {
+        return {
+          errorType: "user",
+          message: "Correo electrónico o contraseña inválidos"
+        };
+      }
+    }
+    return {
+      errorType: "server",
+      message: "Error interno del servidor. Inténtelo más tarde."
+    };
+  }
 });
 ipcMain.handle(
   `${base$9}-verify-session`,

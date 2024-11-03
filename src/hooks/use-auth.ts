@@ -13,10 +13,12 @@ import { useEffect } from "react";
 import { UserProps } from "@/types/user";
 
 type SessionResponse = {
-  data: {
+  data?: {
     user: UserProps;
     token?: string;
   };
+  errorType?: "user" | "server" | "network";
+  message?: string;
 };
 
 function useAuth() {
@@ -36,15 +38,15 @@ function useAuth() {
         }
       );
 
-      if (response.data.token) {
-        localStorage.setItem("session_token", response.data.token);
+      if (response.data?.token) {
+        localStorage.setItem("session_token", response.data?.token);
       }
 
-      if (response.data.user) {
-        dispatch(userUpdated(response.data.user));
+      if (response.data?.user) {
+        dispatch(userUpdated(response.data?.user));
       }
 
-      return response.data.user;
+      return response.data?.user;
     } catch (error) {
       localStorage.removeItem("session_token");
       return null;
@@ -68,17 +70,6 @@ function useAuth() {
     }
   }, [sessionUser, dispatch]);
 
-  useEffect(() => {
-    const handleFocus = () => {
-      refetch();
-    };
-
-    window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [refetch]);
-
   const handleLogin = async (
     email: string,
     password: string,
@@ -94,19 +85,26 @@ function useAuth() {
         }
       );
 
-      if (!response.data.token || !response.data.user) {
-        toast.error("Error al iniciar sesión");
-        return;
+      if (response.errorType) {
+        throw new Error(response.message);
       }
 
-      localStorage.setItem("session_token", response.data.token);
-      dispatch(loginSuccess(response.data.user));
+      if (!response.data?.token || !response.data?.user) {
+        throw new Error("Correo electrónico o contraseña inválidos");
+      }
+
+      localStorage.setItem("session_token", response.data?.token);
+      dispatch(loginSuccess(response.data?.user));
       await refetch();
 
       navigate({ to: "/agenda" });
       toast.success("Sesión Iniciada");
     } catch (error) {
-      toast.error("Correo electrónico o contraseña inválidos");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Ha ocurrido un error inesperado");
+      }
     }
   };
 
