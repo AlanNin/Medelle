@@ -10,21 +10,21 @@ export const PrescriptionComponent: React.FC<{
   const patientName =
     typeof prescription.patient_id === "object"
       ? prescription.patient_id.name
-      : "...";
+      : "Sin registrar";
   const dateOfBirth =
     typeof prescription.patient_id === "object" &&
     prescription.patient_id.date_of_birth
       ? formatDate(prescription.patient_id.date_of_birth)
-      : "...";
+      : "Sin registrar";
   const phone =
     typeof prescription.patient_id === "object" && prescription.patient_id.phone
       ? prescription.patient_id.phone
-      : "...";
+      : "Sin registrar";
   const address =
     typeof prescription.patient_id === "object" &&
     prescription.patient_id.address
       ? prescription.patient_id.address
-      : "...";
+      : "Sin registrar";
   const gender =
     typeof prescription.patient_id === "object" &&
     prescription.patient_id.gender
@@ -33,7 +33,7 @@ export const PrescriptionComponent: React.FC<{
         : prescription.patient_id.gender === "female"
         ? "Femenino"
         : "Otro"
-      : "...";
+      : "Sin registrar";
   const doctorName =
     typeof prescription.user_id === "object"
       ? prescription.user_id.name
@@ -45,7 +45,7 @@ export const PrescriptionComponent: React.FC<{
         : prescription.user_id.gender === "female"
         ? "Dra."
         : "Dr/a."
-      : "Dr/a.";
+      : "";
   const doctorSpeciality =
     typeof prescription.user_id === "object"
       ? prescription.user_id.speciality
@@ -233,7 +233,9 @@ export const PrescriptionComponent: React.FC<{
       </head>
       <body>
         <div className="prescription">
-          <img src={SiteLogo} alt="Logo" className="header-logo-left" />
+          {SiteLogo && (
+            <img src={SiteLogo} alt="Logo" className="header-logo-left" />
+          )}
           <img src={RxLogo} alt="Logo" className="header-logo-right" />
 
           <div className="letterhead">
@@ -242,9 +244,9 @@ export const PrescriptionComponent: React.FC<{
             </div>
             <div className="specialty">{doctorSpeciality}</div>
             <div className="contact-info">
-              <span>{doctorWorkPhone}</span>
-              <span>{doctorPersonalPhone}</span>
-              <span>{doctorEmail}</span>
+              {doctorWorkPhone && <span>{doctorWorkPhone}</span>}
+              {doctorPersonalPhone && <span>{doctorPersonalPhone}</span>}
+              {doctorEmail && <span>{doctorEmail}</span>}
             </div>
             <div
               style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.5rem" }}
@@ -293,7 +295,7 @@ export const PrescriptionComponent: React.FC<{
                       : prescription.patient_id.marital_status === "free_union"
                       ? "Unión libre"
                       : "Otro"
-                    : "..."}
+                    : "Sin registrar"}
                 </span>
               </div>
             </div>
@@ -302,17 +304,23 @@ export const PrescriptionComponent: React.FC<{
           <div className="consultation-details">
             <div className="section">
               <div className="section-title">Motivo de Consulta</div>
-              <div className="section-content">{prescription.reason}</div>
+              <div className="section-content">
+                {prescription.reason ?? "Sin registrar"}
+              </div>
             </div>
 
             <div className="section">
               <div className="section-title">Síntomas</div>
-              <div className="section-content">{prescription.symptoms}</div>
+              <div className="section-content">
+                {prescription.symptoms ?? "Sin registrar"}
+              </div>
             </div>
 
             <div className="section">
               <div className="section-title">Diagnóstico</div>
-              <div className="section-content">{prescription.diagnosis}</div>
+              <div className="section-content">
+                {prescription.diagnosis ?? "Sin registrar"}
+              </div>
             </div>
 
             <div className="section">
@@ -359,11 +367,15 @@ export async function generatePrescriptionTemplate(
   prescription: ConsultationProps
 ) {
   const RxLogo = await window.ipcRenderer.invoke("converter-RxLogo-image-64");
-  const SiteLogo = await window.ipcRenderer.invoke(
-    "converter-image-64",
+  const SiteLogo =
     typeof prescription.user_id === "object" &&
-      prescription.user_id.work_logo_url
-  );
+    prescription.user_id.work_logo_url
+      ? await window.ipcRenderer.invoke(
+          "converter-image-64",
+          typeof prescription.user_id === "object" &&
+            prescription.user_id.work_logo_url
+        )
+      : null;
 
   return ReactDOMServer.renderToStaticMarkup(
     <PrescriptionComponent

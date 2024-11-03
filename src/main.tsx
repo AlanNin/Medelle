@@ -1,6 +1,10 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import {
+  RouterProvider,
+  createMemoryHistory,
+  createRouter,
+} from "@tanstack/react-router";
 import { routeTree } from "./routes/routes";
 import { Toaster } from "@/components/ui/sonner";
 import "./global.css";
@@ -10,7 +14,15 @@ import { AppConfigProvider } from "./providers/app-config-provider";
 
 // import { ThemeProvider } from "./providers/theme-provider";
 
-const router = createRouter({ routeTree, defaultPreload: "intent" });
+const memoryHistory = createMemoryHistory({
+  initialEntries: ["/"],
+});
+
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+  history: memoryHistory,
+});
 
 declare module "@tanstack/react-router" {
   interface Register {

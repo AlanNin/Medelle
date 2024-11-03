@@ -26,3 +26,20 @@ ipcMain.handle(`${base}-delete`, async (_event: IpcMainInvokeEvent, data) => {
 
   return result.data;
 });
+
+ipcMain.handle(
+  `${base}-delete-field`,
+  async (_event: IpcMainInvokeEvent, data) => {
+    const result = await axios.put(
+      `${process.env.API_URL}user/delete-field`,
+      data.data,
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
+
+    return result.data;
+  }
+);

@@ -1,12 +1,24 @@
 import uploadImage from "@/lib/cloudinary";
-import { Pencil } from "lucide-react";
+import { ImageUp, Pencil, Trash } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRef } from "react";
 
 type Props = {
   children: React.ReactNode;
   show_pencil?: boolean;
   pencil_width?: number;
   pencil_height?: number;
-  onComplete: (image_url: string) => void;
+  component_height?: "small" | "medium";
+  onComplete?: (image_url: string) => void;
+  onDelete?: () => void;
 };
 
 export default function UploadImageInheritComponent({
@@ -14,12 +26,25 @@ export default function UploadImageInheritComponent({
   show_pencil = true,
   pencil_width = 4,
   pencil_height = 4,
+  component_height = "medium",
   onComplete,
+  onDelete,
 }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleUploadImage = async (file: File | null) => {
-    if (!file) return;
+    if (!file || !onComplete) {
+      return;
+    }
     const image_url = await uploadImage(file);
     onComplete(image_url);
+  };
+
+  const handleDeleteImage = async () => {
+    if (!onDelete) {
+      return;
+    }
+    onDelete();
   };
 
   return (
@@ -27,7 +52,7 @@ export default function UploadImageInheritComponent({
       <input
         type="file"
         accept="image/*"
-        id="imageUpload"
+        ref={fileInputRef}
         className="hidden"
         onChange={(e) => {
           const files = e.target.files;
@@ -37,19 +62,51 @@ export default function UploadImageInheritComponent({
         }}
       />
 
-      <div
-        onClick={() => document.getElementById("imageUpload")?.click()}
-        className="cursor-pointer relative group"
-      >
+      <div className="cursor-pointer relative group">
         {show_pencil && (
-          <div className="absolute right-0 top-0 z-10 p-1.5 bg-white/90 group-hover:bg-white/60 rounded-full transition-all duration-300 group-hover:shadow-xl flex items-center justify-center">
+          <div
+            className={`absolute ${
+              component_height === "medium"
+                ? "top-0 right-0"
+                : "-top-1 -right-1"
+            }  z-10 p-1.5 bg-white/90 group-hover:bg-white/60 rounded-full transition-all duration-300 group-hover:shadow-xl flex items-center justify-center`}
+          >
             <Pencil
               className={`w-${pencil_width} h-${pencil_height} text-muted-foreground`}
             />
           </div>
         )}
 
-        {children}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel className="-mb-2">
+              Imagen de perfil
+            </DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              Se mostrará en las prescripciones
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                className="gap-3 cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImageUp />
+                <span>Subir imagen</span>
+              </DropdownMenuItem>
+              {onDelete && (
+                <DropdownMenuItem
+                  className="gap-3 cursor-pointer"
+                  onClick={() => handleDeleteImage()}
+                >
+                  <Trash />
+                  <span>Eliminar imagen</span>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </>
   );

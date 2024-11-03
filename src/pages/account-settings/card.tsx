@@ -71,11 +71,41 @@ export default function AccountSettingsCardComponent() {
     }
   };
 
+  const deleteUserPhoto = async () => {
+    try {
+      const result = await window.ipcRenderer.invoke("user-delete-field", {
+        token: localStorage.getItem("session_token"),
+        data: { field: "photo_url" },
+      });
+      if (result) {
+        handleRefetchUserSession();
+        toast.success("Usuario actualizado");
+      }
+    } catch (error) {
+      toast.error("Error al actualizar usuario");
+    }
+  };
+
   const updateUserWorkLogo = async (image_url: string) => {
     try {
       const result = await window.ipcRenderer.invoke("user-update", {
         token: localStorage.getItem("session_token"),
         data: { work_logo_url: image_url },
+      });
+      if (result) {
+        handleRefetchUserSession();
+        toast.success("Usuario actualizado");
+      }
+    } catch (error) {
+      toast.error("Error al actualizar usuario");
+    }
+  };
+
+  const deleteUserWorkLogo = async () => {
+    try {
+      const result = await window.ipcRenderer.invoke("user-delete-field", {
+        token: localStorage.getItem("session_token"),
+        data: { field: "work_logo_url" },
       });
       if (result) {
         handleRefetchUserSession();
@@ -152,43 +182,38 @@ export default function AccountSettingsCardComponent() {
             <div className="flex flex-col items-center gap-4">
               <div className="relative w-full flex items-center justify-center">
                 <div className="flex flex-col items-start absolute left-0 top-[50%] translate-y-[-50%] text-center text-sm text-muted-foreground">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1.5">
-                        <UploadImageInheritComponent
-                          onComplete={updateUserWorkLogo}
-                          show_pencil={
-                            currentUser?.work_logo_url ? true : false
-                          }
-                          pencil_height={3}
-                          pencil_width={3}
-                        >
-                          <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center">
-                            <AvatarImage
-                              src={currentUser?.work_logo_url}
-                              alt={`${currentUser?.name} - Avatar`}
-                            />
-                            <AvatarFallback className="text-3xl font-bold text-primary bg-primary/0">
-                              <Plus className="h-4 w-4 text-primary/35" />
-                            </AvatarFallback>
-                          </Avatar>
-                        </UploadImageInheritComponent>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        className="z-30 flex flex-col gap-0 p-3"
-                        side="top"
-                      >
-                        <p>Logo laboral</p>
-                        <p>Se mostrará en las prescripciones</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <UploadImageInheritComponent
+                    onComplete={updateUserWorkLogo}
+                    onDelete={
+                      currentUser?.work_logo_url
+                        ? deleteUserWorkLogo
+                        : undefined
+                    }
+                    pencil_height={3}
+                    pencil_width={3}
+                    component_height="small"
+                  >
+                    <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
+                      <AvatarImage
+                        src={currentUser?.work_logo_url}
+                        alt={`${currentUser?.name} - Avatar`}
+                      />
+                      <AvatarFallback className="text-3xl font-bold text-primary bg-primary/0">
+                        <Plus className="h-4 w-4 text-primary/35" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </UploadImageInheritComponent>
                 </div>
-                <UploadImageInheritComponent onComplete={updateUserPhoto}>
-                  <Avatar className="h-24 w-24 ring-4 ring-primary/10">
+                <UploadImageInheritComponent
+                  onComplete={updateUserPhoto}
+                  onDelete={
+                    currentUser?.photo_url ? deleteUserPhoto : undefined
+                  }
+                >
+                  <Avatar className="h-24 w-24 ring-4 ring-primary/10 cursor-pointer">
                     <AvatarImage
                       src={currentUser?.photo_url}
-                      alt={`${currentUser?.name} - Avatar`}
+                      alt={`${currentUser?.name} - Work Logo`}
                     />
                     <AvatarFallback className="text-3xl font-bold text-primary">
                       {currentUser?.name
