@@ -4,16 +4,19 @@ import path from "path";
 
 const base = "converter";
 
-ipcMain.handle(`${base}-RxLogo-image-64`, async (event: IpcMainInvokeEvent) => {
-  const image = fs.readFileSync(
-    path.join(process.cwd(), "public", "RxLogo.png")
-  );
-  return `data:image/png;base64,${image.toString("base64")}`;
-});
+ipcMain.handle(
+  `${base}-RxLogo-image-64`,
+  async (_event: IpcMainInvokeEvent) => {
+    const image = fs.readFileSync(
+      path.join(process.cwd(), "public", "RxLogo.png")
+    );
+    return `data:image/png;base64,${image.toString("base64")}`;
+  }
+);
 
 ipcMain.handle(
   `${base}-image-64`,
-  async (event: IpcMainInvokeEvent, image_url: string) => {
+  async (_event: IpcMainInvokeEvent, image_url: string) => {
     try {
       const response = await fetch(image_url);
 

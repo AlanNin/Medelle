@@ -4,14 +4,14 @@ const base = "file-explorer";
 
 ipcMain.handle(
   `${base}-open-file`,
-  async (event: IpcMainInvokeEvent, path: string) => {
+  async (_event: IpcMainInvokeEvent, path: string) => {
     await shell.openPath(path);
   }
 );
 
 ipcMain.handle(
   `${base}-open-folder`,
-  async (event: IpcMainInvokeEvent, path: string) => {
+  async (_event: IpcMainInvokeEvent, path: string) => {
     await shell.showItemInFolder(path);
   }
 );

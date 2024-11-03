@@ -5,7 +5,7 @@ const base = "patient";
 
 ipcMain.handle(
   `${base}-get-from-user`,
-  async (event: IpcMainInvokeEvent, data) => {
+  async (_event: IpcMainInvokeEvent, data) => {
     const result = await axios.get(
       `${process.env.API_URL}patient/get-from-user`,
       {
@@ -18,7 +18,7 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle(`${base}-add`, async (event: IpcMainInvokeEvent, data) => {
+ipcMain.handle(`${base}-add`, async (_event: IpcMainInvokeEvent, data) => {
   const result = await axios.post(
     `${process.env.API_URL}patient/create`,
     data.data,
@@ -31,7 +31,7 @@ ipcMain.handle(`${base}-add`, async (event: IpcMainInvokeEvent, data) => {
   return result.data;
 });
 
-ipcMain.handle(`${base}-update`, async (event: IpcMainInvokeEvent, data) => {
+ipcMain.handle(`${base}-update`, async (_event: IpcMainInvokeEvent, data) => {
   const { patient_id, ...restData } = data.data;
 
   const result = await axios.put(
@@ -46,7 +46,7 @@ ipcMain.handle(`${base}-update`, async (event: IpcMainInvokeEvent, data) => {
   return result.data;
 });
 
-ipcMain.handle(`${base}-delete`, async (event: IpcMainInvokeEvent, data) => {
+ipcMain.handle(`${base}-delete`, async (_event: IpcMainInvokeEvent, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
     {

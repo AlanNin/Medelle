@@ -1,5 +1,7 @@
 {
   "name": "patient-care-project",
+  "description": "App for Doctors. Take care of your patients.",
+  "author": "Alan Nin",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -84,7 +86,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.20",
     "electron": "^30.0.1",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "24.9.1",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

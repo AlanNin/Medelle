@@ -34,8 +34,6 @@ import {
 } from "../ui/tooltip";
 import UploadImagesButtonComponent from "./upload-images-button";
 import DatePickerComponent from "./date-picker";
-import { Input } from "../ui/input";
-import formatDate from "@/lib/format-date";
 import { PatientProps } from "@/types/patient";
 
 type Props = {

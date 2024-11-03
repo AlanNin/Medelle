@@ -34,7 +34,7 @@ const safeCleanup = async (filePath: string): Promise<void> => {
 ipcMain.handle(
   `${base}-pdf`,
   async (
-    event: IpcMainInvokeEvent,
+    _event: IpcMainInvokeEvent,
     data: PdfDataProps
   ): Promise<PdfResultProps> => {
     const tempDirPath = path.join(__dirname, "temp");

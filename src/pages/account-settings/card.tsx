@@ -249,7 +249,9 @@ export default function AccountSettingsCardComponent() {
                       ? "Masculino"
                       : currentUser?.gender === "female"
                       ? "Femenino"
-                      : "Otro" || "No registrada"
+                      : currentUser?.gender === "other"
+                      ? "Otro"
+                      : "No registrada"
                   }
                 />
                 <CollapsibleTrigger asChild>
@@ -289,7 +291,7 @@ export default function AccountSettingsCardComponent() {
                   label="Suscripción"
                   value={
                     currentUser?.subscription?.type === "single-purchase"
-                      ? "Compra única" || "Activa"
+                      ? "Compra única"
                       : currentUser?.subscription?.type === "active"
                       ? `Activa - Hasta el ${formatDate(
                           currentUser?.subscription.due_date!

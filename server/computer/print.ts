@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
 
 ipcMain.handle(
   `${base}-load-printers`,
-  async (event: IpcMainInvokeEvent): Promise<PrintersListProps> => {
+  async (_event: IpcMainInvokeEvent): Promise<PrintersListProps> => {
     return new Promise((resolve) => {
       // Create a new BrowserWindow
       const win = new BrowserWindow({
@@ -52,7 +52,7 @@ ipcMain.handle(
 
 ipcMain.handle(
   `${base}-silent`,
-  async (event: IpcMainInvokeEvent, data: PrintSilentProps) => {
+  async (_event: IpcMainInvokeEvent, data: PrintSilentProps) => {
     // validate inputs
     if (!data.template || !data.printer)
       return { success: false, error: "No template or printer provided" };
@@ -115,7 +115,7 @@ ipcMain.handle(
 
 ipcMain.handle(
   `${base}-not-silent`,
-  async (event: IpcMainInvokeEvent, data: PrintNotSilentProps) => {
+  async (_event: IpcMainInvokeEvent, data: PrintNotSilentProps) => {
     // validate inputs
     if (!data.template) return { success: false, error: "No template" };
 
