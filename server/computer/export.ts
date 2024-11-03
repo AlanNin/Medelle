@@ -16,7 +16,7 @@ import Store from "electron-store";
 // get the current file path and directory path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const store = new Store<StoreProps>();
+const appConfig = new Store<AppConfigProps>();
 const base = "export";
 
 // function to safely clean temporary files
@@ -78,7 +78,8 @@ ipcMain.handle(
       const pdfBuffer = await win.webContents.printToPDF(pdfOptions);
 
       // get last path used
-      const lastPath = store.get("lastSavePath") || app.getPath("documents");
+      const lastPath =
+        appConfig.get("lastSavePath") || app.getPath("documents");
 
       // show dialog to save file
       const { canceled, filePath } = await dialog.showSaveDialog({
@@ -92,7 +93,7 @@ ipcMain.handle(
       }
 
       if (!canceled && filePath) {
-        store.set("lastSavePath", path.dirname(filePath));
+        appConfig.set("lastSavePath", path.dirname(filePath));
       }
 
       // save the PDF in the selected location

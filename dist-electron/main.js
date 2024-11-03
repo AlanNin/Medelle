@@ -16346,17 +16346,17 @@ axios.formToJSON = (thing) => formDataToJSON(utils$2.isHTMLForm(thing) ? new For
 axios.getAdapter = adapters.getAdapter;
 axios.HttpStatusCode = HttpStatusCode;
 axios.default = axios;
-const base$8 = "auth";
-ipcMain.handle(`${base$8}-sign-up`, async (event, data) => {
+const base$9 = "auth";
+ipcMain.handle(`${base$9}-sign-up`, async (event, data) => {
   const success = { message: "Data saved", data };
   return success;
 });
-ipcMain.handle(`${base$8}-sign-in`, async (event, data) => {
+ipcMain.handle(`${base$9}-sign-in`, async (event, data) => {
   const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
   return result.data;
 });
 ipcMain.handle(
-  `${base$8}-verify-session`,
+  `${base$9}-verify-session`,
   async (event, data) => {
     const result = await axios.get(
       `${process.env.API_URL}auth/verify-session`,
@@ -16369,8 +16369,8 @@ ipcMain.handle(
     return result.data;
   }
 );
-const base$7 = "user";
-ipcMain.handle(`${base$7}-update`, async (event, data) => {
+const base$8 = "user";
+ipcMain.handle(`${base$8}-update`, async (event, data) => {
   const result = await axios.put(
     `${process.env.API_URL}user/update`,
     data.data,
@@ -16382,7 +16382,7 @@ ipcMain.handle(`${base$7}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$7}-delete`, async (event, data) => {
+ipcMain.handle(`${base$8}-delete`, async (event, data) => {
   const result = await axios.delete(`${process.env.API_URL}user/delete`, {
     headers: {
       Authorization: `Bearer ${data.token}`
@@ -16390,9 +16390,9 @@ ipcMain.handle(`${base$7}-delete`, async (event, data) => {
   });
   return result.data;
 });
-const base$6 = "patient";
+const base$7 = "patient";
 ipcMain.handle(
-  `${base$6}-get-from-user`,
+  `${base$7}-get-from-user`,
   async (event, data) => {
     const result = await axios.get(
       `${process.env.API_URL}patient/get-from-user`,
@@ -16405,7 +16405,7 @@ ipcMain.handle(
     return result.data;
   }
 );
-ipcMain.handle(`${base$6}-add`, async (event, data) => {
+ipcMain.handle(`${base$7}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}patient/create`,
     data.data,
@@ -16417,7 +16417,7 @@ ipcMain.handle(`${base$6}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$6}-update`, async (event, data) => {
+ipcMain.handle(`${base$7}-update`, async (event, data) => {
   const { patient_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}patient/update/${patient_id}`,
@@ -16430,7 +16430,7 @@ ipcMain.handle(`${base$6}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$6}-delete`, async (event, data) => {
+ipcMain.handle(`${base$7}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
     {
@@ -16441,8 +16441,8 @@ ipcMain.handle(`${base$6}-delete`, async (event, data) => {
   );
   return result.data;
 });
-const base$5 = "appointment";
-ipcMain.handle(`${base$5}-add`, async (event, data) => {
+const base$6 = "appointment";
+ipcMain.handle(`${base$6}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}appointment/create`,
     data.data,
@@ -16454,7 +16454,7 @@ ipcMain.handle(`${base$5}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$5}-update`, async (event, data) => {
+ipcMain.handle(`${base$6}-update`, async (event, data) => {
   const { appointment_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}appointment/update/${appointment_id}`,
@@ -16467,7 +16467,7 @@ ipcMain.handle(`${base$5}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$5}-delete`, async (event, data) => {
+ipcMain.handle(`${base$6}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}appointment/delete/${data.data.appointment_id}`,
     {
@@ -16479,7 +16479,7 @@ ipcMain.handle(`${base$5}-delete`, async (event, data) => {
   return result.data;
 });
 ipcMain.handle(
-  `${base$5}-get-from-user`,
+  `${base$6}-get-from-user`,
   async (event, data) => {
     const result = await axios.get(
       `${process.env.API_URL}appointment/get-from-user`,
@@ -16493,7 +16493,7 @@ ipcMain.handle(
   }
 );
 ipcMain.handle(
-  `${base$5}-get-from-patient`,
+  `${base$6}-get-from-patient`,
   async (event, data) => {
     const result = await axios.get(
       `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
@@ -16506,9 +16506,9 @@ ipcMain.handle(
     return result.data;
   }
 );
-const base$4 = "consultation";
+const base$5 = "consultation";
 ipcMain.handle(
-  `${base$4}-get-from-user`,
+  `${base$5}-get-from-user`,
   async (event, data) => {
     const result = await axios.get(
       `${process.env.API_URL}consultation/get-from-user`,
@@ -16521,7 +16521,7 @@ ipcMain.handle(
     return result.data;
   }
 );
-ipcMain.handle(`${base$4}-add`, async (event, data) => {
+ipcMain.handle(`${base$5}-add`, async (event, data) => {
   const result = await axios.post(
     `${process.env.API_URL}consultation/create`,
     data.data,
@@ -16533,7 +16533,7 @@ ipcMain.handle(`${base$4}-add`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$4}-update`, async (event, data) => {
+ipcMain.handle(`${base$5}-update`, async (event, data) => {
   const { consultation_id, ...restData } = data.data;
   const result = await axios.put(
     `${process.env.API_URL}consultation/update/${consultation_id}`,
@@ -16546,7 +16546,7 @@ ipcMain.handle(`${base$4}-update`, async (event, data) => {
   );
   return result.data;
 });
-ipcMain.handle(`${base$4}-delete`, async (event, data) => {
+ipcMain.handle(`${base$5}-delete`, async (event, data) => {
   const result = await axios.delete(
     `${process.env.API_URL}consultation/delete/${data.data.consultation_id}`,
     {
@@ -26330,18 +26330,18 @@ class Conf {
     const fileExtension = options.fileExtension ? `.${options.fileExtension}` : "";
     this.path = path$3.resolve(options.cwd, `${options.configName ?? "config"}${fileExtension}`);
     const fileStore = this.store;
-    const store2 = Object.assign(createPlainObject(), options.defaults, fileStore);
+    const store = Object.assign(createPlainObject(), options.defaults, fileStore);
     if (options.migrations) {
       if (!options.projectVersion) {
         throw new Error("Please specify the `projectVersion` option.");
       }
       this._migrate(options.migrations, options.projectVersion, options.beforeEachMigration);
     }
-    this._validate(store2);
+    this._validate(store);
     try {
-      assert$1.deepEqual(fileStore, store2);
+      assert$1.deepEqual(fileStore, store);
     } catch {
-      this.store = store2;
+      this.store = store;
     }
     if (options.watch) {
       this._watch();
@@ -26351,8 +26351,8 @@ class Conf {
     if (__privateGet(this, _options).accessPropertiesByDotNotation) {
       return this._get(key, defaultValue);
     }
-    const { store: store2 } = this;
-    return key in store2 ? store2[key] : defaultValue;
+    const { store } = this;
+    return key in store ? store[key] : defaultValue;
   }
   set(key, value) {
     if (typeof key !== "string" && typeof key !== "object") {
@@ -26364,13 +26364,13 @@ class Conf {
     if (this._containsReservedKey(key)) {
       throw new TypeError(`Please don't use the ${INTERNAL_KEY} key, as it's used to manage this module internal operations.`);
     }
-    const { store: store2 } = this;
+    const { store } = this;
     const set = (key2, value2) => {
       checkValueType(key2, value2);
       if (__privateGet(this, _options).accessPropertiesByDotNotation) {
-        setProperty(store2, key2, value2);
+        setProperty(store, key2, value2);
       } else {
-        store2[key2] = value2;
+        store[key2] = value2;
       }
     };
     if (typeof key === "object") {
@@ -26381,7 +26381,7 @@ class Conf {
     } else {
       set(key, value);
     }
-    this.store = store2;
+    this.store = store;
   }
   /**
       Check if an item exists.
@@ -26409,13 +26409,13 @@ class Conf {
     }
   }
   delete(key) {
-    const { store: store2 } = this;
+    const { store } = this;
     if (__privateGet(this, _options).accessPropertiesByDotNotation) {
-      deleteProperty(store2, key);
+      deleteProperty(store, key);
     } else {
-      delete store2[key];
+      delete store[key];
     }
-    this.store = store2;
+    this.store = store;
   }
   /**
       Delete all items.
@@ -26638,9 +26638,9 @@ class Conf {
     return getProperty(this.store, key, defaultValue);
   }
   _set(key, value) {
-    const { store: store2 } = this;
-    setProperty(store2, key, value);
-    this.store = store2;
+    const { store } = this;
+    setProperty(store, key, value);
+    this.store = store;
   }
 }
 _validator = new WeakMap();
@@ -26704,8 +26704,8 @@ class ElectronStore extends Conf {
 }
 const __filename$1 = fileURLToPath(import.meta.url);
 const __dirname$2 = dirname(__filename$1);
-const store = new ElectronStore();
-const base$3 = "export";
+const appConfig$1 = new ElectronStore();
+const base$4 = "export";
 const safeCleanup = async (filePath) => {
   if (fs$2.existsSync(filePath)) {
     try {
@@ -26716,7 +26716,7 @@ const safeCleanup = async (filePath) => {
   }
 };
 ipcMain.handle(
-  `${base$3}-pdf`,
+  `${base$4}-pdf`,
   async (event, data) => {
     const tempDirPath = path$2.join(__dirname$2, "temp");
     const tempFilePath = path$2.join(tempDirPath, "temporal-template.html");
@@ -26743,7 +26743,7 @@ ipcMain.handle(
         ...data == null ? void 0 : data.config
       };
       const pdfBuffer = await win2.webContents.printToPDF(pdfOptions);
-      const lastPath = store.get("lastSavePath") || app.getPath("documents");
+      const lastPath = appConfig$1.get("lastSavePath") || app.getPath("documents");
       const { canceled, filePath } = await dialog.showSaveDialog({
         defaultPath: path$2.join(lastPath, "Prescription - Patient Care.pdf"),
         filters: [{ name: "PDF", extensions: ["pdf"] }],
@@ -26753,7 +26753,7 @@ ipcMain.handle(
         return { success: false, canceled: true };
       }
       if (!canceled && filePath) {
-        store.set("lastSavePath", path$2.dirname(filePath));
+        appConfig$1.set("lastSavePath", path$2.dirname(filePath));
       }
       await fs$2.promises.writeFile(filePath, pdfBuffer);
       return { success: true, path: filePath };
@@ -26770,11 +26770,11 @@ ipcMain.handle(
     }
   }
 );
-const base$2 = "print";
+const base$3 = "print";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname$1 = dirname(__filename);
 ipcMain.handle(
-  `${base$2}-load-printers`,
+  `${base$3}-load-printers`,
   async (event) => {
     return new Promise((resolve2) => {
       const win2 = new BrowserWindow({
@@ -26800,7 +26800,7 @@ ipcMain.handle(
   }
 );
 ipcMain.handle(
-  `${base$2}-silent`,
+  `${base$3}-silent`,
   async (event, data) => {
     if (!data.template || !data.printer)
       return { success: false, error: "No template or printer provided" };
@@ -26839,7 +26839,7 @@ ipcMain.handle(
   }
 );
 ipcMain.handle(
-  `${base$2}-not-silent`,
+  `${base$3}-not-silent`,
   async (event, data) => {
     if (!data.template) return { success: false, error: "No template" };
     const tempDirPath = path$2.join(__dirname$1, "temp");
@@ -26871,15 +26871,15 @@ ipcMain.handle(
     });
   }
 );
-const base$1 = "converter";
-ipcMain.handle(`${base$1}-RxLogo-image-64`, async (event) => {
+const base$2 = "converter";
+ipcMain.handle(`${base$2}-RxLogo-image-64`, async (event) => {
   const image = fs$2.readFileSync(
     path$2.join(process.cwd(), "public", "RxLogo.png")
   );
   return `data:image/png;base64,${image.toString("base64")}`;
 });
 ipcMain.handle(
-  `${base$1}-image-64`,
+  `${base$2}-image-64`,
   async (event, image_url) => {
     try {
       const response = await fetch(image_url);
@@ -26895,19 +26895,30 @@ ipcMain.handle(
     }
   }
 );
-const base = "file-explorer";
+const base$1 = "file-explorer";
 ipcMain.handle(
-  `${base}-open-file`,
+  `${base$1}-open-file`,
   async (event, path2) => {
     await shell.openPath(path2);
   }
 );
 ipcMain.handle(
-  `${base}-open-folder`,
+  `${base$1}-open-folder`,
   async (event, path2) => {
     await shell.showItemInFolder(path2);
   }
 );
+const appConfig = new ElectronStore();
+const base = "config";
+ipcMain.handle(`${base}-load`, async (event) => {
+  const appConfigData = appConfig.store;
+  return appConfigData || {};
+});
+ipcMain.handle(`${base}-save`, async (event, data) => {
+  Object.keys(data).forEach((key) => {
+    appConfig.set(key, data[key]);
+  });
+});
 dotenv.config();
 const __dirname = path$3.dirname(fileURLToPath$1(import.meta.url));
 process.env.APP_ROOT = path$3.join(__dirname, "..");

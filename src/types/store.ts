@@ -1,3 +1,0 @@
-type StoreProps = {
-  lastSavePath: string;
-};

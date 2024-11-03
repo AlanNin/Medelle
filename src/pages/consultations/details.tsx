@@ -23,6 +23,7 @@ import { PrintNotSilentProps } from "@/types/print";
 import { toast } from "sonner";
 import { PdfDataProps } from "@/types/pdf";
 import debounce from "@/lib/debouce";
+import ImageMagnifier from "@/components/utils/zoomer";
 
 type Props = {
   isOpen: boolean;
@@ -396,15 +397,14 @@ export default function ConsultationDetailsComponent({
         </DialogContent>
       </Dialog>
       <Dialog open={isShowingImage} onOpenChange={setIsShowingImage}>
-        <DialogContent
-          hideClose
-          className="max-w-[50%] p-0 bg-transparent border-none"
-        >
-          <div className="relative aspect-square p-0">
-            <img
-              src={selectedImage || ""}
-              className="object-contain w-full h-full rounded-md"
-            />
+        <DialogContent hideClose className="p-0 bg-transparent border-none">
+          <div className="relative flex items-center justify-center">
+            <ImageMagnifier>
+              <img
+                src={selectedImage || ""}
+                className="object-contain w-full h-full rounded-md"
+              />
+            </ImageMagnifier>
           </div>
         </DialogContent>
       </Dialog>
