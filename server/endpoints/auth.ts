@@ -19,7 +19,11 @@ ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
       if (status >= 400 && status < 500) {
         return {
           errorType: "user",
-          message: "Correo electrónico o contraseña inválidos",
+          message:
+            error.response.data.message === "Supscription inactive"
+              ? "Usuario no autorizado, tu suscripción ha expirado"
+              : "Correo electrónico o contraseña inválidos" ||
+                "Correo electrónico o contraseña inválidos",
         };
       }
     }

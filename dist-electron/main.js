@@ -16361,7 +16361,7 @@ ipcMain.handle(`${base$9}-sign-in`, async (_event, data) => {
       if (status >= 400 && status < 500) {
         return {
           errorType: "user",
-          message: "Correo electrónico o contraseña inválidos"
+          message: error2.response.data.message === "Supscription inactive" ? "Usuario no autorizado, tu suscripción ha expirado" : "Correo electrónico o contraseña inválidos"
         };
       }
     }
@@ -26953,8 +26953,12 @@ ipcMain.handle(`${base}-save`, async (_event, data) => {
     appConfig.set(key, data[key]);
   });
 });
-dotenv.config();
 const __dirname = path$3.dirname(fileURLToPath$1(import.meta.url));
+if (process.env.NODE_ENV === "production") {
+  dotenv.config({ path: path$3.join(__dirname, "../.env.production") });
+} else {
+  dotenv.config({ path: path$3.join(__dirname, "../.env.development") });
+}
 process.env.APP_ROOT = path$3.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");

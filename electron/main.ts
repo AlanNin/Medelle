@@ -4,9 +4,13 @@ import path from "node:path";
 import dotenv from "dotenv";
 import "../server";
 
-dotenv.config();
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+if (process.env.NODE_ENV === "production") {
+  dotenv.config({ path: path.join(__dirname, "../.env.production") });
+} else {
+  dotenv.config({ path: path.join(__dirname, "../.env.development") });
+}
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 

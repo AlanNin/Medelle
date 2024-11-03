@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import AppLogo from "@/assets/icons/AppLogoBlack.png";
 import useAuth from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -23,6 +24,13 @@ export default function SignInPage() {
     handlePersistentSession();
     return null;
   }
+
+  const handleNotAvailableToast = () => {
+    toast("Esta  función aún no está disponible 😔", {
+      description:
+        "Ponte en contactopara obtener más información, alanbusinessnin@gmail.com",
+    });
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-white p-8">
@@ -72,7 +80,10 @@ export default function SignInPage() {
                   <Label htmlFor="password" className="text-sm font-medium">
                     Contraseña
                   </Label>
-                  <p className="text-xs text-gray-600 hover:underline cursor-pointer">
+                  <p
+                    className="text-xs text-gray-600 hover:underline cursor-pointer"
+                    onClick={handleNotAvailableToast}
+                  >
                     ¿Olvidaste tu contraseña?
                   </p>
                 </div>
@@ -96,7 +107,10 @@ export default function SignInPage() {
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <p className="text-sm text-gray-600 ">
+            <p
+              className="text-sm text-gray-600"
+              onClick={handleNotAvailableToast}
+            >
               ¿No tienes cuenta?{" "}
               <span className="hover:underline cursor-pointer">
                 Registrate ahora
