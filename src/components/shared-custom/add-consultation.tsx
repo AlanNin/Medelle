@@ -155,17 +155,22 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
-    const result = await window.ipcRenderer.invoke("consultation-add", {
-      token: localStorage.getItem("session_token"),
-      data: {
-        ...inputs,
-      },
-    });
-    if (result) {
-      handleRefetchUserConsultations();
-      toast.success("Consulta creada");
-      setIsOpen(false);
-    }
+
+    toast.promise(
+      window.ipcRenderer.invoke("consultation-add", {
+        token: localStorage.getItem("session_token"),
+        data: { ...inputs },
+      }),
+      {
+        loading: "Guardando consulta...",
+        success: () => {
+          handleRefetchUserConsultations();
+          setIsOpen(false);
+          return "Consulta creada";
+        },
+        error: "Ocurrió un error al crear la consulta",
+      }
+    );
   };
 
   const handleSelectPatient = (patient_id: string | undefined) => {
@@ -314,6 +319,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
                 <UploadImagesButtonComponent
                   images={inputs.laboratory_studies?.images ?? []}
                   setImages={handleLaboratoryStudiesImagesChange}
+                  folder="laboratory_studies"
                 />
               </div>
             </div>
@@ -330,6 +336,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
                 <UploadImagesButtonComponent
                   images={inputs.images_studies?.images ?? []}
                   setImages={handleImagesStudiesImagesChange}
+                  folder="images_studies"
                 />
               </div>
             </div>

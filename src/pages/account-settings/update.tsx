@@ -117,33 +117,39 @@ export default function AccountSettingsUpdateComponent({
     passwordInputs.new_password !== passwordInputs.confirm_new_password;
 
   const updateUser = async () => {
-    try {
-      if (isDisabled) {
-        toast.error("Por favor, rellena todos los campos requeridos");
-        return;
-      }
-
-      if (isPasswordsDifferent) {
-        toast.error("Las contraseñas no coinciden");
-        return;
-      }
-
-      const result = await window.ipcRenderer.invoke("user-update", {
-        token: localStorage.getItem("session_token"),
-        data: { ...inputs, ...passwordInputs },
-      });
-      if (result) {
-        handleRefetchUserSession();
-        toast.success("Paciente actualizado");
-        setIsOpen(false);
-      }
-    } catch (error) {
-      if (passwordInputs.old_password) {
-        toast.error("La contraseña anterior es incorrecta");
-      } else {
-        toast.error("Error al actualizar usuario");
-      }
+    if (isDisabled) {
+      toast.error("Por favor, rellena todos los campos requeridos");
+      return;
     }
+
+    if (isPasswordsDifferent) {
+      toast.error("Las contraseñas no coinciden");
+      return;
+    }
+
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-update", {
+          token: localStorage.getItem("session_token"),
+          data: { ...inputs, ...passwordInputs },
+        });
+        if (result) {
+          handleRefetchUserSession();
+          setIsOpen(false);
+        }
+      })(),
+      {
+        loading: "Actualizando usuario...",
+        success: "Usuario actualizado",
+        error: () => {
+          if (passwordInputs.old_password) {
+            return "La contraseña anterior es incorrecta";
+          } else {
+            return "Error al actualizar usuario";
+          }
+        },
+      }
+    );
   };
 
   return (

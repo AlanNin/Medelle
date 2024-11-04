@@ -18,7 +18,9 @@ declare namespace NodeJS {
     APP_ROOT: string;
     /** /dist/ or /public/ */
     VITE_PUBLIC: string;
-    API_URL: string;
+    VITE_API_URL: string;
+    VITE_CLOUDINARY_NAME: string;
+    VITE_CLOUDINARY_UPLOAD_PRESET: string;
   }
 }
 

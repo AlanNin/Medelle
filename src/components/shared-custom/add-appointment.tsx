@@ -155,8 +155,8 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
       return;
     }
 
-    try {
-      const result = await window.ipcRenderer.invoke("appointment-add", {
+    toast.promise(
+      window.ipcRenderer.invoke("appointment-add", {
         token: localStorage.getItem("session_token"),
         data: {
           date_time: appointmentDate,
@@ -164,16 +164,18 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
           reason: reason,
           status: status,
         },
-      });
-      if (result) {
-        setIsOpen(false);
-        clearInputs();
-        refetchUserAppointments();
-        toast.success("Cita guardada");
+      }),
+      {
+        loading: "Guardando cita...",
+        success: () => {
+          setIsOpen(false);
+          clearInputs();
+          refetchUserAppointments();
+          return "Cita guardada";
+        },
+        error: "Ocurrió un error al crear la cita",
       }
-    } catch (error) {
-      toast.error("Ocurrio un error al crear la cita");
-    }
+    );
   };
 
   return (

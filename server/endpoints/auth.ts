@@ -10,7 +10,10 @@ ipcMain.handle(`${base}-sign-up`, async (_event: IpcMainInvokeEvent, data) => {
 
 ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
   try {
-    const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
+    const result = await axios.post(
+      `${import.meta.env.VITE_API_URL}auth/sign-in`,
+      data
+    );
     return result.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -22,8 +25,7 @@ ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
           message:
             error.response.data.message === "Supscription inactive"
               ? "Usuario no autorizado, tu suscripción ha expirado"
-              : "Correo electrónico o contraseña inválidos" ||
-                "Correo electrónico o contraseña inválidos",
+              : "Correo electrónico o contraseña inválidos",
         };
       }
     }
@@ -39,7 +41,7 @@ ipcMain.handle(
   `${base}-verify-session`,
   async (_event: IpcMainInvokeEvent, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}auth/verify-session`,
+      `${import.meta.env.VITE_API_URL}auth/verify-session`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`,

@@ -4,13 +4,13 @@ import path from "node:path";
 import dotenv from "dotenv";
 import "../server";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+dotenv.config({ path: envFile });
 
-if (process.env.NODE_ENV === "production") {
-  dotenv.config({ path: path.join(__dirname, "../.env.production") });
-} else {
-  dotenv.config({ path: path.join(__dirname, "../.env.development") });
-}
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
@@ -27,6 +27,7 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   win = new BrowserWindow({
+    title: "PatientCare",
     icon: path.join(__dirname, "../build/icon.png"),
     frame: true,
     show: false,
@@ -39,6 +40,8 @@ function createWindow() {
     minHeight: 807,
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 

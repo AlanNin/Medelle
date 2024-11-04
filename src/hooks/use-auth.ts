@@ -77,6 +77,11 @@ function useAuth() {
   ) => {
     e.preventDefault();
     try {
+      toast.loading("Iniciando sesión...", {
+        duration: Infinity,
+        id: "logging-in",
+      });
+
       const response: SessionResponse = await window.ipcRenderer.invoke(
         "auth-sign-in",
         {
@@ -97,9 +102,11 @@ function useAuth() {
       dispatch(loginSuccess(response.data?.user));
       await refetch();
 
+      toast.dismiss("logging-in");
       navigate({ to: "/agenda" });
       toast.success("Sesión Iniciada");
     } catch (error) {
+      toast.dismiss("logging-in");
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -124,8 +131,8 @@ function useAuth() {
       !!localStorage.getItem("session_token") && !!currentUser;
 
     if (session_exists) {
-      toast(`¡Hola, ${currentUser?.name}! Bienvenido de nuevo 😊`);
       navigate({ to: "/agenda" });
+      toast(`¡Hola, ${currentUser?.name}! Bienvenido de nuevo 😊`);
     }
   };
 

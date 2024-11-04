@@ -53,33 +53,40 @@ export default function ConsultationDetailsComponent({
   async function handleExportPDFPrescription() {
     const template = await generatePrescriptionTemplate(consultation);
 
-    const handlePrintPrescription: PdfResult = await window.ipcRenderer.invoke(
-      "export-pdf",
-      {
-        template,
-        config: {
-          margin: {
-            marginType: "none" as const,
-          },
-          pageSize: "A4",
-          landscape: false,
-          printBackground: true,
-        },
-      } as PdfDataProps
-    );
+    toast.promise(
+      (async () => {
+        const handlePrintPrescription: PdfResult = await window.ipcRenderer.invoke(
+          "export-pdf",
+          {
+            template,
+            config: {
+              margin: {
+                marginType: "none" as const,
+              },
+              pageSize: "A4",
+              landscape: false,
+              printBackground: true,
+            },
+          } as PdfDataProps
+        );
 
-    if (handlePrintPrescription.success && handlePrintPrescription.path) {
-      toast.success("PDF generado con éxito", {
-        description: `Ubicación: "${handlePrintPrescription.path}"`,
-      });
-      handleOpenPDF(handlePrintPrescription.path!);
-    } else {
-      if (handlePrintPrescription.canceled) {
-        toast.error("Generación de PDF cancelada");
-      } else {
-        toast.error("Error al generar PDF");
+        if (handlePrintPrescription.success && handlePrintPrescription.path) {
+          handleOpenPDF(handlePrintPrescription.path!);
+          return `PDF generado con éxito. Ubicación: "${handlePrintPrescription.path}"`;
+        } else {
+          if (handlePrintPrescription.canceled) {
+            throw new Error("Generación de PDF cancelada");
+          } else {
+            throw new Error("Error al generar PDF");
+          }
+        }
+      })(),
+      {
+        loading: "Generando PDF...",
+        success: (msg) => msg,
+        error: (error) => error.message,
       }
-    }
+    );
   }
 
   const debouncedHandleExportPDFPrescription = debounce(
@@ -90,23 +97,32 @@ export default function ConsultationDetailsComponent({
   async function handlePrintNotSilent() {
     const template = await generatePrescriptionTemplate(consultation);
 
-    const response = await window.ipcRenderer.invoke("print-not-silent", {
-      template,
-      config: {
-        margin: {
-          marginType: "none" as const,
-        },
-        Size: "A4",
-        landscape: false,
-        printBackground: true,
-      },
-    } as PrintNotSilentProps);
+    toast.promise(
+      (async () => {
+        const response = await window.ipcRenderer.invoke("print-not-silent", {
+          template,
+          config: {
+            margin: {
+              marginType: "none" as const,
+            },
+            size: "A4",
+            landscape: false,
+            printBackground: true,
+          },
+        } as PrintNotSilentProps);
 
-    if (response.success) {
-      toast.success("Impresión exitosa");
-    } else {
-      toast.error("Error al imprimir");
-    }
+        if (response.success) {
+          return "Impresión exitosa";
+        } else {
+          throw new Error("Error al imprimir");
+        }
+      })(),
+      {
+        loading: "Imprimiendo...",
+        success: (msg) => msg,
+        error: (error) => error.message,
+      }
+    );
   }
 
   const debouncedHandlePrintNotSilent = debounce(handlePrintNotSilent, 800);

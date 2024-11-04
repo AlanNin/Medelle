@@ -164,18 +164,25 @@ export default function UpdateConsultationComponent({
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
-    const result = await window.ipcRenderer.invoke("consultation-update", {
-      token: localStorage.getItem("session_token"),
-      data: {
-        ...inputs,
-        consultation_id: consultation._id,
-      },
-    });
-    if (result) {
-      handleRefetchUserConsultations();
-      toast.success("Consulta actualizada");
-      setIsOpen(false);
-    }
+
+    toast.promise(
+      window.ipcRenderer.invoke("consultation-update", {
+        token: localStorage.getItem("session_token"),
+        data: {
+          ...inputs,
+          consultation_id: consultation._id,
+        },
+      }),
+      {
+        loading: "Actualizando consulta...",
+        success: () => {
+          handleRefetchUserConsultations();
+          setIsOpen(false);
+          return "Consulta actualizada";
+        },
+        error: "Ocurrió un error al actualizar la consulta",
+      }
+    );
   };
 
   const handleSelectPatient = (patient_id: string | undefined) => {
@@ -228,21 +235,23 @@ export default function UpdateConsultationComponent({
   const [isDeleting, setIsDeleting] = React.useState(false);
 
   const deleteConsultation = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("consultation-delete", {
+    toast.promise(
+      window.ipcRenderer.invoke("consultation-delete", {
         token: localStorage.getItem("session_token"),
         data: {
           consultation_id: consultation._id,
         },
-      });
-      if (result) {
-        setIsOpen(false);
-        handleRefetchUserConsultations();
-        toast.success("Consulta eliminada");
+      }),
+      {
+        loading: "Eliminando consulta...",
+        success: () => {
+          setIsOpen(false);
+          handleRefetchUserConsultations();
+          return "Consulta eliminada";
+        },
+        error: "Ocurrió un error al eliminar la consulta",
       }
-    } catch (error) {
-      toast.error("Ocurrio un error al eliminar la consulta");
-    }
+    );
   };
 
   return (
@@ -352,6 +361,7 @@ export default function UpdateConsultationComponent({
                   <UploadImagesButtonComponent
                     images={inputs.laboratory_studies?.images ?? []}
                     setImages={handleLaboratoryStudiesImagesChange}
+                    folder="laboratory_studies"
                   />
                 </div>
               </div>
@@ -368,6 +378,7 @@ export default function UpdateConsultationComponent({
                   <UploadImagesButtonComponent
                     images={inputs.images_studies?.images ?? []}
                     setImages={handleImagesStudiesImagesChange}
+                    folder="images_studies"
                   />
                 </div>
               </div>

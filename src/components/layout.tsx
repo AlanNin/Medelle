@@ -26,6 +26,7 @@ import { AddAppointmentComponent } from "./shared-custom/add-appointment";
 import AddPatientComponent from "./shared-custom/add-patient";
 import AddConsultationComponent from "./shared-custom/add-consultation";
 import useKeyboardShortcuts from "@/lib/keyboard-shortcuts";
+import internetChecker from "../lib/internet-checker";
 
 export default function Layout() {
   const router = useRouterState();
@@ -59,6 +60,8 @@ export default function Layout() {
   };
 
   useKeyboardShortcuts();
+
+  internetChecker();
 
   return (
     <>

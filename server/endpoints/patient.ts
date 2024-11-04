@@ -7,7 +7,7 @@ ipcMain.handle(
   `${base}-get-from-user`,
   async (_event: IpcMainInvokeEvent, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}patient/get-from-user`,
+      `${import.meta.env.VITE_API_URL}patient/get-from-user`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`,
@@ -20,7 +20,7 @@ ipcMain.handle(
 
 ipcMain.handle(`${base}-add`, async (_event: IpcMainInvokeEvent, data) => {
   const result = await axios.post(
-    `${process.env.API_URL}patient/create`,
+    `${import.meta.env.VITE_API_URL}patient/create`,
     data.data,
     {
       headers: {
@@ -35,7 +35,7 @@ ipcMain.handle(`${base}-update`, async (_event: IpcMainInvokeEvent, data) => {
   const { patient_id, ...restData } = data.data;
 
   const result = await axios.put(
-    `${process.env.API_URL}patient/update/${patient_id}`,
+    `${import.meta.env.VITE_API_URL}patient/update/${patient_id}`,
     restData,
     {
       headers: {
@@ -48,7 +48,7 @@ ipcMain.handle(`${base}-update`, async (_event: IpcMainInvokeEvent, data) => {
 
 ipcMain.handle(`${base}-delete`, async (_event: IpcMainInvokeEvent, data) => {
   const result = await axios.delete(
-    `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
+    `${import.meta.env.VITE_API_URL}patient/delete/${data.data.patient_id}`,
     {
       headers: {
         Authorization: `Bearer ${data.token}`,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,11 +19,15 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
 
   const { handleLogin, session_exists, handlePersistentSession } = useAuth();
+  const hasExecutedRef = useRef(false);
 
-  if (session_exists) {
-    handlePersistentSession();
-    return null;
-  }
+  useEffect(() => {
+    if (session_exists && !hasExecutedRef.current) {
+      handlePersistentSession();
+      hasExecutedRef.current = true;
+      return;
+    }
+  }, []);
 
   const handleNotAvailableToast = () => {
     toast("Esta  función aún no está disponible 😔", {

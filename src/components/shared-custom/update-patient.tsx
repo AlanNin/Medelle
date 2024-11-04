@@ -193,33 +193,42 @@ export default function UpdatePatientComponent({
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
-    const result = await window.ipcRenderer.invoke("patient-update", {
-      token: localStorage.getItem("session_token"),
-      data: { ...inputs, age: patient_age, patient_id: patient._id },
-    });
-    if (result) {
-      handleRefetchUserPatients();
-      toast.success("Paciente actualizado");
-      setIsOpen(false);
-    }
+
+    toast.promise(
+      window.ipcRenderer.invoke("patient-update", {
+        token: localStorage.getItem("session_token"),
+        data: { ...inputs, age: patient_age, patient_id: patient._id },
+      }),
+      {
+        loading: "Actualizando paciente...",
+        success: () => {
+          handleRefetchUserPatients();
+          setIsOpen(false);
+          return "Paciente actualizado";
+        },
+        error: "Ocurrió un error al actualizar el paciente",
+      }
+    );
   };
 
   const deletePatient = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("patient-delete", {
+    toast.promise(
+      window.ipcRenderer.invoke("patient-delete", {
         token: localStorage.getItem("session_token"),
         data: {
           patient_id: patient._id,
         },
-      });
-      if (result) {
-        setIsOpen(false);
-        handleRefetchUserPatients();
-        toast.success("Paciente eliminado");
+      }),
+      {
+        loading: "Eliminando paciente...",
+        success: () => {
+          setIsOpen(false);
+          handleRefetchUserPatients();
+          return "Paciente eliminado";
+        },
+        error: "Ocurrió un error al eliminar el paciente",
       }
-    } catch (error) {
-      toast.error("Ocurrio un error al eliminar la cita");
-    }
+    );
   };
 
   return (

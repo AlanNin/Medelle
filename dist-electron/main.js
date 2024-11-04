@@ -16353,7 +16353,10 @@ ipcMain.handle(`${base$9}-sign-up`, async (_event, data) => {
 });
 ipcMain.handle(`${base$9}-sign-in`, async (_event, data) => {
   try {
-    const result = await axios.post(`${process.env.API_URL}auth/sign-in`, data);
+    const result = await axios.post(
+      `${"http://localhost:8080/api/"}auth/sign-in`,
+      data
+    );
     return result.data;
   } catch (error2) {
     if (axios.isAxiosError(error2) && error2.response) {
@@ -16375,7 +16378,7 @@ ipcMain.handle(
   `${base$9}-verify-session`,
   async (_event, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}auth/verify-session`,
+      `${"http://localhost:8080/api/"}auth/verify-session`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`
@@ -16388,7 +16391,7 @@ ipcMain.handle(
 const base$8 = "user";
 ipcMain.handle(`${base$8}-update`, async (_event, data) => {
   const result = await axios.put(
-    `${process.env.API_URL}user/update`,
+    `${"http://localhost:8080/api/"}user/update`,
     data.data,
     {
       headers: {
@@ -16399,18 +16402,21 @@ ipcMain.handle(`${base$8}-update`, async (_event, data) => {
   return result.data;
 });
 ipcMain.handle(`${base$8}-delete`, async (_event, data) => {
-  const result = await axios.delete(`${process.env.API_URL}user/delete`, {
-    headers: {
-      Authorization: `Bearer ${data.token}`
+  const result = await axios.delete(
+    `${"http://localhost:8080/api/"}user/delete`,
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`
+      }
     }
-  });
+  );
   return result.data;
 });
 ipcMain.handle(
   `${base$8}-delete-field`,
   async (_event, data) => {
     const result = await axios.put(
-      `${process.env.API_URL}user/delete-field`,
+      `${"http://localhost:8080/api/"}user/delete-field`,
       data.data,
       {
         headers: {
@@ -16426,7 +16432,7 @@ ipcMain.handle(
   `${base$7}-get-from-user`,
   async (_event, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}patient/get-from-user`,
+      `${"http://localhost:8080/api/"}patient/get-from-user`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`
@@ -16438,7 +16444,7 @@ ipcMain.handle(
 );
 ipcMain.handle(`${base$7}-add`, async (_event, data) => {
   const result = await axios.post(
-    `${process.env.API_URL}patient/create`,
+    `${"http://localhost:8080/api/"}patient/create`,
     data.data,
     {
       headers: {
@@ -16451,7 +16457,7 @@ ipcMain.handle(`${base$7}-add`, async (_event, data) => {
 ipcMain.handle(`${base$7}-update`, async (_event, data) => {
   const { patient_id, ...restData } = data.data;
   const result = await axios.put(
-    `${process.env.API_URL}patient/update/${patient_id}`,
+    `${"http://localhost:8080/api/"}patient/update/${patient_id}`,
     restData,
     {
       headers: {
@@ -16463,7 +16469,7 @@ ipcMain.handle(`${base$7}-update`, async (_event, data) => {
 });
 ipcMain.handle(`${base$7}-delete`, async (_event, data) => {
   const result = await axios.delete(
-    `${process.env.API_URL}patient/delete/${data.data.patient_id}`,
+    `${"http://localhost:8080/api/"}patient/delete/${data.data.patient_id}`,
     {
       headers: {
         Authorization: `Bearer ${data.token}`
@@ -16475,7 +16481,7 @@ ipcMain.handle(`${base$7}-delete`, async (_event, data) => {
 const base$6 = "appointment";
 ipcMain.handle(`${base$6}-add`, async (_event, data) => {
   const result = await axios.post(
-    `${process.env.API_URL}appointment/create`,
+    `${"http://localhost:8080/api/"}appointment/create`,
     data.data,
     {
       headers: {
@@ -16488,7 +16494,7 @@ ipcMain.handle(`${base$6}-add`, async (_event, data) => {
 ipcMain.handle(`${base$6}-update`, async (_event, data) => {
   const { appointment_id, ...restData } = data.data;
   const result = await axios.put(
-    `${process.env.API_URL}appointment/update/${appointment_id}`,
+    `${"http://localhost:8080/api/"}appointment/update/${appointment_id}`,
     restData,
     {
       headers: {
@@ -16500,7 +16506,7 @@ ipcMain.handle(`${base$6}-update`, async (_event, data) => {
 });
 ipcMain.handle(`${base$6}-delete`, async (_event, data) => {
   const result = await axios.delete(
-    `${process.env.API_URL}appointment/delete/${data.data.appointment_id}`,
+    `${"http://localhost:8080/api/"}appointment/delete/${data.data.appointment_id}`,
     {
       headers: {
         Authorization: `Bearer ${data.token}`
@@ -16513,7 +16519,7 @@ ipcMain.handle(
   `${base$6}-get-from-user`,
   async (_event, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}appointment/get-from-user`,
+      `${"http://localhost:8080/api/"}appointment/get-from-user`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`
@@ -16527,7 +16533,7 @@ ipcMain.handle(
   `${base$6}-get-from-patient`,
   async (_event, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}appointment/get-from-patient/${data.patient_id}`,
+      `${"http://localhost:8080/api/"}appointment/get-from-patient/${data.patient_id}`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`
@@ -16542,7 +16548,7 @@ ipcMain.handle(
   `${base$5}-get-from-user`,
   async (_event, data) => {
     const result = await axios.get(
-      `${process.env.API_URL}consultation/get-from-user`,
+      `${"http://localhost:8080/api/"}consultation/get-from-user`,
       {
         headers: {
           Authorization: `Bearer ${data.token}`
@@ -16554,7 +16560,7 @@ ipcMain.handle(
 );
 ipcMain.handle(`${base$5}-add`, async (_event, data) => {
   const result = await axios.post(
-    `${process.env.API_URL}consultation/create`,
+    `${"http://localhost:8080/api/"}consultation/create`,
     data.data,
     {
       headers: {
@@ -16567,7 +16573,7 @@ ipcMain.handle(`${base$5}-add`, async (_event, data) => {
 ipcMain.handle(`${base$5}-update`, async (_event, data) => {
   const { consultation_id, ...restData } = data.data;
   const result = await axios.put(
-    `${process.env.API_URL}consultation/update/${consultation_id}`,
+    `${"http://localhost:8080/api/"}consultation/update/${consultation_id}`,
     restData,
     {
       headers: {
@@ -16579,7 +16585,7 @@ ipcMain.handle(`${base$5}-update`, async (_event, data) => {
 });
 ipcMain.handle(`${base$5}-delete`, async (_event, data) => {
   const result = await axios.delete(
-    `${process.env.API_URL}consultation/delete/${data.data.consultation_id}`,
+    `${"http://localhost:8080/api/"}consultation/delete/${data.data.consultation_id}`,
     {
       headers: {
         Authorization: `Bearer ${data.token}`
@@ -26953,12 +26959,9 @@ ipcMain.handle(`${base}-save`, async (_event, data) => {
     appConfig.set(key, data[key]);
   });
 });
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
+dotenv.config({ path: envFile });
 const __dirname = path$3.dirname(fileURLToPath$1(import.meta.url));
-if (process.env.NODE_ENV === "production") {
-  dotenv.config({ path: path$3.join(__dirname, "../.env.production") });
-} else {
-  dotenv.config({ path: path$3.join(__dirname, "../.env.development") });
-}
 process.env.APP_ROOT = path$3.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const MAIN_DIST = path$3.join(process.env.APP_ROOT, "dist-electron");
@@ -26967,6 +26970,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path$3.join(process.env.APP_ROOT
 let win;
 function createWindow() {
   win = new BrowserWindow({
+    title: "PatientCare",
     icon: path$3.join(__dirname, "../build/icon.png"),
     frame: true,
     show: false,
@@ -26978,7 +26982,9 @@ function createWindow() {
     minWidth: 1040,
     minHeight: 807,
     webPreferences: {
-      preload: path$3.join(__dirname, "preload.mjs")
+      preload: path$3.join(__dirname, "preload.mjs"),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
   win.maximize();

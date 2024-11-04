@@ -17,9 +17,14 @@ import { toast } from "sonner";
 type Props = {
   images: string[];
   setImages: (images: string[]) => void;
+  folder?: string;
 };
 
-export default function ImageUploadComponent({ images, setImages }: Props) {
+export default function UploadImagesButtonComponent({
+  images,
+  setImages,
+  folder,
+}: Props) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,18 +86,26 @@ export default function ImageUploadComponent({ images, setImages }: Props) {
 
   const handleUpload = async () => {
     setIsUploading(true);
-    try {
-      const uploadPromises = selectedImages.map((image) => uploadImage(image));
-      const uploadedUrls = await Promise.all(uploadPromises);
-      setImages([...images, ...uploadedUrls]);
-      await Promise.all(uploadPromises);
-      toast.success("Imágenes subidas");
-      setSelectedImages([]);
-      setPreviewUrls([]);
-      setIsOpen(false);
-    } catch (error) {
-      toast.error("Ocurrio un error al subir las imágenes");
-    }
+
+    toast.promise(
+      (async () => {
+        const uploadPromises = selectedImages.map((image) =>
+          uploadImage(image, folder)
+        );
+        const uploadedUrls = await Promise.all(uploadPromises);
+
+        setImages([...images, ...uploadedUrls]);
+        setSelectedImages([]);
+        setPreviewUrls([]);
+        setIsOpen(false);
+      })(),
+      {
+        loading: "Subiendo imágen(es)...",
+        success: "Imágen(es) subidas",
+        error: "Ocurrió un error al subir las imágen(es)",
+      }
+    );
+
     setIsUploading(false);
   };
 

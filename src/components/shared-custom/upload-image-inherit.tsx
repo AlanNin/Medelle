@@ -19,6 +19,7 @@ type Props = {
   component_height?: "small" | "medium";
   onComplete?: (image_url: string) => void;
   onDelete?: () => void;
+  folder?: string;
 };
 
 export default function UploadImageInheritComponent({
@@ -29,6 +30,7 @@ export default function UploadImageInheritComponent({
   component_height = "medium",
   onComplete,
   onDelete,
+  folder,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +38,7 @@ export default function UploadImageInheritComponent({
     if (!file || !onComplete) {
       return;
     }
-    const image_url = await uploadImage(file);
+    const image_url = await uploadImage(file, folder);
     onComplete(image_url);
   };
 

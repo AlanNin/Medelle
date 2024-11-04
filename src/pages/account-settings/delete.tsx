@@ -20,19 +20,24 @@ export function AccountSettingsDeleteComponent({ isOpen, setIsOpen }: Props) {
   const { handleLogout } = useAuth();
 
   const handleDeleteAccount = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("user-delete", {
-        token: localStorage.getItem("session_token"),
-      });
-      if (result) {
-        setIsOpen(false);
-        handleLogout();
-        toast.success("Cuenta eliminada");
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-delete", {
+          token: localStorage.getItem("session_token"),
+        });
+        if (result) {
+          setIsOpen(false);
+          handleLogout();
+        }
+      })(),
+      {
+        loading: "Eliminando cuenta...",
+        success: "Cuenta eliminada",
+        error: "Error al eliminar cuenta",
       }
-    } catch (error) {
-      toast.error("Error al eliminar cuenta");
-    }
+    );
   };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>

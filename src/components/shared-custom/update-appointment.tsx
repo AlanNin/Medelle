@@ -173,12 +173,12 @@ export function UpdateAppointmentComponent({
       status === appointment.status
     ) {
       setIsOpen(false);
-      toast.success("No se dectectaron cambios");
+      toast.success("No se detectaron cambios");
       return;
     }
 
-    try {
-      const result = await window.ipcRenderer.invoke("appointment-update", {
+    toast.promise(
+      window.ipcRenderer.invoke("appointment-update", {
         token: localStorage.getItem("session_token"),
         data: {
           appointment_id: appointment._id,
@@ -187,35 +187,39 @@ export function UpdateAppointmentComponent({
           reason: reason,
           status: status,
         },
-      });
-      if (result) {
-        setIsOpen(false);
-        refetchUserAppointments();
-        toast.success("Cita actualizada");
+      }),
+      {
+        loading: "Actualizando cita...",
+        success: () => {
+          setIsOpen(false);
+          refetchUserAppointments();
+          return "Cita actualizada";
+        },
+        error: "Ocurrió un error al actualizar la cita",
       }
-    } catch (error) {
-      toast.error("Ocurrio un error al actualizar la cita");
-    }
+    );
   };
 
   const [isDeleting, setIsDeleting] = React.useState(false);
 
   const deleteAppointment = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("appointment-delete", {
+    toast.promise(
+      window.ipcRenderer.invoke("appointment-delete", {
         token: localStorage.getItem("session_token"),
         data: {
           appointment_id: appointment._id,
         },
-      });
-      if (result) {
-        setIsOpen(false);
-        refetchUserAppointments();
-        toast.success("Cita eliminada");
+      }),
+      {
+        loading: "Eliminando cita...",
+        success: () => {
+          setIsOpen(false);
+          refetchUserAppointments();
+          return "Cita eliminada";
+        },
+        error: "Ocurrió un error al eliminar la cita",
       }
-    } catch (error) {
-      toast.error("Ocurrio un error al eliminar la cita");
-    }
+    );
   };
 
   return (

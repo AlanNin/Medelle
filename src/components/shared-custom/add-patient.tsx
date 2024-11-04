@@ -184,15 +184,22 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }
-    const result = await window.ipcRenderer.invoke("patient-add", {
-      token: localStorage.getItem("session_token"),
-      data: { ...inputs, age: patient_age },
-    });
-    if (result) {
-      handleRefetchUserPatients();
-      toast.success("Paciente creado");
-      setIsOpen(false);
-    }
+
+    toast.promise(
+      window.ipcRenderer.invoke("patient-add", {
+        token: localStorage.getItem("session_token"),
+        data: { ...inputs, age: patient_age },
+      }),
+      {
+        loading: "Guardando paciente...",
+        success: () => {
+          handleRefetchUserPatients();
+          setIsOpen(false);
+          return "Paciente creado";
+        },
+        error: "Ocurrió un error al crear el paciente",
+      }
+    );
   };
 
   return (

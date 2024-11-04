@@ -57,63 +57,79 @@ export default function AccountSettingsCardComponent() {
   };
 
   const updateUserPhoto = async (image_url: string) => {
-    try {
-      const result = await window.ipcRenderer.invoke("user-update", {
-        token: localStorage.getItem("session_token"),
-        data: { photo_url: image_url },
-      });
-      if (result) {
-        handleRefetchUserSession();
-        toast.success("Usuario actualizado");
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-update", {
+          token: localStorage.getItem("session_token"),
+          data: { photo_url: image_url },
+        });
+        if (result) {
+          handleRefetchUserSession();
+        }
+      })(),
+      {
+        loading: "Actualizando usuario...",
+        success: "Usuario actualizado",
+        error: "Error al actualizar usuario",
       }
-    } catch (error) {
-      toast.error("Error al actualizar usuario");
-    }
+    );
   };
 
   const deleteUserPhoto = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("user-delete-field", {
-        token: localStorage.getItem("session_token"),
-        data: { field: "photo_url" },
-      });
-      if (result) {
-        handleRefetchUserSession();
-        toast.success("Usuario actualizado");
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-delete-field", {
+          token: localStorage.getItem("session_token"),
+          data: { field: "photo_url" },
+        });
+        if (result) {
+          handleRefetchUserSession();
+        }
+      })(),
+      {
+        loading: "Eliminando foto de usuario...",
+        success: "Foto de usuario eliminada",
+        error: "Error al eliminar la foto de usuario",
       }
-    } catch (error) {
-      toast.error("Error al actualizar usuario");
-    }
+    );
   };
 
   const updateUserWorkLogo = async (image_url: string) => {
-    try {
-      const result = await window.ipcRenderer.invoke("user-update", {
-        token: localStorage.getItem("session_token"),
-        data: { work_logo_url: image_url },
-      });
-      if (result) {
-        handleRefetchUserSession();
-        toast.success("Usuario actualizado");
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-update", {
+          token: localStorage.getItem("session_token"),
+          data: { work_logo_url: image_url },
+        });
+        if (result) {
+          handleRefetchUserSession();
+        }
+      })(),
+      {
+        loading: "Actualizando logo de trabajo...",
+        success: "Logo de trabajo actualizado",
+        error: "Error al actualizar el logo de trabajo",
       }
-    } catch (error) {
-      toast.error("Error al actualizar usuario");
-    }
+    );
   };
 
   const deleteUserWorkLogo = async () => {
-    try {
-      const result = await window.ipcRenderer.invoke("user-delete-field", {
-        token: localStorage.getItem("session_token"),
-        data: { field: "work_logo_url" },
-      });
-      if (result) {
-        handleRefetchUserSession();
-        toast.success("Usuario actualizado");
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("user-delete-field", {
+          token: localStorage.getItem("session_token"),
+          data: { field: "work_logo_url" },
+        });
+        if (result) {
+          handleRefetchUserSession();
+        }
+      })(),
+      {
+        loading: "Eliminando logo de trabajo...",
+        success: "Logo de trabajo eliminado",
+        error: "Error al eliminar el logo de trabajo",
       }
-    } catch (error) {
-      toast.error("Error al actualizar usuario");
-    }
+    );
   };
 
   const { handleLogout } = useAuth();
@@ -192,6 +208,7 @@ export default function AccountSettingsCardComponent() {
                     pencil_height={3}
                     pencil_width={3}
                     component_height="small"
+                    folder="work_logos"
                   >
                     <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
                       <AvatarImage
@@ -209,6 +226,7 @@ export default function AccountSettingsCardComponent() {
                   onDelete={
                     currentUser?.photo_url ? deleteUserPhoto : undefined
                   }
+                  folder="profile_photos"
                 >
                   <Avatar className="h-24 w-24 ring-4 ring-primary/10 cursor-pointer">
                     <AvatarImage
