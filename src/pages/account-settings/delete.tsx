@@ -33,7 +33,7 @@ export function AccountSettingsDeleteComponent({ isOpen, setIsOpen }: Props) {
       {
         loading: "Eliminando cuenta...",
         success: "Cuenta eliminada",
-        error: "Error al eliminar cuenta",
+        error: "Ocurrió un error al eliminar cuenta",
       }
     );
   };

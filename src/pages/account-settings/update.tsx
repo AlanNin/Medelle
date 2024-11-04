@@ -145,7 +145,7 @@ export default function AccountSettingsUpdateComponent({
           if (passwordInputs.old_password) {
             return "La contraseña anterior es incorrecta";
           } else {
-            return "Error al actualizar usuario";
+            return "Ocurrió un error al actualizar usuario";
           }
         },
       }

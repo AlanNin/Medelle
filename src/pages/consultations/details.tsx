@@ -77,7 +77,7 @@ export default function ConsultationDetailsComponent({
           if (handlePrintPrescription.canceled) {
             throw new Error("Generación de PDF cancelada");
           } else {
-            throw new Error("Error al generar PDF");
+            throw new Error("Ocurrió un error al generar PDF");
           }
         }
       })(),
@@ -114,7 +114,7 @@ export default function ConsultationDetailsComponent({
         if (response.success) {
           return "Impresión exitosa";
         } else {
-          throw new Error("Error al imprimir");
+          throw new Error("Ocurrió un error al imprimir");
         }
       })(),
       {
@@ -152,7 +152,7 @@ export default function ConsultationDetailsComponent({
   //   if (response.success) {
   //     toast.success("Impresión exitosa");
   //   } else {
-  //     toast.error("Error al imprimir");
+  //     toast.error("Ocurrió un error al imprimir");
   //   }
   // }
 

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { PatientProps } from "@/types/patient";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type Props = {
   patients: PatientProps[];
@@ -40,13 +41,25 @@ export function SearchPatientComponent({
   };
 
   const createPatient = async (data: PatientProps) => {
-    const result = await window.ipcRenderer.invoke("patient-add", {
-      token: localStorage.getItem("session_token"),
-      data,
-    });
-    if (result) {
-      refetchUserPatients();
-    }
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke("patient-add", {
+          token: localStorage.getItem("session_token"),
+          data,
+        });
+        if (result) {
+          refetchUserPatients();
+          return "Paciente creado";
+        } else {
+          throw new Error("Ocurrió un error al crear paciente");
+        }
+      })(),
+      {
+        loading: "Creando paciente...",
+        success: (msg) => msg,
+        error: (error) => error.message,
+      }
+    );
   };
 
   return (

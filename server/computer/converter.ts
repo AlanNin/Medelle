@@ -30,9 +30,9 @@ ipcMain.handle(
 
       return `data:image/png;base64,${buffer.toString("base64")}`;
     } catch (error) {
-      console.error(`Error al obtener la imagen: ${error}`);
+      console.error(`Ocurrió un error al obtener la imagen: ${error}`);
       // Maneja el error según lo necesites
-      throw new Error("Error al convertir la imagen a base64");
+      throw new Error("Ocurrió un error al convertir la imagen a base64");
     }
   }
 );

@@ -122,7 +122,7 @@ function useAuth() {
       navigate({ to: "/" });
       toast.success("Sesión Terminada");
     } catch (error) {
-      toast.error("Error al cerrar sesión");
+      toast.error("Ocurrió un error al cerrar sesión");
     }
   };
 

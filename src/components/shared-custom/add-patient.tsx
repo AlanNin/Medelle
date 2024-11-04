@@ -180,7 +180,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
   };
 
   const createPatient = async () => {
-    if (!inputs.name || inputs.name.length === 0 || !inputs.gender) {
+    if (!inputs.name || inputs.name.length === 0) {
       toast.error("Por favor, rellena todos los campos requeridos");
       return;
     }

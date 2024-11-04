@@ -70,7 +70,7 @@ export default function AccountSettingsCardComponent() {
       {
         loading: "Actualizando usuario...",
         success: "Usuario actualizado",
-        error: "Error al actualizar usuario",
+        error: "Ocurrió un error al actualizar usuario",
       }
     );
   };
@@ -89,7 +89,7 @@ export default function AccountSettingsCardComponent() {
       {
         loading: "Eliminando foto de usuario...",
         success: "Foto de usuario eliminada",
-        error: "Error al eliminar la foto de usuario",
+        error: "Ocurrió un error al eliminar la foto de usuario",
       }
     );
   };
@@ -108,7 +108,7 @@ export default function AccountSettingsCardComponent() {
       {
         loading: "Actualizando logo de trabajo...",
         success: "Logo de trabajo actualizado",
-        error: "Error al actualizar el logo de trabajo",
+        error: "Ocurrió un error al actualizar el logo de trabajo",
       }
     );
   };
@@ -127,7 +127,7 @@ export default function AccountSettingsCardComponent() {
       {
         loading: "Eliminando logo de trabajo...",
         success: "Logo de trabajo eliminado",
-        error: "Error al eliminar el logo de trabajo",
+        error: "Ocurrió un error al eliminar el logo de trabajo",
       }
     );
   };
