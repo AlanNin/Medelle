@@ -361,9 +361,7 @@ export default function UpdatePatientComponent({
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">
-                      Género <span className="text-red-500">*</span>
-                    </Label>
+                    <Label className="text-right">Género</Label>
                     <Select
                       name="gender"
                       value={inputs.gender}
