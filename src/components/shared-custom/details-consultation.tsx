@@ -159,7 +159,7 @@ export default function ConsultationDetailsComponent({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen} modal={true}>
-        <DialogContent disableAnimation className=" h-[85%] 2xl:h-[70%] p-0">
+        <DialogContent disableAnimation className=" h-[85%] 2xl:h-[65%] p-0">
           <DialogHeader className="pt-6 px-6 space-y-0">
             <DialogTitle>Detalles de la consulta</DialogTitle>
             <DialogDescription>
@@ -173,16 +173,16 @@ export default function ConsultationDetailsComponent({
                   <Avatar className="h-12 w-12">
                     {typeof consultation.patient_id === "string" ? (
                       <AvatarFallback className="uppercase">
-                        {consultation.patient_id.charAt(0)}
+                        {consultation.patient_id?.charAt(0)}
                       </AvatarFallback>
                     ) : (
                       <>
                         <AvatarImage
-                          src={consultation.patient_id.photo_url}
-                          alt={consultation.patient_id.name}
+                          src={consultation.patient_id?.photo_url}
+                          alt={consultation.patient_id?.name}
                         />
                         <AvatarFallback className="uppercase">
-                          {consultation.patient_id.name
+                          {consultation.patient_id?.name
                             .split(" ")
                             .map((name: string) => name.charAt(0))
                             .join("")}
@@ -193,13 +193,13 @@ export default function ConsultationDetailsComponent({
                   <div className="grid gap-1">
                     <h3 className="font-semibold">
                       {typeof consultation.patient_id === "object"
-                        ? consultation.patient_id.name
+                        ? consultation.patient_id?.name
                         : "Paciente"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       Teléfono:{" "}
                       {(typeof consultation.patient_id === "object" &&
-                        consultation.patient_id.phone) ??
+                        consultation.patient_id?.phone) ??
                         "Sin registro"}
                     </p>
                   </div>

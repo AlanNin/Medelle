@@ -69,7 +69,7 @@ export function SearchPatientComponent({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between px-3"
         >
           {selectedPatient
             ? patients?.find(

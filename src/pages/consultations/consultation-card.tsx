@@ -11,7 +11,7 @@ import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConsultationProps } from "@/types/consultation";
 import UpdateConsultationComponent from "@/components/shared-custom/update-consultation";
-import ConsultationDetailsComponent from "./details";
+import ConsultationDetailsComponent from "../../components/shared-custom/details-consultation";
 
 type Props = {
   consultation: any;
