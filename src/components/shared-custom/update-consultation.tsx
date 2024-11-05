@@ -259,7 +259,7 @@ export default function UpdateConsultationComponent({
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent
           disableAnimation
-          className="max-w-full w-max h-[85%] p-0"
+          className="max-w-full w-max h-[85%] 2xl:h-[70%] p-0"
         >
           <AlertDialogHeader className="pt-6 px-6 space-y-0">
             <AlertDialogTitle>Actualizar consulta</AlertDialogTitle>

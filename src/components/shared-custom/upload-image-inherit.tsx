@@ -20,6 +20,7 @@ type Props = {
   onComplete?: (image_url: string) => void;
   onDelete?: () => void;
   folder?: string;
+  tooltip_title: string;
 };
 
 export default function UploadImageInheritComponent({
@@ -31,6 +32,7 @@ export default function UploadImageInheritComponent({
   onComplete,
   onDelete,
   folder,
+  tooltip_title,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +85,7 @@ export default function UploadImageInheritComponent({
           <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel className="-mb-2">
-              Imagen de perfil
+              {tooltip_title}
             </DropdownMenuLabel>
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Se mostrará en las prescripciones

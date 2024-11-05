@@ -209,6 +209,7 @@ export default function AccountSettingsCardComponent() {
                     pencil_width={3}
                     component_height="small"
                     folder="work_logos"
+                    tooltip_title="Logo de trabajo"
                   >
                     <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
                       <AvatarImage
@@ -227,6 +228,7 @@ export default function AccountSettingsCardComponent() {
                     currentUser?.photo_url ? deleteUserPhoto : undefined
                   }
                   folder="profile_photos"
+                  tooltip_title="Imagen de perfil"
                 >
                   <Avatar className="h-24 w-24 ring-4 ring-primary/10 cursor-pointer">
                     <AvatarImage
