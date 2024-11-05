@@ -1,6 +1,7 @@
 import { ConsultationProps } from "@/types/consultation";
 import ReactDOMServer from "react-dom/server";
 import formatDate from "@/lib/format-date";
+import { RxLogo } from "@/lib/rx-image";
 
 export const PrescriptionComponent: React.FC<{
   prescription: ConsultationProps;
@@ -366,7 +367,6 @@ export const PrescriptionComponent: React.FC<{
 export async function generatePrescriptionTemplate(
   prescription: ConsultationProps
 ) {
-  const RxLogo = await window.ipcRenderer.invoke("converter-RxLogo-image-64");
   const SiteLogo =
     typeof prescription.user_id === "object" &&
     prescription.user_id.work_logo_url
