@@ -94,6 +94,8 @@ ipcMain.handle(
       win.on("closed", () => {
         win.destroy();
       });
+
+      if (win) win.destroy();
     });
   }
 );
@@ -144,6 +146,8 @@ ipcMain.handle(
       win.on("closed", () => {
         win.destroy();
       });
+
+      if (win) win.destroy();
     });
   }
 );

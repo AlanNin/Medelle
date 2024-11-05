@@ -21747,7 +21747,7 @@ ee.handle(
         );
       }), s.on("closed", () => {
         s.destroy();
-      });
+      }), s && s.destroy();
     });
   }
 );
@@ -21782,7 +21782,7 @@ ee.handle(
         );
       }), s.on("closed", () => {
         s.destroy();
-      });
+      }), s && s.destroy();
     });
   }
 );
