@@ -1,8 +1,8 @@
-# PatientCare Client
+# PatientCare
 
 ![PatientCare](./public/example.png)
 
-**PatientCare Client** es una aplicación de escritorio construida con Electron, Vite y React que permite a los médicos gestionar sus pacientes, citas y consultas de manera eficiente. La aplicación ofrece una interfaz de usuario intuitiva para interactuar con la API de PatientCare, almacenar imágenes en Cloudinary y realizar solicitudes HTTP con Axios.
+**PatientCare** es una aplicación de escritorio construida con Electron, Vite y React que permite a los médicos gestionar sus pacientes, citas y consultas de manera eficiente. La aplicación ofrece una interfaz de usuario intuitiva para interactuar con la API de PatientCare, almacenar imágenes en Cloudinary y realizar solicitudes HTTP con Axios.
 
 ## Características
 
@@ -47,8 +47,8 @@
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/tuusuario/patientcare-client.git
-   cd patientcare-client
+   git clone https://github.com/AlanNin/PatientCare
+   cd patientcare
    ```
 
 ## Contact
