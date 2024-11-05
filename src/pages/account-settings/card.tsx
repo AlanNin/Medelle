@@ -210,6 +210,7 @@ export default function AccountSettingsCardComponent() {
                     component_height="small"
                     folder="work_logos"
                     tooltip_title="Logo de trabajo"
+                    tooptip_show_prescription={true}
                   >
                     <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
                       <AvatarImage

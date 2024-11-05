@@ -21,6 +21,7 @@ type Props = {
   onDelete?: () => void;
   folder?: string;
   tooltip_title: string;
+  tooptip_show_prescription?: boolean;
 };
 
 export default function UploadImageInheritComponent({
@@ -33,6 +34,7 @@ export default function UploadImageInheritComponent({
   onDelete,
   folder,
   tooltip_title,
+  tooptip_show_prescription,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,12 +86,17 @@ export default function UploadImageInheritComponent({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel className="-mb-2">
+            <DropdownMenuLabel
+              className={`${tooptip_show_prescription && "-mb-2"}`}
+            >
               {tooltip_title}
             </DropdownMenuLabel>
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Se mostrará en las prescripciones
-            </DropdownMenuLabel>
+            {tooptip_show_prescription && (
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Se mostrará en las prescripciones
+              </DropdownMenuLabel>
+            )}
+
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
