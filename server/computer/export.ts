@@ -9,15 +9,10 @@ import {
 import path from "path";
 import fs from "fs";
 import { PdfDataProps, PdfResultProps } from "@/types/pdf";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import Store from "electron-store";
 
-// get the current file path and directory path
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const appConfig = new Store<AppConfigProps>();
 const base = "export";
+const appConfig = new Store<AppConfigProps>();
 
 // function to safely clean temporary files
 const safeCleanup = async (filePath: string): Promise<void> => {
@@ -37,10 +32,9 @@ ipcMain.handle(
     _event: IpcMainInvokeEvent,
     data: PdfDataProps
   ): Promise<PdfResultProps> => {
-    const tempDirPath = path.join(__dirname, "temp");
+    const tempDirPath = path.join(app.getPath("temp"), "pdf-exports");
     const tempFilePath = path.join(tempDirPath, "temporal-template.html");
 
-    // create the temp directory if it doesn't exist
     fs.mkdirSync(tempDirPath, { recursive: true });
     fs.writeFileSync(tempFilePath, data.template);
 
@@ -48,40 +42,27 @@ ipcMain.handle(
     let tempPath: string = "";
 
     try {
-      // create a hidden window
       win = new BrowserWindow({
-        width: 595, // a4 size
+        width: 595,
         height: 842,
         show: false,
         webPreferences: { nodeIntegration: true },
       });
 
-      // ensure the temporary folder exists
-      const tempDir = path.join(app.getPath("temp"), "pdf-exports");
-      await fs.promises.mkdir(tempDir, { recursive: true });
-
-      // create a unique named temporary HTML file
-      tempPath = path.join(tempDir, `temp-${Date.now()}.html`);
+      tempPath = path.join(tempDirPath, `temp-${Date.now()}.html`);
       await fs.promises.copyFile(tempFilePath, tempPath);
-
-      // load the HTML file and wait for it to finish
       await win.loadFile(tempPath);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for content to load
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // set print options
       const pdfOptions: PrintToPDFOptions = {
         printBackground: true,
         ...data?.config,
       };
 
-      // generate PDF
       const pdfBuffer = await win.webContents.printToPDF(pdfOptions);
 
-      // get last path used
       const lastPath =
         appConfig.get("lastSavePath") || app.getPath("documents");
-
-      // show dialog to save file
       const { canceled, filePath } = await dialog.showSaveDialog({
         defaultPath: path.join(lastPath, "Prescription - Patient Care.pdf"),
         filters: [{ name: "PDF", extensions: ["pdf"] }],
@@ -92,11 +73,7 @@ ipcMain.handle(
         return { success: false, canceled: true };
       }
 
-      if (!canceled && filePath) {
-        appConfig.set("lastSavePath", path.dirname(filePath));
-      }
-
-      // save the PDF in the selected location
+      appConfig.set("lastSavePath", path.dirname(filePath));
       await fs.promises.writeFile(filePath, pdfBuffer);
       return { success: true, path: filePath };
     } catch (error) {
