@@ -49,8 +49,7 @@ export default function PatientCardComponent({
 
   const [isShowingAppointment, setIsShowingAppointment] = React.useState(false);
 
-  const showAppointmentDetails = (e: React.MouseEvent, appointment: any) => {
-    e.stopPropagation();
+  const showAppointmentDetails = (appointment: any) => {
     setSelectedAppointment({
       ...appointment,
       patient_id: patient,
@@ -66,11 +65,7 @@ export default function PatientCardComponent({
     false
   );
 
-  const showConsultationDetails = (
-    e: React.MouseEvent,
-    consultation: ConsultationProps
-  ) => {
-    e.stopPropagation();
+  const showConsultationDetails = (consultation: ConsultationProps) => {
     setSelectedConsultation({
       ...consultation,
       patient_id: patient,
@@ -258,14 +253,15 @@ export default function PatientCardComponent({
                             ? "h-[86px]"
                             : "h-[70px]"
                         } w-max rounded-md border p-4`}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <div className="space-y-0 ">
                           {patient.appointments.map((appointment, index) => (
                             <div
                               key={index}
                               className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                              onClick={(e) =>
-                                showAppointmentDetails(e, appointment)
+                              onClick={() =>
+                                showAppointmentDetails(appointment)
                               }
                             >
                               <span>
@@ -296,14 +292,15 @@ export default function PatientCardComponent({
                             ? "h-[86px]"
                             : "h-[70px]"
                         } w-max rounded-md border p-4`}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <div className="space-y-0">
                           {patient.consultations.map((consultation, index) => (
                             <div
                               key={index}
                               className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                              onClick={(e) =>
-                                showConsultationDetails(e, consultation)
+                              onClick={() =>
+                                showConsultationDetails(consultation)
                               }
                             >
                               <span>
@@ -445,14 +442,15 @@ export default function PatientCardComponent({
                               ? "h-[86px]"
                               : "h-[70px]"
                           } w-full rounded-md border p-4`}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <div className="space-y-0">
                             {patient.appointments.map((appointment, index) => (
                               <div
                                 key={index}
                                 className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                                onClick={(e) =>
-                                  showAppointmentDetails(e, appointment)
+                                onClick={() =>
+                                  showAppointmentDetails(appointment)
                                 }
                               >
                                 <span>
@@ -483,6 +481,7 @@ export default function PatientCardComponent({
                               ? "h-[86px]"
                               : "h-[70px]"
                           } w-full rounded-md border p-4`}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <div className="space-y-0">
                             {patient.consultations.map(
@@ -490,8 +489,8 @@ export default function PatientCardComponent({
                                 <div
                                   key={index}
                                   className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                                  onClick={(e) =>
-                                    showConsultationDetails(e, consultation)
+                                  onClick={() =>
+                                    showConsultationDetails(consultation)
                                   }
                                 >
                                   <span>
