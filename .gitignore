@@ -27,6 +27,9 @@ dist-electron
 # dist ignore
 dist/*
 dist-electron/*
+dist-electron/temp/*
+dist-electron/main.js
+dist-electron/preload.mjs
 
 # local env files
 .env
