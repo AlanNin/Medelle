@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and build outputs
 node_modules
 dist
 dist-ssr
@@ -24,14 +25,7 @@ dist-electron
 *.sln
 *.sw?
 
-# dist ignore
-dist/*
-dist-electron/*
-dist-electron/temp/*
-dist-electron/main.js
-dist-electron/preload.mjs
-
-# local env files
+# Local environment files
 .env
 .env.development
 .env.production
