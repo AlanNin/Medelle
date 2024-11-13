@@ -13,7 +13,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, FileImage, Printer } from "lucide-react";
+import {
+  ArrowDownToLine,
+  Download,
+  FileImage,
+  FileText,
+  Printer,
+} from "lucide-react";
 import { ConsultationProps } from "@/types/consultation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
@@ -24,6 +30,7 @@ import { toast } from "sonner";
 import { PdfDataProps } from "@/types/pdf";
 import debounce from "@/lib/debouce";
 import ImageMagnifier from "@/components/utils/zoomer";
+import PDFIcon from "@/assets/icons/PDF.png";
 
 type Props = {
   isOpen: boolean;
@@ -45,6 +52,30 @@ export default function ConsultationDetailsComponent({
 }: Props) {
   const [isShowingImage, setIsShowingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isShowingPDF, setIsShowingPDF] = useState(false);
+  const [selectedPDF, setSelectedPDF] = useState<string | null>(null);
+
+  const handleSaveImage = async (url: string) => {
+    toast.promise(
+      (async () => {
+        const result = await window.ipcRenderer.invoke(
+          "file-explorer-save-image",
+          url
+        );
+
+        if (result) {
+          return "Imagen guardada con éxito.";
+        } else {
+          throw new Error("Ocurrió un error al guardar la imagen.");
+        }
+      })(),
+      {
+        loading: "Guardando imagen...",
+        success: (msg) => msg,
+        error: (error) => error.message,
+      }
+    );
+  };
 
   const handleOpenPDF = async (path: string) => {
     await window.ipcRenderer.invoke("file-explorer-open-file", path);
@@ -248,24 +279,47 @@ export default function ConsultationDetailsComponent({
                       consultation.laboratory_studies.images.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-1">
                           {consultation.laboratory_studies.images.map(
-                            (image, index) => (
-                              <div
-                                key={index}
-                                className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
-                                onClick={() => {
-                                  setIsShowingImage(true);
-                                  setSelectedImage(image);
-                                }}
-                              >
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
-                                  <FileImage className="h-6 w-6 text-white" />
-                                </div>
-                                <img
-                                  src={image}
-                                  alt={`Estudio de laboratorio ${index + 1}`}
-                                  className="object-cover rounded-lg w-full h-full"
-                                />
-                              </div>
+                            (image) => (
+                              <>
+                                {image.endsWith(".pdf") ? (
+                                  <div
+                                    key={image}
+                                    className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
+                                    onClick={() => {
+                                      setIsShowingPDF(true);
+                                      setSelectedPDF(image);
+                                      console.log(image);
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                      <FileText className="h-6 w-6 text-white" />
+                                    </div>
+                                    <img
+                                      src={PDFIcon}
+                                      alt={`Estudio de laboratorio`}
+                                      className="object-cover rounded-lg w-full h-full p-4"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div
+                                    key={image}
+                                    className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
+                                    onClick={() => {
+                                      setIsShowingImage(true);
+                                      setSelectedImage(image);
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                      <FileImage className="h-6 w-6 text-white" />
+                                    </div>
+                                    <img
+                                      src={image}
+                                      alt={`Estudio de laboratorio`}
+                                      className="object-cover rounded-lg w-full h-full"
+                                    />
+                                  </div>
+                                )}
+                              </>
                             )
                           )}
                         </div>
@@ -297,27 +351,25 @@ export default function ConsultationDetailsComponent({
                       {consultation.images_studies.images &&
                       consultation.images_studies.images.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-1">
-                          {consultation.images_studies.images.map(
-                            (image, index) => (
-                              <div
-                                key={index}
-                                className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
-                                onClick={() => {
-                                  setIsShowingImage(true);
-                                  setSelectedImage(image);
-                                }}
-                              >
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
-                                  <FileImage className="h-6 w-6 text-white" />
-                                </div>
-                                <img
-                                  src={image}
-                                  alt={`Estudio de imagen ${index + 1}`}
-                                  className="object-cover rounded-lg w-full h-full"
-                                />
+                          {consultation.images_studies.images.map((image) => (
+                            <div
+                              key={image}
+                              className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
+                              onClick={() => {
+                                setIsShowingImage(true);
+                                setSelectedImage(image);
+                              }}
+                            >
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                <FileImage className="h-6 w-6 text-white" />
                               </div>
-                            )
-                          )}
+                              <img
+                                src={image}
+                                alt={`Estudio de imagen`}
+                                className="object-cover rounded-lg w-full h-full"
+                              />
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 mt-1">
@@ -413,7 +465,10 @@ export default function ConsultationDetailsComponent({
         </DialogContent>
       </Dialog>
       <Dialog open={isShowingImage} onOpenChange={setIsShowingImage}>
-        <DialogContent hideClose className="p-0 bg-transparent border-none">
+        <DialogContent
+          hideClose
+          className="p-0 bg-transparent border-none 3xl:max-w-screen-sm 4xl:max-w-screen-md"
+        >
           <div className="relative flex items-center justify-center">
             <ImageMagnifier>
               <img
@@ -421,6 +476,25 @@ export default function ConsultationDetailsComponent({
                 className="object-contain w-full h-full rounded-md"
               />
             </ImageMagnifier>
+            <ArrowDownToLine
+              className="absolute top-2 right-2 h-8 w-8 text-secondary bg-primary p-1.5 rounded-md cursor-pointer"
+              onClick={() => handleSaveImage(selectedImage || "")}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isShowingPDF} onOpenChange={setIsShowingPDF}>
+        <DialogContent
+          hideClose
+          className="p-0 bg-transparent border-none max-w-[80vw]"
+        >
+          <div className="relative flex items-center justify-center">
+            <embed
+              src={selectedPDF || ""}
+              type="application/pdf"
+              className="w-full h-[80vh] rounded-md"
+              title="Documento PDF"
+            />
           </div>
         </DialogContent>
       </Dialog>

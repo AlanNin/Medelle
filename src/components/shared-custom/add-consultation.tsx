@@ -30,7 +30,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import UploadImagesButtonComponent from "./upload-images-button";
+import UploadFilesButtonComponent from "./upload-images-button";
 import DatePickerComponent from "./date-picker";
 import { PatientProps } from "@/types/patient";
 
@@ -316,9 +316,9 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
                   onChange={(e) => handleLaboratoryStudiesDescriptionChange(e)}
                   placeholder="Escribe aquí..."
                 />
-                <UploadImagesButtonComponent
-                  images={inputs.laboratory_studies?.images ?? []}
-                  setImages={handleLaboratoryStudiesImagesChange}
+                <UploadFilesButtonComponent
+                  files={inputs.laboratory_studies?.images ?? []}
+                  setFiles={handleLaboratoryStudiesImagesChange}
                   folder="laboratory_studies"
                 />
               </div>
@@ -333,9 +333,9 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
                   onChange={(e) => handleImagesStudiesDescriptionChange(e)}
                   placeholder="Escribe aquí..."
                 />
-                <UploadImagesButtonComponent
-                  images={inputs.images_studies?.images ?? []}
-                  setImages={handleImagesStudiesImagesChange}
+                <UploadFilesButtonComponent
+                  files={inputs.images_studies?.images ?? []}
+                  setFiles={handleImagesStudiesImagesChange}
                   folder="images_studies"
                 />
               </div>

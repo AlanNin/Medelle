@@ -13,16 +13,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import PDFIcon from "@/assets/icons/PDF.png";
 
 type Props = {
-  images: string[];
-  setImages: (images: string[]) => void;
+  files: string[];
+  setFiles: (files: string[]) => void;
   folder?: string;
 };
 
-export default function UploadImagesButtonComponent({
-  images,
-  setImages,
+export default function UploadFilesButtonComponent({
+  files,
+  setFiles,
   folder,
 }: Props) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -75,8 +76,8 @@ export default function UploadImagesButtonComponent({
   };
 
   const removeUploadedFile = (image_url: string) => {
-    const updatedImages = images.filter((image: any) => image !== image_url);
-    setImages(updatedImages);
+    const updatedImages = files.filter((image: any) => image !== image_url);
+    setFiles(updatedImages);
   };
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function UploadImagesButtonComponent({
         );
         const uploadedUrls = await Promise.all(uploadPromises);
 
-        setImages([...images, ...uploadedUrls]);
+        setFiles([...files, ...uploadedUrls]);
         setSelectedImages([]);
         setPreviewUrls([]);
         setIsOpen(false);
@@ -119,22 +120,22 @@ export default function UploadImagesButtonComponent({
           onClick={() => setIsOpen(true)}
         >
           <Upload className="h-4 w-4 mr-2" />
-          Subir imágenes ({images.length}/3)
+          Subir imágenes ({files.length}/3)
         </Button>
       </div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Subir imagenes</DialogTitle>
+            <DialogTitle>Subir archivos</DialogTitle>
             <DialogDescription>
               Arrastra y suelta tus archivos o haz click para buscar.
             </DialogDescription>
           </DialogHeader>
-          {selectedImages.length + images.length < 3 && (
+          {selectedImages.length + files.length < 3 && (
             <>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*, application/pdf"
                 multiple
                 id="imageUpload"
                 className="hidden"
@@ -158,7 +159,7 @@ export default function UploadImagesButtonComponent({
                       Arrastra tus archivos hasta aquí
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Puedes subir hasta 3 imágenes
+                      Puedes subir hasta 3 archivos (imágenes o PDFs)
                     </p>
                   </div>
                 </div>
@@ -166,22 +167,31 @@ export default function UploadImagesButtonComponent({
             </>
           )}
 
-          {images.length > 0 && (
+          {files.length > 0 && (
             <div className=" space-y-3">
-              {images.map((image: any, index) => (
+              {files.map((image: any, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-2 px-4 border rounded-lg w-full"
                 >
                   <div className="flex items-center gap-3">
-                    <img
-                      src={image}
-                      alt={`Preview`}
-                      className="h-10 w-10 object-cover rounded-sm"
-                    />
+                    {image.endsWith(".pdf") ? (
+                      <img
+                        src={PDFIcon}
+                        alt={`Preview`}
+                        className="h-10 w-10 object-cover rounded-sm"
+                      />
+                    ) : (
+                      <img
+                        src={image}
+                        alt={`Preview`}
+                        className="h-10 w-10 object-cover rounded-sm"
+                      />
+                    )}
+
                     <div className="flex flex-col">
                       <span className="text-sm font-medium max-w-[200px] truncate">
-                        {`Image - ${index + 1}`}{" "}
+                        {`Archivo - ${index + 1}`}{" "}
                       </span>
                       <span className="text-xs text-green-600 flex items-center gap-1">
                         Subida <Check className="h-3 w-3 text-green-600" />
@@ -209,11 +219,20 @@ export default function UploadImagesButtonComponent({
                   className="flex items-center justify-between p-2 px-4 border rounded-lg w-full"
                 >
                   <div className="flex items-center gap-3">
-                    <img
-                      src={previewUrls[index]}
-                      alt={`Preview`}
-                      className="h-10 w-10 object-cover rounded-sm"
-                    />
+                    {file.type.endsWith("pdf") ? (
+                      <img
+                        src={PDFIcon}
+                        alt={`Preview`}
+                        className="h-10 w-10 object-cover rounded-sm"
+                      />
+                    ) : (
+                      <img
+                        src={previewUrls[index]}
+                        alt={`Preview`}
+                        className="h-10 w-10 object-cover rounded-sm"
+                      />
+                    )}
+
                     <div className="flex flex-col">
                       <span className="text-sm font-medium max-w-[200px] truncate">
                         {file.name}
@@ -242,11 +261,11 @@ export default function UploadImagesButtonComponent({
               onClick={() => {
                 setSelectedImages([]);
                 setPreviewUrls([]);
-                setImages([]);
+                setFiles([]);
               }}
               disabled={
                 isUploading ||
-                (selectedImages.length === 0 && images.length === 0)
+                (selectedImages.length === 0 && files.length === 0)
               }
             >
               Limpiar

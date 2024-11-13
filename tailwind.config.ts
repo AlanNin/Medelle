@@ -13,9 +13,6 @@ const tailwindConfig: Config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
       zIndex: {
@@ -24,6 +21,10 @@ const tailwindConfig: Config = {
         "80": "80",
         "90": "90",
         "100": "100",
+      },
+      screens: {
+        "3xl": "1920px",
+        "4xl": "2560px",
       },
       minHeight: {
         page: "calc(100vh - 50px)",
