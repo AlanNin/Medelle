@@ -103,7 +103,7 @@ export default function ConsultationDetailsComponent({
 
         if (handlePrintPrescription.success && handlePrintPrescription.path) {
           handleOpenPDF(handlePrintPrescription.path!);
-          return `PDF generado con éxito. Ubicación: "${handlePrintPrescription.path}"`;
+          return `PDF generado con éxito. Dirección: "${handlePrintPrescription.path}"`;
         } else {
           if (handlePrintPrescription.canceled) {
             throw new Error("Generación de PDF cancelada");

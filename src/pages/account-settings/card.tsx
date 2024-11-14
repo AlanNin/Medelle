@@ -328,9 +328,9 @@ export default function AccountSettingsCardComponent() {
                 />
                 <ProfileInfoItem
                   icon={MapPin}
-                  label="Ubicación laboral"
+                  label="Dirección laboral"
                   value={currentUser?.work_address || "No registrada"}
-                  tooltip="Esta ubicación se podrá mostrar al imprimir una prescripción"
+                  tooltip="Esta dirección se podrá mostrar al imprimir una prescripción"
                 />
                 <ProfileInfoItem
                   icon={DollarSign}

@@ -251,12 +251,12 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
-                  <Label className="text-right">Ubicación</Label>
+                  <Label className="text-right">Dirección</Label>
                   <Input
                     name="address"
                     value={inputs.address}
                     onChange={(e) => handleInputChange(e)}
-                    placeholder="Escribe la ubicación aquí..."
+                    placeholder="Escribe la dirección aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">

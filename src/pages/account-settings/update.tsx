@@ -210,7 +210,7 @@ export default function AccountSettingsUpdateComponent({
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Ubicación laboral</Label>
+                    <Label className="text-right">Dirección laboral</Label>
                     <Input
                       name="work_address"
                       value={inputs.work_address}
