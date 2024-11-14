@@ -1,8 +1,13 @@
 import { app, BrowserWindow } from "electron";
+import { autoUpdater } from "electron-updater";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import dotenv from "dotenv";
 import "../server";
+import { UpdateProps } from "@/types/update";
+
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
 
 const envFile =
   process.env.NODE_ENV === "production"
@@ -14,7 +19,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
@@ -23,7 +27,8 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
 
-let win: BrowserWindow | null;
+let win: BrowserWindow | undefined;
+let updatePopupWin: BrowserWindow | undefined;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -45,38 +50,117 @@ function createWindow() {
     },
   });
 
-  win.maximize();
-  win.show();
-
-  // test active push message to Renderer-process.
-  win.webContents.on("did-finish-load", () => {
-    win?.webContents.send("main-process-message", new Date().toLocaleString());
-  });
-
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+function createUpdatePopup() {
+  updatePopupWin = new BrowserWindow({
+    title: "PatientCare - Updater",
+    icon: path.join(__dirname, "../build/icon.png"),
+    width: 400,
+    height: 250,
+    show: false,
+    frame: false,
+    resizable: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.mjs"),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  if (VITE_DEV_SERVER_URL) {
+    updatePopupWin.loadURL(`${VITE_DEV_SERVER_URL}/updater.html`);
+  } else {
+    updatePopupWin.loadFile(path.join(RENDERER_DIST, "updater.html"));
+  }
+
+  updatePopupWin.once("ready-to-show", () => {
+    updatePopupWin?.show();
+    autoUpdater.checkForUpdates();
+    updateMainWindow({
+      status: "checking",
+      message: `${app.getVersion()}`,
+    });
+  });
+
+  updatePopupWin.on("closed", () => {
+    updatePopupWin = undefined;
+    if (!win?.isVisible()) {
+      app.quit();
+    }
+  });
+}
+
+function updateMainWindow(data: UpdateProps) {
+  updatePopupWin?.webContents.send("update-message", data);
+}
+
+app.whenReady().then(() => {
+  createWindow();
+
+  // if (process.env.NODE_ENV === "development") {
+  //   win?.maximize();
+  //   win?.show();
+  //   return;
+  // }
+
+  createUpdatePopup();
+});
+
+autoUpdater.on("update-available", (info) => {
+  updateMainWindow({
+    status: "available",
+    message: `${info.version}`,
+  });
+  autoUpdater.downloadUpdate();
+});
+
+autoUpdater.on("update-not-available", () => {
+  // updateMainWindow({
+  //   status: "not-available",
+  // });
+  setTimeout(() => {
+    updatePopupWin?.close();
+    win?.maximize();
+    win?.show();
+  }, 1500);
+});
+
+autoUpdater.on("error", (err) => {
+  updateMainWindow({
+    status: "error",
+    message: `Error: ${err.message}`,
+  });
+  setTimeout(() => {
+    updatePopupWin?.close();
+    win?.show();
+  }, 1500);
+});
+
+autoUpdater.on("update-downloaded", () => {
+  updateMainWindow({
+    status: "downloaded",
+  });
+  setTimeout(() => {
+    autoUpdater.quitAndInstall();
+  }, 1500);
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-    win = null;
+    win = undefined;
   }
 });
 
 app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });
-
-app.whenReady().then(createWindow);

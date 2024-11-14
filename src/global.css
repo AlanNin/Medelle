@@ -124,3 +124,24 @@
 ::-webkit-scrollbar-track {
   background-color: #bdbdbd;
 }
+
+@keyframes typingDots {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+}
+
+.typing-dots::after {
+  content: "";
+  display: inline-block;
+  animation: typingDots 1.5s steps(1, end) infinite;
+}

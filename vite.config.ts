@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import path from "node:path";
 import electron from "vite-plugin-electron/simple";
@@ -37,6 +38,19 @@ export default defineConfig(({ mode }) => {
     ],
     define: {
       "process.env": env,
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, "index.html"),
+          updater: path.resolve(__dirname, "updater.html"),
+        },
+        output: {
+          entryFileNames: "assets/[name]-[hash].js",
+          chunkFileNames: "assets/[name]-[hash].js",
+          assetFileNames: "assets/[name]-[hash].[ext]",
+        },
+      },
     },
   };
 });

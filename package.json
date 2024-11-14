@@ -2,7 +2,7 @@
   "name": "patient-care-project",
   "description": "App for Doctors. Take care of your patients.",
   "author": "Alan Nin",
-  "private": true,
+  "license": "ISC",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -10,6 +10,11 @@
     "build": "cross-env NODE_ENV=production tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "cross-env NODE_ENV=production vite preview"
+  },
+  "repository": "https://github.com/AlanNin/PatientCare",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
   },
   "build": {
     "appId": "com.patientcare.app",
@@ -19,7 +24,8 @@
     },
     "files": [
       "dist-electron/**/*",
-      "dist/**/*"
+      "dist/**/*",
+      "updater.html"
     ],
     "mac": {
       "icon": "build/icon.icns"
@@ -59,6 +65,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "electron-store": "^10.0.0",
+    "electron-updater": "^6.3.9",
     "framer-motion": "^11.11.9",
     "he": "^1.2.0",
     "is-online": "^11.0.0",
@@ -99,6 +106,7 @@
     "vite": "^5.1.6",
     "vite-plugin-electron": "^0.28.6",
     "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-static-copy": "^2.1.0",
     "vite-tsconfig-paths": "^5.0.1"
   },
   "main": "dist-electron/main.js"
