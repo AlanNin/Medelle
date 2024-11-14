@@ -73,14 +73,26 @@ function useAuth() {
   const handleLogin = async (
     email: string,
     password: string,
-    e: React.FormEvent
+    e: React.FormEvent,
+    rememberMe: boolean
   ) => {
     e.preventDefault();
     try {
+      if (!email || !password) {
+        toast.error("Por favor, rellena todos los campos requeridos");
+        return;
+      }
+
       toast.loading("Iniciando sesión...", {
         duration: Infinity,
         id: "logging-in",
       });
+
+      if (rememberMe) {
+        localStorage.setItem("lastEmail", email);
+      } else {
+        localStorage.removeItem("lastEmail");
+      }
 
       const response: SessionResponse = await window.ipcRenderer.invoke(
         "auth-sign-in",

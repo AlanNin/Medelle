@@ -104,11 +104,11 @@ function updateMainWindow(data: UpdateProps) {
 app.whenReady().then(() => {
   createWindow();
 
-  // if (process.env.NODE_ENV === "development") {
-  //   win?.maximize();
-  //   win?.show();
-  //   return;
-  // }
+  if (process.env.NODE_ENV === "development") {
+    win?.maximize();
+    win?.show();
+    return;
+  }
 
   createUpdatePopup();
 });
@@ -125,11 +125,14 @@ autoUpdater.on("update-not-available", () => {
   // updateMainWindow({
   //   status: "not-available",
   // });
-  setTimeout(() => {
-    updatePopupWin?.close();
-    win?.maximize();
-    win?.show();
-  }, 1500);
+  // setTimeout(() => {
+  //   updatePopupWin?.close();
+  //   win?.maximize();
+  //   win?.show();
+  // }, 1500);
+  updatePopupWin?.close();
+  win?.maximize();
+  win?.show();
 });
 
 autoUpdater.on("error", (err) => {
@@ -138,9 +141,10 @@ autoUpdater.on("error", (err) => {
     message: `Error: ${err.message}`,
   });
   setTimeout(() => {
-    updatePopupWin?.close();
-    win?.show();
-  }, 1500);
+    app.quit();
+    win = undefined;
+    updatePopupWin = undefined;
+  }, 2000);
 });
 
 autoUpdater.on("update-downloaded", () => {
@@ -156,6 +160,7 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
     win = undefined;
+    updatePopupWin = undefined;
   }
 });
 

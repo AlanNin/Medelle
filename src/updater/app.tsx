@@ -1,6 +1,6 @@
 import AppLogo from "@/assets/icons/AppLogoBlack.png";
 import { UpdateProps } from "@/types/update";
-import { Loader2 } from "lucide-react";
+import { Frown, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export default function UpdaterApp() {
@@ -47,10 +47,13 @@ export default function UpdaterApp() {
 
       case "error":
         return (
-          <div className="flex flex-col items-center">
-            <h1 className="text-base text-red-500">
-              Error al verificar actualizaciones
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-base text-muted-foreground">
+              Ocurrió un error al verificar las actualizaciones
             </h1>
+            <p className="text-sm text-muted-foreground italic">
+              Terminando aplicación...
+            </p>
           </div>
         );
 
@@ -83,12 +86,17 @@ export default function UpdaterApp() {
         <img src={AppLogo} className="w-10 h-10" alt="Logo" />
         <h1 className="text-4xl font-medium">PatientCare</h1>
       </div>
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-6">
         {renderUpdateStatus()}
-        <Loader2
-          className="animate-spin w-6 h-6 text-muted-foreground"
-          strokeWidth={1.2}
-        />
+
+        {status.status === "error" ? (
+          <Frown className="w-6 h-6 text-muted-foreground" strokeWidth={1.2} />
+        ) : (
+          <Loader2
+            className="animate-spin w-6 h-6 text-muted-foreground"
+            strokeWidth={1.2}
+          />
+        )}
       </div>
     </div>
   );

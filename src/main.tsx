@@ -35,16 +35,16 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ReactQueryProvider>
-        <AppConfigProvider>
+      <AppConfigProvider>
+        <ReactQueryProvider>
           {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
           <ReactReduxProvider>
             <RouterProvider router={router} />
           </ReactReduxProvider>
           <Toaster />
           {/* </ThemeProvider> */}
-        </AppConfigProvider>
-      </ReactQueryProvider>
+        </ReactQueryProvider>
+      </AppConfigProvider>
     </StrictMode>
   );
 }
