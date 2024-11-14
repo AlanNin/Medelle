@@ -352,23 +352,46 @@ export default function ConsultationDetailsComponent({
                       consultation.images_studies.images.length > 0 ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-1">
                           {consultation.images_studies.images.map((image) => (
-                            <div
-                              key={image}
-                              className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
-                              onClick={() => {
-                                setIsShowingImage(true);
-                                setSelectedImage(image);
-                              }}
-                            >
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
-                                <FileImage className="h-6 w-6 text-white" />
-                              </div>
-                              <img
-                                src={image}
-                                alt={`Estudio de imagen`}
-                                className="object-cover rounded-lg w-full h-full"
-                              />
-                            </div>
+                            <>
+                              {image.endsWith(".pdf") ? (
+                                <div
+                                  key={image}
+                                  className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
+                                  onClick={() => {
+                                    setIsShowingPDF(true);
+                                    setSelectedPDF(image);
+                                    console.log(image);
+                                  }}
+                                >
+                                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                    <FileText className="h-6 w-6 text-white" />
+                                  </div>
+                                  <img
+                                    src={PDFIcon}
+                                    alt={`Estudio de laboratorio`}
+                                    className="object-cover rounded-lg w-full h-full p-4"
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  key={image}
+                                  className="relative aspect-square cursor-pointer w-[143px] h-[143px]"
+                                  onClick={() => {
+                                    setIsShowingImage(true);
+                                    setSelectedImage(image);
+                                  }}
+                                >
+                                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                    <FileImage className="h-6 w-6 text-white" />
+                                  </div>
+                                  <img
+                                    src={image}
+                                    alt={`Estudio de imagen`}
+                                    className="object-cover rounded-lg w-full h-full"
+                                  />
+                                </div>
+                              )}
+                            </>
                           ))}
                         </div>
                       ) : (
