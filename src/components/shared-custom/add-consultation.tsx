@@ -33,6 +33,8 @@ import {
 import UploadFilesButtonComponent from "./upload-images-button";
 import DatePickerComponent from "./date-picker";
 import { PatientProps } from "@/types/patient";
+import { Input } from "../ui/input";
+import { gestionalAgeToText } from "@/lib/gestional-age-text";
 
 type Props = {
   isOpen: boolean;
@@ -57,6 +59,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     gynecological_information: {
       last_menstrual_period: undefined,
       estimated_due_date: undefined,
+      gestational_age: undefined,
     },
     treatment: "",
     patient_id: "",
@@ -130,12 +133,23 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     return undefined;
   };
 
+  const calculateGestationalAge = (LMP: Date): number | undefined => {
+    if (LMP) {
+      const today = new Date();
+      const diffInMs = today.getTime() - LMP.getTime();
+      const diffInWeeks = diffInMs / (1000 * 60 * 60 * 24 * 7);
+      return parseFloat(diffInWeeks.toFixed(1));
+    }
+    return undefined;
+  };
+
   const handleInputLMPChange = (value: Date) => {
     setInputs((prevInputs) => ({
       ...prevInputs,
       gynecological_information: {
         last_menstrual_period: value,
         estimated_due_date: calculateDueDate(value),
+        gestational_age: calculateGestationalAge(value),
       },
     }));
   };
@@ -356,31 +370,45 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
               fetchedUserPatients?.data.find(
                 (patient: PatientProps) => patient._id === inputs.patient_id
               )?.gender !== "male" && (
-                <div className="grid grid-cols-2 gap-4 items-start mb-2">
-                  <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Última menstruación</Label>
-                    <DatePickerComponent
-                      date={
-                        inputs.gynecological_information?.last_menstrual_period
-                      }
-                      setDate={handleInputLMPChange}
-                      untilCurrent={true}
-                    />
+                <>
+                  <div className="grid grid-cols-2 gap-4 items-start mb-2">
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">Última menstruación</Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information
+                            ?.last_menstrual_period
+                        }
+                        setDate={handleInputLMPChange}
+                        untilCurrent={true}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">
+                        Fecha probable de parto
+                      </Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information?.estimated_due_date
+                        }
+                        setDate={() => {}}
+                        disabled
+                        placeholder="Seleccionar FUR / LMP"
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">
-                      Fecha probable de parto
-                    </Label>
-                    <DatePickerComponent
-                      date={
-                        inputs.gynecological_information?.estimated_due_date
-                      }
-                      setDate={() => {}}
+                    <Label className="text-right">Edad gestacional</Label>
+                    <Input
+                      value={gestionalAgeToText(
+                        inputs.gynecological_information?.gestational_age
+                      )}
+                      onChange={() => {}}
                       disabled
                       placeholder="Seleccionar FUR / LMP"
                     />
                   </div>
-                </div>
+                </>
               )}
           </div>
         </ScrollArea>

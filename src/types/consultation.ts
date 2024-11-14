@@ -19,6 +19,7 @@ export type ConsultationProps = {
   gynecological_information?: {
     last_menstrual_period?: Date;
     estimated_due_date?: Date;
+    gestational_age?: number;
   };
   patient_id: PatientProps | string;
   user_id?: UserProps | string;
