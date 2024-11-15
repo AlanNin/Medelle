@@ -31,7 +31,7 @@ import { PdfDataProps } from "@/types/pdf";
 import debounce from "@/lib/debouce";
 import ImageMagnifier from "@/components/utils/zoomer";
 import PDFIcon from "@/assets/icons/PDF.png";
-import { gestionalAgeToText } from "@/lib/gestional-age-text";
+import { gestationalAgeToText } from "@/lib/gestional-age-text";
 
 type Props = {
   isOpen: boolean;
@@ -433,7 +433,7 @@ export default function ConsultationDetailsComponent({
                                 consultation.gynecological_information
                                   .last_menstrual_period
                               )
-                            : "Sin información"}
+                            : "Sin registrar"}
                         </p>
                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                           Fecha de parto previsto:{" "}
@@ -443,17 +443,17 @@ export default function ConsultationDetailsComponent({
                                 consultation.gynecological_information
                                   .estimated_due_date
                               )
-                            : "Sin información"}
+                            : "Sin registrar"}
                         </p>
                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                           Edad gestacional:{" "}
                           {consultation.gynecological_information
                             ?.gestational_age
-                            ? gestionalAgeToText(
+                            ? gestationalAgeToText(
                                 consultation.gynecological_information
                                   .gestational_age
                               )
-                            : "Sin información"}
+                            : "Sin registrar"}
                         </p>
                       </div>
 

@@ -36,7 +36,7 @@ import UploadFilesButtonComponent from "./upload-images-button";
 import DatePickerComponent from "./date-picker";
 import { PatientProps } from "@/types/patient";
 import { Input } from "../ui/input";
-import { gestionalAgeToText } from "@/lib/gestional-age-text";
+import { gestationalAgeToText } from "@/lib/gestional-age-text";
 
 type Props = {
   consultation: ConsultationProps;
@@ -447,7 +447,7 @@ export default function UpdateConsultationComponent({
                     <div className="flex flex-col gap-2.5 items-start">
                       <Label className="text-right">Edad gestacional</Label>
                       <Input
-                        value={gestionalAgeToText(
+                        value={gestationalAgeToText(
                           inputs.gynecological_information?.gestational_age ||
                             consultation.gynecological_information
                               ?.gestational_age

@@ -101,9 +101,9 @@ export default function UploadFilesButtonComponent({
         setIsOpen(false);
       })(),
       {
-        loading: "Subiendo imágen(es)...",
-        success: "Imágen(es) subidas",
-        error: "Ocurrió un error al subir las imágen(es)",
+        loading: "Subiendo archivo(s)...",
+        success: "Archivo(s) subidos",
+        error: "Ocurrió un error al subir los archivo(s)",
       }
     );
 
