@@ -191,7 +191,7 @@ export default function ConsultationDetailsComponent({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen} modal={true}>
-        <DialogContent disableAnimation className=" h-[85%] 2xl:h-[65%] p-0">
+        <DialogContent className=" h-[85%] 2xl:h-[65%] p-0">
           <DialogHeader className="pt-6 px-6 space-y-0">
             <DialogTitle>Detalles de la consulta</DialogTitle>
             <DialogDescription>

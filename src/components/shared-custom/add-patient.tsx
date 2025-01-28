@@ -23,7 +23,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { PatientProps } from "@/types/patient";
-import { differenceInYears, isBefore, setYear } from "date-fns";
+import {
+  differenceInMonths,
+  differenceInYears,
+  isBefore,
+  setYear,
+} from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -159,14 +164,23 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
     }
 
     const today = new Date();
-    let age = differenceInYears(today, inputs.date_of_birth);
+    const ageInYears = differenceInYears(today, inputs.date_of_birth);
+
+    if (ageInYears < 1) {
+      const ageInMonths = differenceInMonths(today, inputs.date_of_birth);
+      const fractionalMonth =
+        (today.getDate() - inputs.date_of_birth.getDate()) / 30;
+      const ageInMonthsDecimal = ageInMonths + fractionalMonth;
+      return ageInMonthsDecimal / 12;
+    }
 
     const birthDateThisYear = setYear(
       inputs.date_of_birth,
       today.getFullYear()
     );
+
     if (isBefore(birthDateThisYear, today)) {
-      return age;
+      return ageInYears;
     } else {
       return 0;
     }
@@ -204,10 +218,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent
-        disableAnimation
-        className="max-w-full w-max h-[80%] 2xl:h-[70%] p-0"
-      >
+      <AlertDialogContent className="max-w-full w-max h-[80%] 2xl:h-[70%] p-0">
         <AlertDialogHeader className="pt-6 px-6 space-y-0">
           <AlertDialogTitle>Añadir paciente</AlertDialogTitle>
           <AlertDialogDescription>
@@ -325,7 +336,13 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                   </div>
                   <Input
                     name="age"
-                    value={patient_age ? `${patient_age} años` : undefined}
+                    value={
+                      patient_age
+                        ? patient_age >= 1
+                          ? `${patient_age} años`
+                          : `${(patient_age * 12).toFixed(1)} meses`
+                        : undefined
+                    }
                     placeholder="Selecciona una fecha..."
                     disabled
                   />

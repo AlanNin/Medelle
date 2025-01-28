@@ -188,7 +188,7 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
         }
       }}
     >
-      <AlertDialogContent disableAnimation className="max-w-full w-max">
+      <AlertDialogContent className="max-w-full w-max">
         <AlertDialogHeader className="space-y-0">
           <AlertDialogTitle>Añadir cita</AlertDialogTitle>
           <AlertDialogDescription>

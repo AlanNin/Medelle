@@ -343,7 +343,6 @@ export default function PatientCardComponent({
         {isShowing && viewMode === "grid" && (
           <Dialog open={isShowing} onOpenChange={setIsShowing}>
             <DialogContent
-              disableAnimation
               onClick={(e) => e.stopPropagation()}
               hideClose
               className="p-0 max-h-[85vh] overflow-auto"

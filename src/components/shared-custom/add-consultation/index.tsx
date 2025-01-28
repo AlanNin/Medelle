@@ -2,8 +2,8 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "../ui/textarea";
-import { ScrollArea } from "../ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -13,27 +13,27 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 import { ConsultationProps } from "@/types/consultation";
-import { SearchPatientComponent } from "./search-patient";
+import { SearchPatientComponent } from "../search-patient";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
+} from "@/components/ui/collapsible";
 import { ChevronsUpDown, Info } from "lucide-react";
-import { Separator } from "../ui/separator";
-import { SearchAppointmentComponent } from "./search-appointment";
+import { Separator } from "@/components/ui/separator";
+import { SearchAppointmentComponent } from "../search-appointment";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
-import UploadFilesButtonComponent from "./upload-images-button";
-import DatePickerComponent from "./date-picker";
+} from "@/components/ui/tooltip";
+import UploadFilesButtonComponent from "../upload-images-button";
+import DatePickerComponent from "../date-picker";
 import { PatientProps } from "@/types/patient";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { gestationalAgeToText } from "@/lib/gestional-age-text";
 
 type Props = {
@@ -41,8 +41,13 @@ type Props = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
+const presentation = ["selection", "obstetric", "gynecological"];
+
 export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
   const queryClient = useQueryClient();
+  const [currentPresentation, setCurrentPresentation] = React.useState<
+    typeof presentation[number]
+  >(presentation[0]);
 
   const [inputs, setInputs] = React.useState<ConsultationProps>({
     reason: "",
@@ -231,10 +236,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent
-        disableAnimation
-        className="max-w-full w-max h-[85%] 2xl:h-[70%] p-0"
-      >
+      <AlertDialogContent className="max-w-full w-max h-[85%] 2xl:h-[70%] p-0">
         <AlertDialogHeader className="pt-6 px-6 space-y-0">
           <AlertDialogTitle>Añadir consulta</AlertDialogTitle>
           <AlertDialogDescription>

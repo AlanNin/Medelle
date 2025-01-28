@@ -155,7 +155,7 @@ export default function AccountSettingsUpdateComponent({
   return (
     <>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent disableAnimation className="p-0">
+        <AlertDialogContent className="p-0">
           <AlertDialogHeader className="pt-6 px-6 space-y-0">
             <AlertDialogTitle>Actualizar perfil</AlertDialogTitle>
             <AlertDialogDescription>

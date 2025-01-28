@@ -1,7 +1,7 @@
 import { ConsultationProps } from "@/types/consultation";
 import ReactDOMServer from "react-dom/server";
 import formatDate from "@/lib/format-date";
-import { RxLogo } from "@/lib/rx-image";
+import { RxLogo } from "@/assets/rx-image";
 
 export const PrescriptionComponent: React.FC<{
   prescription: ConsultationProps;

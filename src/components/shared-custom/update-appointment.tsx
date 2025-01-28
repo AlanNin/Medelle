@@ -225,7 +225,7 @@ export function UpdateAppointmentComponent({
   return (
     <>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent disableAnimation className="max-w-full w-max">
+        <AlertDialogContent className="max-w-full w-max">
           <AlertDialogHeader className="space-y-0">
             <AlertDialogTitle>Actualizar cita</AlertDialogTitle>
             <AlertDialogDescription>
