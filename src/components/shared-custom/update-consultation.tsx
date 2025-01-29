@@ -23,7 +23,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import { ChevronsUpDown, Info, Trash } from "lucide-react";
+import {
+  Calendar1,
+  ChevronsUpDown,
+  Info,
+  SquarePen,
+  Trash,
+  Weight,
+} from "lucide-react";
 import { Separator } from "../ui/separator";
 import { SearchAppointmentComponent } from "./search-appointment";
 import {
@@ -34,9 +41,16 @@ import {
 } from "../ui/tooltip";
 import UploadFilesButtonComponent from "./upload-images-button";
 import DatePickerComponent from "./date-picker";
-import { PatientProps } from "@/types/patient";
 import { Input } from "../ui/input";
 import { gestationalAgeToText } from "@/lib/gestional-age-text";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Switch } from "../ui/switch";
 
 type Props = {
   consultation: ConsultationProps;
@@ -52,6 +66,7 @@ export default function UpdateConsultationComponent({
   const queryClient = useQueryClient();
 
   const [inputs, setInputs] = React.useState<ConsultationProps>({
+    type: consultation.type,
     reason: consultation.reason,
     symptoms: consultation.symptoms,
     diagnosis: consultation.diagnosis,
@@ -70,10 +85,26 @@ export default function UpdateConsultationComponent({
         consultation.gynecological_information?.estimated_due_date,
       gestational_age: consultation.gynecological_information?.gestational_age,
     },
+    obstetric_information: {
+      blood_pressure: consultation.obstetric_information?.blood_pressure,
+      weight: consultation.obstetric_information?.weight,
+      fundal_height: consultation.obstetric_information?.fundal_height,
+      fcf_mfa: consultation.obstetric_information?.fcf_mfa,
+      edema: consultation.obstetric_information?.edema,
+      varices: consultation.obstetric_information?.varices,
+    },
+    notes: consultation.notes,
     treatment: consultation.treatment,
     patient_id: consultation.patient_id,
     appointment_id: consultation.appointment_id ?? undefined,
   });
+
+  const handleConsultationTypeChange = (value: string) => {
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      type: value,
+    }));
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -268,6 +299,54 @@ export default function UpdateConsultationComponent({
     );
   };
 
+  const handleInputObstetricInformationChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      obstetric_information: {
+        ...prevInputs.obstetric_information,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleInputBooleanChange = (name: string, value: boolean) => {
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      obstetric_information: {
+        ...prevInputs.obstetric_information,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleOnlyNumberChange = (e: any) => {
+    const isControlKey = e.ctrlKey || e.metaKey;
+
+    const isNumberKey = /^[0-9]$/.test(e.key);
+
+    if (
+      !isNumberKey &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !isControlKey &&
+      e.key !== "ArrowLeft" &&
+      e.key !== "ArrowRight" &&
+      e.key !== "Home" &&
+      e.key !== "End"
+    ) {
+      e.preventDefault();
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -281,6 +360,24 @@ export default function UpdateConsultationComponent({
           </AlertDialogHeader>
           <ScrollArea className="h-full w-full">
             <div className="px-6 py-2 flex flex-col w-full h-full gap-5">
+              <div className="flex flex-col gap-2.5 items-start">
+                <Label className="text-right">
+                  Tipo de consulta <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  name="type"
+                  value={inputs.type}
+                  onValueChange={handleConsultationTypeChange}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona un tipo de consulta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="obstetric">Obstétrica</SelectItem>
+                    <SelectItem value="gynecological">Ginecológica</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex flex-col gap-2.5 items-start">
                 <Label className="text-right">
                   Paciente <span className="text-red-500">*</span>
@@ -405,57 +502,181 @@ export default function UpdateConsultationComponent({
                   placeholder="Escribe aquí..."
                 />
               </div>
-              {patientId &&
-                fetchedUserPatients?.data.find(
-                  (patient: PatientProps) => patient._id === patientId
-                )?.gender !== "male" && (
-                  <>
-                    <div className="grid grid-cols-2 gap-4 items-start mb-2">
-                      <div className="flex flex-col gap-2.5 items-start">
-                        <Label className="text-right">
-                          Última menstruación
-                        </Label>
-                        <DatePickerComponent
-                          date={
-                            inputs.gynecological_information
-                              ?.last_menstrual_period
-                          }
-                          setDate={handleInputLMPChange}
-                          untilCurrent={true}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-2.5 items-start">
-                        <Label className="text-right">
-                          Fecha probable de parto
-                        </Label>
-                        <DatePickerComponent
-                          date={
-                            inputs.gynecological_information
-                              ?.estimated_due_date ||
-                            consultation.gynecological_information
-                              ?.estimated_due_date
-                          }
-                          setDate={() => {}}
-                          disabled
-                          placeholder="Seleccionar FUR / LMP"
-                        />
-                      </div>
+
+              {inputs.type && inputs.type === "obstetric" && (
+                <>
+                  <div className="flex gap-1.5 items-center my-4">
+                    <Calendar1
+                      className="h-4 w-4 text-muted-foreground"
+                      strokeWidth={2}
+                    />
+
+                    <Label className="text-muted-foreground">
+                      Calendario gestacional
+                    </Label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 items-start mb-2">
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">Última menstruación</Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information
+                            ?.last_menstrual_period
+                        }
+                        setDate={handleInputLMPChange}
+                        untilCurrent={true}
+                      />
                     </div>
                     <div className="flex flex-col gap-2.5 items-start">
-                      <Label className="text-right">Edad gestacional</Label>
-                      <Input
-                        value={gestationalAgeToText(
-                          inputs.gynecological_information?.gestational_age ||
-                            consultation.gynecological_information
-                              ?.gestational_age
-                        )}
-                        onChange={() => {}}
+                      <Label className="text-right">
+                        Fecha probable de parto
+                      </Label>
+                      <DatePickerComponent
+                        date={
+                          inputs.gynecological_information
+                            ?.estimated_due_date ||
+                          consultation.gynecological_information
+                            ?.estimated_due_date
+                        }
+                        setDate={() => {}}
                         disabled
                         placeholder="Seleccionar FUR / LMP"
                       />
                     </div>
-                  </>
-                )}
+                  </div>
+                  <div className="flex flex-col gap-2.5 items-start">
+                    <Label className="text-right">Edad gestacional</Label>
+                    <Input
+                      value={gestationalAgeToText(
+                        inputs.gynecological_information?.gestational_age ||
+                          consultation.gynecological_information
+                            ?.gestational_age
+                      )}
+                      onChange={() => {}}
+                      disabled
+                      placeholder="Seleccionar FUR / LMP"
+                    />
+                  </div>
+
+                  <div className="flex gap-1.5 items-center my-4">
+                    <Weight
+                      className="h-4 w-4 text-muted-foreground"
+                      strokeWidth={2}
+                    />
+
+                    <Label className="text-muted-foreground">
+                      Exámen físico
+                    </Label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-10 ">
+                    {/* col 1 */}
+                    <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">Tensión arterial</Label>
+                        <Input
+                          name="blood_pressure"
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
+                          }
+                          onKeyDown={(e) => {
+                            handleOnlyNumberChange(e);
+                          }}
+                          value={inputs.obstetric_information?.blood_pressure}
+                          placeholder="Escribe un número aquí..."
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">Altura Uterina</Label>
+                        <Input
+                          name="fundal_height"
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
+                          }
+                          onKeyDown={(e) => {
+                            handleOnlyNumberChange(e);
+                          }}
+                          value={inputs.obstetric_information?.fundal_height}
+                          placeholder="Escribe un número aquí..."
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">FCF/MFA</Label>
+                        <Input
+                          name="fcf_mfa"
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
+                          }
+                          onKeyDown={(e) => {
+                            handleOnlyNumberChange(e);
+                          }}
+                          value={inputs.obstetric_information?.fcf_mfa}
+                          placeholder="Escribe un número aquí..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* col 2 */}
+                    <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">Peso (kg)</Label>
+                        <Input
+                          name="weight"
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
+                          }
+                          onKeyDown={(e) => {
+                            handleOnlyNumberChange(e);
+                          }}
+                          value={inputs.obstetric_information?.weight}
+                          placeholder="Escribe un número aquí..."
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">Edema</Label>
+                        <Switch
+                          name="edema"
+                          className="my-2"
+                          checked={inputs.obstetric_information?.edema}
+                          onCheckedChange={(value: boolean) =>
+                            handleInputBooleanChange("edema", value)
+                          }
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2.5 items-start">
+                        <Label className="text-right">Varices</Label>
+                        <Switch
+                          name="varices"
+                          className="my-2"
+                          checked={inputs.obstetric_information?.varices}
+                          onCheckedChange={(value: boolean) =>
+                            handleInputBooleanChange("varices", value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className="flex gap-1.5 items-center my-4">
+                <SquarePen
+                  className="h-4 w-4 text-muted-foreground"
+                  strokeWidth={2}
+                />
+
+                <Label className="text-muted-foreground">Otros</Label>
+              </div>
+              <div className="flex flex-col gap-2.5 items-start">
+                <Label className="text-right">Notas del doctor</Label>
+                <Textarea
+                  className="min-h-[88px] max-h-[88px]"
+                  name="notes"
+                  value={inputs.notes}
+                  onChange={(e) => handleInputChange(e)}
+                  placeholder="Otros detalles relevantes..."
+                />
+              </div>
             </div>
           </ScrollArea>
           <AlertDialogFooter className="pb-6 px-6 flex items-center">

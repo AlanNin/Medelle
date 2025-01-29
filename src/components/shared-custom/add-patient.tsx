@@ -302,7 +302,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                     onKeyDown={(e) => {
                       handleOnlyNumberChange(e);
                     }}
-                    placeholder="Ej: 175"
+                    placeholder="Escribe un número aquí..."
                   />
                 </div>
               </div>
@@ -372,7 +372,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                     name="insurance"
                     value={inputs.insurance}
                     onChange={(e) => handleInputChange(e)}
-                    placeholder="Ej: Privado"
+                    placeholder="Escribe aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
@@ -408,7 +408,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                     onKeyDown={(e) => {
                       handleOnlyNumberChange(e);
                     }}
-                    placeholder="Ej: 70 kg"
+                    placeholder="Escribe un número aquí..."
                   />
                 </div>
               </div>

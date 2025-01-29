@@ -1,53 +1,24 @@
 "use client";
 import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { ConsultationProps } from "@/types/consultation";
-import { SearchPatientComponent } from "../search-patient";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronsUpDown, Info } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { SearchAppointmentComponent } from "../search-appointment";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import UploadFilesButtonComponent from "../upload-images-button";
-import DatePickerComponent from "../date-picker";
-import { PatientProps } from "@/types/patient";
-import { Input } from "@/components/ui/input";
-import { gestationalAgeToText } from "@/lib/gestional-age-text";
+import AddObstetricConsultationComponent from "./obstetric";
+import SelectionAddConsultationComponent from "./selection";
+import AddGynecologicalConsultationComponent from "./gynecological";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 };
 
-const presentation = ["selection", "obstetric", "gynecological"];
+const selections = ["selection", "obstetric", "gynecological"];
 
 export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
   const queryClient = useQueryClient();
-  const [currentPresentation, setCurrentPresentation] = React.useState<
-    typeof presentation[number]
-  >(presentation[0]);
+  const [currentSelection, setCurrentSelection] = React.useState<
+    typeof selections[number]
+  >(selections[0]);
 
   const [inputs, setInputs] = React.useState<ConsultationProps>({
     reason: "",
@@ -61,11 +32,20 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
       description: undefined,
       images: undefined,
     },
+    obstetric_information: {
+      blood_pressure: undefined,
+      weight: undefined,
+      fundal_height: undefined,
+      fcf_mfa: undefined,
+      edema: undefined,
+      varices: undefined,
+    },
     gynecological_information: {
       last_menstrual_period: undefined,
       estimated_due_date: undefined,
       gestational_age: undefined,
     },
+    notes: undefined,
     treatment: "",
     patient_id: "",
     appointment_id: undefined,
@@ -79,6 +59,54 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     setInputs((prevInputs) => ({
       ...prevInputs,
       [name]: value,
+    }));
+  };
+
+  const handleOnlyNumberChange = (e: any) => {
+    const isControlKey = e.ctrlKey || e.metaKey;
+
+    const isNumberKey = /^[0-9]$/.test(e.key);
+
+    if (
+      !isNumberKey &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !isControlKey &&
+      e.key !== "ArrowLeft" &&
+      e.key !== "ArrowRight" &&
+      e.key !== "Home" &&
+      e.key !== "End"
+    ) {
+      e.preventDefault();
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  const handleInputBooleanChange = (name: string, value: boolean) => {
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      obstetric_information: {
+        ...prevInputs.obstetric_information,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleInputObstetricInformationChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      obstetric_information: {
+        ...prevInputs.obstetric_information,
+        [name]: value,
+      },
     }));
   };
 
@@ -178,7 +206,7 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     toast.promise(
       window.ipcRenderer.invoke("consultation-add", {
         token: localStorage.getItem("session_token"),
-        data: { ...inputs },
+        data: { ...inputs, type: currentSelection },
       }),
       {
         loading: "Guardando consulta...",
@@ -235,198 +263,60 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
   });
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="max-w-full w-max h-[85%] 2xl:h-[70%] p-0">
-        <AlertDialogHeader className="pt-6 px-6 space-y-0">
-          <AlertDialogTitle>Añadir consulta</AlertDialogTitle>
-          <AlertDialogDescription>
-            Añade una nueva consulta a tu registro. Al terminar haz click en
-            guardar.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <ScrollArea className="h-full w-full">
-          <div className="px-6 py-2 flex flex-col w-full h-full gap-5">
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">
-                Paciente <span className="text-red-500">*</span>
-              </Label>
-              <SearchPatientComponent
-                patients={fetchedUserPatients?.data}
-                selectedPatient={inputs.patient_id as string}
-                setSelectedPatient={handleSelectPatient}
-              />
-            </div>
-            <Collapsible className="space-y-2.5 w-full">
-              <CollapsibleTrigger className="flex items-center gap-2">
-                <Label className="text-right cursor-pointer text-muted-foreground">
-                  ¿Quieres vincular esta consulta a una cita existente?
-                </Label>
-                <ChevronsUpDown className="h-4 w-4  text-muted-foreground" />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className=" h-3.5 w-3.5 text-muted-foreground" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Al vincular una cita existente esta será actualizada
-                        como completada
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SearchAppointmentComponent
-                  appointments={fetchedUserAppointments?.data}
-                  selectedAppointment={inputs.appointment_id as string}
-                  setSelectedAppointment={handleSelectAppointment}
-                  disabled={!inputs.patient_id}
-                />
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator className="my-2.5" />
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">
-                Motivo de la consulta <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                className="min-h-[88px] max-h-[88px]"
-                name="reason"
-                value={inputs.reason}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Escribe aquí..."
-              />
-            </div>
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">
-                Sintomas <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                className="min-h-[88px] max-h-[88px]"
-                name="symptoms"
-                value={inputs.symptoms}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Escribe aquí..."
-              />
-            </div>
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">
-                Diagnosis <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                className="min-h-[88px] max-h-[88px]"
-                name="diagnosis"
-                value={inputs.diagnosis}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Escribe aquí..."
-              />
-            </div>
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">Estudios de laboratorio</Label>
-              <div className="flex gap-4 items-center w-full">
-                <Textarea
-                  className="min-h-[88px] max-h-[88px] w-full"
-                  name="laboratory_studies-description"
-                  value={inputs.laboratory_studies?.description}
-                  onChange={(e) => handleLaboratoryStudiesDescriptionChange(e)}
-                  placeholder="Escribe aquí..."
-                />
-                <UploadFilesButtonComponent
-                  files={inputs.laboratory_studies?.images ?? []}
-                  setFiles={handleLaboratoryStudiesImagesChange}
-                  folder="laboratory_studies"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">Estudios de imagenes</Label>
-              <div className="flex gap-4 items-center w-full">
-                <Textarea
-                  className="min-h-[88px] max-h-[88px] w-full"
-                  name="images_studies-description"
-                  value={inputs.images_studies?.description}
-                  onChange={(e) => handleImagesStudiesDescriptionChange(e)}
-                  placeholder="Escribe aquí..."
-                />
-                <UploadFilesButtonComponent
-                  files={inputs.images_studies?.images ?? []}
-                  setFiles={handleImagesStudiesImagesChange}
-                  folder="images_studies"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2.5 items-start">
-              <Label className="text-right">
-                Tratamiento <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                className="min-h-[88px] max-h-[88px]"
-                name="treatment"
-                value={inputs.treatment}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Escribe aquí..."
-              />
-            </div>
-            {inputs.patient_id &&
-              fetchedUserPatients?.data.find(
-                (patient: PatientProps) => patient._id === inputs.patient_id
-              )?.gender !== "male" && (
-                <>
-                  <div className="grid grid-cols-2 gap-4 items-start mb-2">
-                    <div className="flex flex-col gap-2.5 items-start">
-                      <Label className="text-right">Última menstruación</Label>
-                      <DatePickerComponent
-                        date={
-                          inputs.gynecological_information
-                            ?.last_menstrual_period
-                        }
-                        setDate={handleInputLMPChange}
-                        untilCurrent={true}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2.5 items-start">
-                      <Label className="text-right">
-                        Fecha probable de parto
-                      </Label>
-                      <DatePickerComponent
-                        date={
-                          inputs.gynecological_information?.estimated_due_date
-                        }
-                        setDate={() => {}}
-                        disabled
-                        placeholder="Seleccionar FUR / LMP"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Edad gestacional</Label>
-                    <Input
-                      value={gestationalAgeToText(
-                        inputs.gynecological_information?.gestational_age
-                      )}
-                      onChange={() => {}}
-                      disabled
-                      placeholder="Seleccionar FUR / LMP"
-                    />
-                  </div>
-                </>
-              )}
-          </div>
-        </ScrollArea>
-        <AlertDialogFooter className="pb-6 px-6 flex items-center">
-          <Button
-            variant="outline"
-            type="submit"
-            onClick={() => setIsOpen(false)}
-          >
-            Cancelar
-          </Button>
-          <Button type="submit" onClick={createConsultation}>
-            Guardar
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      <SelectionAddConsultationComponent
+        isOpen={isOpen && currentSelection === selections[0]}
+        handleClose={() => setIsOpen(false)}
+        setCurrentSelection={setCurrentSelection}
+      />
+      <AddObstetricConsultationComponent
+        isOpen={isOpen && currentSelection === selections[1]}
+        handleClose={() => setIsOpen(false)}
+        userPatients={fetchedUserPatients?.data}
+        userAppointments={fetchedUserAppointments?.data}
+        handleSelectPatient={handleSelectPatient}
+        handleSelectAppointment={handleSelectAppointment}
+        inputs={inputs}
+        handleInputChange={handleInputChange}
+        handleInputBooleanChange={handleInputBooleanChange}
+        handleLaboratoryStudiesDescriptionChange={
+          handleLaboratoryStudiesDescriptionChange
+        }
+        handleLaboratoryStudiesImagesChange={
+          handleLaboratoryStudiesImagesChange
+        }
+        handleImagesStudiesDescriptionChange={
+          handleImagesStudiesDescriptionChange
+        }
+        handleImagesStudiesImagesChange={handleImagesStudiesImagesChange}
+        handleInputLMPChange={handleInputLMPChange}
+        createConsultation={createConsultation}
+        handleOnlyNumberChange={handleOnlyNumberChange}
+        handleInputObstetricInformationChange={
+          handleInputObstetricInformationChange
+        }
+      />
+      <AddGynecologicalConsultationComponent
+        isOpen={isOpen && currentSelection === selections[2]}
+        handleClose={() => setIsOpen(false)}
+        userPatients={fetchedUserPatients?.data}
+        userAppointments={fetchedUserAppointments?.data}
+        handleSelectPatient={handleSelectPatient}
+        handleSelectAppointment={handleSelectAppointment}
+        inputs={inputs}
+        handleInputChange={handleInputChange}
+        handleLaboratoryStudiesDescriptionChange={
+          handleLaboratoryStudiesDescriptionChange
+        }
+        handleLaboratoryStudiesImagesChange={
+          handleLaboratoryStudiesImagesChange
+        }
+        handleImagesStudiesDescriptionChange={
+          handleImagesStudiesDescriptionChange
+        }
+        handleImagesStudiesImagesChange={handleImagesStudiesImagesChange}
+        createConsultation={createConsultation}
+      />
+    </>
   );
 }

@@ -240,6 +240,19 @@ export default function ConsultationDetailsComponent({
 
               <div className="grid gap-4">
                 <div>
+                  <Label className="text-base">Tipo de la consulta</Label>
+                  <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                    {consultation.type
+                      ? consultation.type === "obstetric"
+                        ? "Obstétrica"
+                        : "Ginecológica"
+                      : "Sin registro"}
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div>
                   <Label className="text-base">Motivo de la consulta</Label>
                   <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
                     {consultation.reason}
@@ -420,47 +433,96 @@ export default function ConsultationDetailsComponent({
                 </div>
 
                 <Separator />
-                {typeof consultation.patient_id === "object" &&
-                  consultation.patient_id.gender !== "male" && (
-                    <>
-                      <div className="flex flex-col mb-2 gap-1.5">
-                        <Label className="text-base">Datos ginecológicos</Label>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          Fecha de última menstruación:{" "}
-                          {consultation.gynecological_information
-                            ?.last_menstrual_period
-                            ? formatDateShort(
-                                consultation.gynecological_information
-                                  .last_menstrual_period
-                              )
-                            : "Sin registrar"}
-                        </p>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          Fecha de parto previsto:{" "}
-                          {consultation.gynecological_information
-                            ?.estimated_due_date
-                            ? formatDateShort(
-                                consultation.gynecological_information
-                                  .estimated_due_date
-                              )
-                            : "Sin registrar"}
-                        </p>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          Edad gestacional:{" "}
-                          {consultation.gynecological_information
-                            ?.gestational_age
-                            ? gestationalAgeToText(
-                                consultation.gynecological_information
-                                  .gestational_age
-                              )
-                            : "Sin registrar"}
-                        </p>
-                      </div>
 
-                      <Separator />
-                    </>
-                  )}
+                {consultation.type && consultation.type === "obstetric" && (
+                  <>
+                    <div>
+                      <Label className="text-base">
+                        Información obstétrica
+                      </Label>
+                      <p className="mt-1.5 text-sm  whitespace-pre-wrap text-muted-foreground">
+                        Fecha de última menstruación:{" "}
+                        {consultation.gynecological_information
+                          ?.last_menstrual_period
+                          ? formatDateShort(
+                              consultation.gynecological_information
+                                .last_menstrual_period
+                            )
+                          : "Sin registrar"}
+                      </p>
+                      <p className="mt-1.5 text-sm  whitespace-pre-wrap text-muted-foreground">
+                        Fecha de parto previsto:{" "}
+                        {consultation.gynecological_information
+                          ?.estimated_due_date
+                          ? formatDateShort(
+                              consultation.gynecological_information
+                                .estimated_due_date
+                            )
+                          : "Sin registrar"}
+                      </p>
+                      <p className="mt-1.5 text-sm  whitespace-pre-wrap text-muted-foreground">
+                        Edad gestacional:{" "}
+                        {consultation.gynecological_information?.gestational_age
+                          ? gestationalAgeToText(
+                              consultation.gynecological_information
+                                .gestational_age
+                            )
+                          : "Sin registrar"}
+                      </p>
+                      <p className="mt-1.5 text-sm  whitespace-pre-wrap text-muted-foreground">
+                        Presión Arterial:{" "}
+                        {consultation.obstetric_information?.blood_pressure
+                          ? consultation.obstetric_information?.blood_pressure
+                          : "Sin registro"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                        Peso (kg):{" "}
+                        {consultation.obstetric_information?.weight
+                          ? consultation.obstetric_information?.weight
+                          : "Sin registro"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                        Altura Uterina:{" "}
+                        {consultation.obstetric_information?.fundal_height
+                          ? consultation.obstetric_information?.fundal_height
+                          : "Sin registro"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                        FCF/MFA:{" "}
+                        {consultation.obstetric_information?.fcf_mfa
+                          ? consultation.obstetric_information?.fcf_mfa
+                          : "Sin registro"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                        Edema:{" "}
+                        {consultation.obstetric_information?.edema
+                          ? consultation.obstetric_information?.edema === true
+                            ? "Si"
+                            : "No"
+                          : "No"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                        Varices:{" "}
+                        {consultation.obstetric_information?.varices
+                          ? consultation.obstetric_information?.varices === true
+                            ? "Si"
+                            : "No"
+                          : "No"}
+                      </p>
+                    </div>
 
+                    <Separator />
+                  </>
+                )}
+
+                <div>
+                  <Label className="text-base">Notas del doctor</Label>
+                  <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
+                    {consultation.notes ? consultation.notes : "Sin registro"}
+                  </p>
+                </div>
+
+                <Separator />
                 <div className="flex flex-col mb-2 gap-1">
                   <p className=" text-sm text-center text-muted-foreground whitespace-pre-wrap  ">
                     {consultation.createdAt
