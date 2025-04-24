@@ -22,17 +22,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { PatientProps } from "@/types/patient";
 import UpdatePatientComponent from "@/components/shared-custom/update-patient";
 import PatientCardComponent from "./patient-card";
+import BottomPagination from "@/components/shared-custom/bottom-pagination";
+import { cn } from "@/lib/utils";
 
 type Props = {
   isLoadingUserPatients: boolean;
@@ -48,7 +42,6 @@ type Props = {
   setFilterValue: (
     filterValue: "all" | "with-appointment" | "without-appointment"
   ) => void;
-  handleScroll: () => void;
 };
 
 export default function PatientsContentComponent({
@@ -63,12 +56,10 @@ export default function PatientsContentComponent({
   setSearchQuery,
   filterValue,
   setFilterValue,
-  handleScroll,
 }: Props) {
   const [isUpdating, setIsUpdating] = React.useState(false);
-  const [selectedPatientToUpdate, setSelectedPatientToUpdate] = React.useState<
-    PatientProps
-  >({} as PatientProps);
+  const [selectedPatientToUpdate, setSelectedPatientToUpdate] =
+    React.useState<PatientProps>({} as PatientProps);
 
   return (
     <>
@@ -145,11 +136,12 @@ export default function PatientsContentComponent({
         </CardHeader>
         <CardContent className="p-6">
           <div
-            className={
+            className={cn(
               viewMode === "list"
                 ? "space-y-3"
-                : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            }
+                : "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
+              totalPages > 1 && "mb-6"
+            )}
           >
             {isLoadingUserPatients ? (
               <div className="w-full h-full items-center justify-center text-center p-8">
@@ -193,56 +185,12 @@ export default function PatientsContentComponent({
           </div>
 
           {totalPages > 1 && (
-            <div className="mt-6 flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={() => {
-                        setCurrentPage(Math.max(1, currentPage - 1));
-                        handleScroll();
-                      }}
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                      content="Anterior"
-                    />
-                  </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          href="#"
-                          onClick={() => {
-                            setCurrentPage(page);
-                            handleScroll();
-                          }}
-                          isActive={currentPage === page}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={() => {
-                        setCurrentPage(Math.min(totalPages, currentPage + 1));
-                        handleScroll();
-                      }}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+            <div className="mt-auto flex justify-center">
+              <BottomPagination
+                totalPages={totalPages}
+                page={currentPage}
+                setPage={setCurrentPage}
+              />
             </div>
           )}
         </CardContent>

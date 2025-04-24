@@ -10,9 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import AppLogo from "@/assets/icons/AppLogoBlack.png";
+import AppLogo from "@/assets/icons/AppLogo.png";
 import useAuth from "@/hooks/use-auth";
-import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
@@ -20,14 +19,29 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Eye, EyeClosed, Info } from "lucide-react";
+
+type SignInInputs = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
 
 export default function SignInPage() {
-  const [email, setEmail] = useState<string | undefined>(undefined);
-  const [password, setPassword] = useState<string | undefined>(undefined);
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [inputs, setInputs] = useState<SignInInputs>({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
 
-  const { handleLogin, session_exists, handlePersistentSession } = useAuth();
+  const {
+    handleSignUp,
+    handleLogin,
+    session_exists,
+    handlePersistentSession,
+    handleRecoverPassword,
+  } = useAuth();
   const hasExecutedRef = useRef(false);
 
   useEffect(() => {
@@ -38,15 +52,8 @@ export default function SignInPage() {
     }
   }, []);
 
-  const handleNotAvailableToast = () => {
-    toast("Esta  función aún no está disponible 😔", {
-      description:
-        "Ponte en contacto para obtener más información, alanbusinessnin@gmail.com",
-    });
-  };
-
   const lastEmail = localStorage.getItem("lastEmail");
-  const emailData = email ?? lastEmail;
+  const emailData = inputs.email ?? lastEmail;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-white p-8">
@@ -55,10 +62,10 @@ export default function SignInPage() {
           <img
             src={AppLogo}
             alt="App Logo"
-            className="relative z-10 w-32 h-auto mx-auto"
+            className="relative z-10 w-32 h-auto mx-auto invert dark:invert-0"
           />
           <h1 className="text-4xl font-extrabold text-center mt-6 mb-2">
-            PatientCare
+            Médelle
           </h1>
           <Label className="text-primary/85 text-center">
             Mejor atención, mejores resultados.
@@ -66,7 +73,7 @@ export default function SignInPage() {
         </div>
         <Card className="w-1/2 border-0 shadow-none">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold">Bienvenido</CardTitle>
+            <CardTitle className="text-3xl font-bold"> ¡Bienvenido!</CardTitle>
             <CardDescription>
               Ingresa tus credenciales para acceder a tu cuenta
             </CardDescription>
@@ -74,7 +81,7 @@ export default function SignInPage() {
           <CardContent>
             <form
               onSubmit={(e) =>
-                handleLogin(emailData!, password!, e, rememberMe)
+                handleLogin(emailData!, inputs.password, e, inputs.rememberMe)
               }
               className="space-y-6"
             >
@@ -85,11 +92,13 @@ export default function SignInPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@dominio.com"
+                  placeholder="c@dominio.com"
                   required
-                  value={email ?? undefined}
+                  value={inputs.email ?? undefined}
                   defaultValue={lastEmail ?? undefined}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, email: e.target.value })
+                  }
                   className="transition-all duration-200 focus:ring-2 focus:ring-black"
                   autoComplete="off"
                 />
@@ -101,30 +110,53 @@ export default function SignInPage() {
                   </Label>
                   <p
                     className="text-xs text-primary/85 hover:underline cursor-pointer"
-                    onClick={handleNotAvailableToast}
+                    onClick={handleRecoverPassword}
                   >
                     ¿Olvidaste tu contraseña?
                   </p>
                 </div>
 
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password ?? undefined}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="transition-all duration-200 focus:ring-2 focus:ring-black"
-                  autoComplete="off"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="••••••••"
+                    value={inputs.password ?? undefined}
+                    onChange={(e) =>
+                      setInputs({ ...inputs, password: e.target.value })
+                    }
+                    className="transition-all duration-200 focus:ring-2 focus:ring-black pr-10"
+                    autoComplete="off"
+                  />
+                  {showPassword ? (
+                    <EyeClosed
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer h-4 w-4"
+                      strokeWidth={1.5}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  ) : (
+                    <Eye
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer h-4 w-4"
+                      strokeWidth={1.5}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  )}
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="rememberMe"
-                  checked={rememberMe}
-                  onCheckedChange={(value) => setRememberMe(value === true)}
+                  checked={inputs.rememberMe}
+                  onCheckedChange={(value) =>
+                    setInputs({ ...inputs, rememberMe: value === true })
+                  }
                   className="border-primary/65"
                 />
-                <label className="text-sm text-primary/85 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-1.5">
+                <label
+                  className="text-sm text-primary/85 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-1.5 cursor-pointer"
+                  htmlFor="rememberMe"
+                >
                   Recordar mi correo electrónico
                   <TooltipProvider>
                     <Tooltip>
@@ -148,14 +180,14 @@ export default function SignInPage() {
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <p
-              className="text-sm text-primary/85"
-              onClick={handleNotAvailableToast}
-            >
+            <p className="text-sm text-primary/85">
               ¿No tienes cuenta?{" "}
-              <span className="hover:underline cursor-pointer">
+              <button
+                onClick={handleSignUp}
+                className="hover:underline cursor-pointer"
+              >
                 Registrate ahora
-              </span>
+              </button>
             </p>
           </CardFooter>
         </Card>

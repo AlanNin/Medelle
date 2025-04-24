@@ -29,10 +29,8 @@ export default function UpcomingDaysAppointmentsComponent({
   const [viewMode, setViewMode] = React.useState<"list" | "grid">("list");
 
   const [isUpdating, setIsUpdating] = React.useState(false);
-  const [
-    selectedAppointmentToUpdate,
-    setSelectedAppointmentToUpdate,
-  ] = React.useState<AppointmentProps>({} as AppointmentProps);
+  const [selectedAppointmentToUpdate, setSelectedAppointmentToUpdate] =
+    React.useState<AppointmentProps>({} as AppointmentProps);
 
   return (
     <>
@@ -85,10 +83,12 @@ export default function UpcomingDaysAppointmentsComponent({
                             alt={appointment.patient_id.name}
                           />
                           <AvatarFallback className="uppercase">
-                            {appointment.patient_id.name
-                              .split(" ")
-                              .map((name: string) => name.charAt(0))
-                              .join("")}
+                            {appointment.patient_id &&
+                            appointment.patient_id.name &&
+                            appointment.patient_id.name.length > 1
+                              ? appointment.patient_id.name[0] +
+                                appointment.patient_id.name[1]
+                              : ""}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 space-y-1">
@@ -144,10 +144,12 @@ export default function UpcomingDaysAppointmentsComponent({
                                 alt={appointment.patient_id.name}
                               />
                               <AvatarFallback className="uppercase">
-                                {appointment.patient_id.name
-                                  .split(" ")
-                                  .map((name: string) => name.charAt(0))
-                                  .join("")}
+                                {appointment.patient_id &&
+                                appointment.patient_id.name &&
+                                appointment.patient_id.name.length > 1
+                                  ? appointment.patient_id.name[0] +
+                                    appointment.patient_id.name[1]
+                                  : ""}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col gap-1">

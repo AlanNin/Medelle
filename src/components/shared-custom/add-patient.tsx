@@ -249,7 +249,7 @@ export default function AddPatientComponent({ isOpen, setIsOpen }: Props) {
                     name="email"
                     value={inputs.email}
                     onChange={(e) => handleInputChange(e)}
-                    placeholder="Ej: m@dominio.com"
+                    placeholder="Ej: c@dominio.com"
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">

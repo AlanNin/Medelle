@@ -87,9 +87,8 @@ export default function ConsultationDetailsComponent({
 
     toast.promise(
       (async () => {
-        const handlePrintPrescription: PdfResult = await window.ipcRenderer.invoke(
-          "export-pdf",
-          {
+        const handlePrintPrescription: PdfResult =
+          await window.ipcRenderer.invoke("export-pdf", {
             template,
             config: {
               margin: {
@@ -99,8 +98,7 @@ export default function ConsultationDetailsComponent({
               landscape: false,
               printBackground: true,
             },
-          } as PdfDataProps
-        );
+          } as PdfDataProps);
 
         if (handlePrintPrescription.success && handlePrintPrescription.path) {
           handleOpenPDF(handlePrintPrescription.path!);
@@ -214,10 +212,11 @@ export default function ConsultationDetailsComponent({
                           alt={consultation.patient_id?.name}
                         />
                         <AvatarFallback className="uppercase">
-                          {consultation.patient_id?.name
-                            .split(" ")
-                            .map((name: string) => name.charAt(0))
-                            .join("")}
+                          {consultation.patient_id &&
+                          consultation.patient_id.name
+                            ? consultation.patient_id.name[0] +
+                              (consultation.patient_id.name[1] || "")
+                            : ""}
                         </AvatarFallback>
                       </>
                     )}
@@ -496,18 +495,14 @@ export default function ConsultationDetailsComponent({
                       <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
                         Edema:{" "}
                         {consultation.obstetric_information?.edema
-                          ? consultation.obstetric_information?.edema === true
-                            ? "Si"
-                            : "No"
-                          : "No"}
+                          ? consultation.obstetric_information?.edema
+                          : "Sin registro"}
                       </p>
                       <p className="mt-1.5 text-sm text-muted-foreground whitespace-pre-wrap">
                         Varices:{" "}
                         {consultation.obstetric_information?.varices
-                          ? consultation.obstetric_information?.varices === true
-                            ? "Si"
-                            : "No"
-                          : "No"}
+                          ? consultation.obstetric_information?.varices
+                          : "Sin registro"}
                       </p>
                     </div>
 

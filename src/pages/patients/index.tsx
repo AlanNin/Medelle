@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import normalizeString from "@/lib/normalize-string";
 import { useQuery } from "@tanstack/react-query";
@@ -18,17 +18,15 @@ export default function Component() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   let itemsPerPage = 12;
 
-  const {
-    data: fetchedUserPatients,
-    isLoading: isLoadingUserPatients,
-  } = useQuery({
-    queryKey: ["user_patients"],
-    queryFn: async () => {
-      return await window.ipcRenderer.invoke("patient-get-from-user", {
-        token: localStorage.getItem("session_token"),
-      });
-    },
-  });
+  const { data: fetchedUserPatients, isLoading: isLoadingUserPatients } =
+    useQuery({
+      queryKey: ["user_patients"],
+      queryFn: async () => {
+        return await window.ipcRenderer.invoke("patient-get-from-user", {
+          token: localStorage.getItem("session_token"),
+        });
+      },
+    });
 
   const filteredPatients = useMemo(() => {
     return fetchedUserPatients?.data?.filter((patient: PatientProps) => {
@@ -51,20 +49,9 @@ export default function Component() {
     currentPage * itemsPerPage
   );
 
-  const mainRef = useRef<HTMLDivElement>(null);
-
-  const handleScroll = () => {
-    if (mainRef.current) {
-      mainRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <TooltipProvider>
-      <main
-        className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6"
-        ref={mainRef}
-      >
+      <main className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
         <motion.div
           key="patients-header"
           initial={{ opacity: 0, y: 20 }}
@@ -91,7 +78,6 @@ export default function Component() {
             setSearchQuery={setSearchQuery}
             filterValue={filterValue}
             setFilterValue={setFilterValue}
-            handleScroll={handleScroll}
           />
         </motion.div>
       </main>

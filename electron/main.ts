@@ -32,7 +32,7 @@ let updatePopupWin: BrowserWindow | undefined;
 
 function createWindow() {
   win = new BrowserWindow({
-    title: "PatientCare",
+    title: "Médelle",
     icon: path.join(__dirname, "../build/icon.png"),
     frame: true,
     show: false,
@@ -59,7 +59,7 @@ function createWindow() {
 
 function createUpdatePopup() {
   updatePopupWin = new BrowserWindow({
-    title: "PatientCare - Updater",
+    title: "Médelle - Actualización",
     icon: path.join(__dirname, "../build/icon.png"),
     width: 400,
     height: 250,

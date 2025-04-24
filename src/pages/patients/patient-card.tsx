@@ -43,9 +43,8 @@ export default function PatientCardComponent({
 }: Props) {
   const [isShowing, setIsShowing] = React.useState(false);
 
-  const [selectedAppointment, setSelectedAppointment] = React.useState<
-    AppointmentProps
-  >({} as AppointmentProps);
+  const [selectedAppointment, setSelectedAppointment] =
+    React.useState<AppointmentProps>({} as AppointmentProps);
 
   const [isShowingAppointment, setIsShowingAppointment] = React.useState(false);
 
@@ -57,13 +56,11 @@ export default function PatientCardComponent({
     setIsShowingAppointment(true);
   };
 
-  const [selectedConsultation, setSelectedConsultation] = React.useState<
-    ConsultationProps
-  >({} as ConsultationProps);
+  const [selectedConsultation, setSelectedConsultation] =
+    React.useState<ConsultationProps>({} as ConsultationProps);
 
-  const [isShowingConsultation, setIsShowingConsultation] = React.useState(
-    false
-  );
+  const [isShowingConsultation, setIsShowingConsultation] =
+    React.useState(false);
 
   const showConsultationDetails = (consultation: ConsultationProps) => {
     setSelectedConsultation({
@@ -93,10 +90,9 @@ export default function PatientCardComponent({
             <Avatar className="h-12 w-12 ">
               <AvatarImage src={patient.photo_url} alt={patient.name} />
               <AvatarFallback className="uppercase">
-                {patient.name
-                  .split(" ")
-                  .map((name: string) => name.charAt(0))
-                  .join("")}
+                {patient && patient.name && patient.name.length > 1
+                  ? patient.name[0] + patient.name[1]
+                  : ""}
               </AvatarFallback>
             </Avatar>
             {patient.next_appointment && (

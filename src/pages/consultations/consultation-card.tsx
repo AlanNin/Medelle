@@ -23,10 +23,8 @@ export default function ConsultationCardComponent({ consultation }: Props) {
     setSelectedConsultationToShowDetails,
   ] = React.useState<ConsultationProps>({} as ConsultationProps);
   const [isUpdating, setIsUpdating] = React.useState(false);
-  const [
-    selectedConsultationToUpdate,
-    setSelectedConsultationToUpdate,
-  ] = React.useState<ConsultationProps>({} as ConsultationProps);
+  const [selectedConsultationToUpdate, setSelectedConsultationToUpdate] =
+    React.useState<ConsultationProps>({} as ConsultationProps);
 
   return (
     <>
@@ -40,10 +38,12 @@ export default function ConsultationCardComponent({ consultation }: Props) {
                   alt={consultation.patient_id.name}
                 />
                 <AvatarFallback className="uppercase">
-                  {consultation.patient_id.name
-                    .split(" ")
-                    .map((name: string) => name.charAt(0))
-                    .join("")}
+                  {consultation.patient_id &&
+                  consultation.patient_id.name &&
+                  consultation.patient_id.name.length > 1
+                    ? consultation.patient_id.name[0] +
+                      consultation.patient_id.name[1]
+                    : ""}
                 </AvatarFallback>
               </Avatar>
               <div>

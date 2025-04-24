@@ -7,11 +7,11 @@ export default function AboutPage() {
         <div className="p-8 text-center">
           <Info className="h-10 w-10 mx-auto mb-3" />
           <h2 className="text-2xl font-bold text-gray-800">
-            Acerca de PatientCare
+            Acerca de Médelle
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            PatientCare es la solución ideal para que los médicos gestionen
-            citas, consultas y pacientes de manera eficiente y segura.
+            Médelle es la solución ideal para que los médicos gestionen citas,
+            consultas y pacientes de manera eficiente y segura.
           </p>
           <p className="mt-6 text-sm text-gray-600 italic mx-4">
             Por favor, tener en cuenta que esta es una versión{" "}

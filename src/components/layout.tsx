@@ -12,7 +12,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import AppLogo from "@/assets/icons/AppLogoBlack.png";
+import AppLogo from "@/assets/icons/AppLogo.png";
 import { Button } from "./ui/button";
 import useAuth from "@/hooks/use-auth";
 import { DoorOpen } from "lucide-react";
@@ -26,7 +26,7 @@ import { AddAppointmentComponent } from "./shared-custom/add-appointment";
 import AddPatientComponent from "./shared-custom/add-patient";
 import AddConsultationComponent from "./shared-custom/add-consultation";
 import useKeyboardShortcuts from "@/lib/keyboard-shortcuts";
-import internetChecker from "../lib/internet-checker";
+import IsOfflineChecker from "@/lib/offline-checker";
 
 export default function Layout() {
   const router = useRouterState();
@@ -37,19 +37,14 @@ export default function Layout() {
 
   const { handleLogout } = useAuth();
 
-  const [isAgendaNewRegisterOpen, setIsAgendaNewRegisterOpen] = React.useState(
-    false
-  );
+  const [isAgendaNewRegisterOpen, setIsAgendaNewRegisterOpen] =
+    React.useState(false);
 
-  const [
-    isPatientNewRegisterOpen,
-    setIsPatientNewRegisterOpen,
-  ] = React.useState(false);
+  const [isPatientNewRegisterOpen, setIsPatientNewRegisterOpen] =
+    React.useState(false);
 
-  const [
-    isConsultationNewRegisterOpen,
-    setIsConsultationNewRegisterOpen,
-  ] = React.useState(false);
+  const [isConsultationNewRegisterOpen, setIsConsultationNewRegisterOpen] =
+    React.useState(false);
 
   const handleReload = () => {
     window.location.reload();
@@ -61,7 +56,7 @@ export default function Layout() {
 
   useKeyboardShortcuts();
 
-  internetChecker();
+  IsOfflineChecker();
 
   return (
     <>
@@ -69,7 +64,7 @@ export default function Layout() {
         <div className="flex items-center gap-1">
           <Link to="/agenda">
             <img
-              className="w-5 h-5 ml-3 mr-2 dark:invert"
+              className="w-5 h-5 ml-3 mr-2 object-contain invert dark:invert-0"
               src={AppLogo}
               alt="AppLogo"
             />

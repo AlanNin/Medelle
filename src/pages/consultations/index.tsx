@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import ConsultationsHeaderComponent from "./header";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import normalizeString from "@/lib/normalize-string";
 import { ConsultationProps } from "@/types/consultation";
 import ConsultationsContentComponent from "./content";
@@ -78,19 +78,8 @@ export default function ConsultationsPage() {
     currentPage * itemsPerPage
   );
 
-  const mainRef = useRef<HTMLDivElement>(null);
-
-  const handleScroll = () => {
-    if (mainRef.current) {
-      mainRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <main
-      className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6"
-      ref={mainRef}
-    >
+    <main className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6 flex flex-col gap-8">
       <motion.div
         key="consultations-header"
         initial={{ opacity: 0, y: 20 }}
@@ -111,7 +100,6 @@ export default function ConsultationsPage() {
           totalPages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          handleScroll={handleScroll}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           filterValue={filterValue}

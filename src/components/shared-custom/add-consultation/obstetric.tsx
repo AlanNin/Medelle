@@ -39,7 +39,6 @@ import { Input } from "@/components/ui/input";
 import { gestationalAgeToText } from "@/lib/gestional-age-text";
 import { ConsultationProps } from "@/types/consultation";
 import { AppointmentProps } from "@/types/appointment";
-import { Switch } from "@/components/ui/switch";
 
 type ObstetricComponentProps = {
   isOpen: boolean;
@@ -52,7 +51,6 @@ type ObstetricComponentProps = {
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
-  handleInputBooleanChange: (name: string, value: boolean) => void;
   handleLaboratoryStudiesDescriptionChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -63,7 +61,6 @@ type ObstetricComponentProps = {
   handleImagesStudiesImagesChange: (images: string[]) => void;
   handleInputLMPChange: (value: Date) => void;
   createConsultation: () => void;
-  handleOnlyNumberChange: (e: any) => void;
   handleInputObstetricInformationChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -78,14 +75,12 @@ export default function AddObstetricConsultationComponent({
   handleSelectAppointment,
   inputs,
   handleInputChange,
-  handleInputBooleanChange,
   handleLaboratoryStudiesDescriptionChange,
   handleLaboratoryStudiesImagesChange,
   handleImagesStudiesDescriptionChange,
   handleImagesStudiesImagesChange,
   handleInputLMPChange,
   createConsultation,
-  handleOnlyNumberChange,
   handleInputObstetricInformationChange,
 }: ObstetricComponentProps) {
   return (
@@ -282,11 +277,8 @@ export default function AddObstetricConsultationComponent({
                   <Input
                     name="blood_pressure"
                     onChange={(e) => handleInputObstetricInformationChange(e)}
-                    onKeyDown={(e) => {
-                      handleOnlyNumberChange(e);
-                    }}
                     value={inputs.obstetric_information?.blood_pressure}
-                    placeholder="Escribe un número aquí..."
+                    placeholder="Escribe aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
@@ -294,11 +286,8 @@ export default function AddObstetricConsultationComponent({
                   <Input
                     name="fundal_height"
                     onChange={(e) => handleInputObstetricInformationChange(e)}
-                    onKeyDown={(e) => {
-                      handleOnlyNumberChange(e);
-                    }}
                     value={inputs.obstetric_information?.fundal_height}
-                    placeholder="Escribe un número aquí..."
+                    placeholder="Escribe aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
@@ -306,11 +295,8 @@ export default function AddObstetricConsultationComponent({
                   <Input
                     name="fcf_mfa"
                     onChange={(e) => handleInputObstetricInformationChange(e)}
-                    onKeyDown={(e) => {
-                      handleOnlyNumberChange(e);
-                    }}
                     value={inputs.obstetric_information?.fcf_mfa}
-                    placeholder="Escribe un número aquí..."
+                    placeholder="Escribe aquí..."
                   />
                 </div>
               </div>
@@ -322,31 +308,26 @@ export default function AddObstetricConsultationComponent({
                   <Input
                     name="weight"
                     onChange={(e) => handleInputObstetricInformationChange(e)}
-                    onKeyDown={(e) => {
-                      handleOnlyNumberChange(e);
-                    }}
                     value={inputs.obstetric_information?.weight}
-                    placeholder="Escribe un número aquí..."
+                    placeholder="Escribe aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
                   <Label className="text-right">Edema</Label>
-                  <Switch
+                  <Input
                     name="edema"
-                    className="my-2"
-                    onCheckedChange={(value: boolean) =>
-                      handleInputBooleanChange("edema", value)
-                    }
+                    onChange={(e) => handleInputObstetricInformationChange(e)}
+                    value={inputs.obstetric_information?.edema}
+                    placeholder="Escribe aquí..."
                   />
                 </div>
                 <div className="flex flex-col gap-2.5 items-start">
                   <Label className="text-right">Varices</Label>
-                  <Switch
+                  <Input
                     name="varices"
-                    className="my-2"
-                    onCheckedChange={(value: boolean) =>
-                      handleInputBooleanChange("varices", value)
-                    }
+                    onChange={(e) => handleInputObstetricInformationChange(e)}
+                    value={inputs.obstetric_information?.varices}
+                    placeholder="Escribe aquí..."
                   />
                 </div>
               </div>

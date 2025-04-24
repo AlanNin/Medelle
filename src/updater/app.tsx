@@ -1,4 +1,4 @@
-import AppLogo from "@/assets/icons/AppLogoBlack.png";
+import AppLogo from "@/assets/icons/AppLogo.png";
 import { UpdateProps } from "@/types/update";
 import { Frown, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -83,8 +83,12 @@ export default function UpdaterApp() {
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-8">
       <div className="flex items-center gap-4">
-        <img src={AppLogo} className="w-10 h-10" alt="Logo" />
-        <h1 className="text-4xl font-medium">PatientCare</h1>
+        <img
+          src={AppLogo}
+          className="w-10 h-10 invert dark:invert-0"
+          alt="Logo"
+        />
+        <h1 className="text-4xl font-medium">Médelle</h1>
       </div>
       <div className="flex flex-col items-center gap-6">
         {renderUpdateStatus()}

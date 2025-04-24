@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-export default function internetChecker() {
+export default function IsOfflineChecker() {
   let isOffline = false;
 
   setInterval(async () => {
@@ -22,4 +22,6 @@ export default function internetChecker() {
       }
     }
   }, 5 * 60 * 1000);
+
+  return isOffline;
 }

@@ -10,15 +10,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ConsultationProps } from "@/types/consultation";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import ConsultationCardComponent from "./consultation-card";
+import BottomPagination from "@/components/shared-custom/bottom-pagination";
+import { cn } from "@/lib/utils";
 
 type Props = {
   consultations: ConsultationProps[];
@@ -26,7 +20,6 @@ type Props = {
   totalPages: number;
   currentPage: number;
   setCurrentPage: (page: number) => void;
-  handleScroll: () => void;
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
   filterValue: "all" | "today" | "last-week" | "last-month";
@@ -41,14 +34,13 @@ export default function ConsultationsContentComponent({
   totalPages,
   currentPage,
   setCurrentPage,
-  handleScroll,
   searchQuery,
   setSearchQuery,
   filterValue,
   setFilterValue,
 }: Props) {
   return (
-    <div className="mt-6 space-y-6">
+    <div className="space-y-6 h-full">
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -98,7 +90,12 @@ export default function ConsultationsContentComponent({
       ) : (
         <>
           {consultations.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+            <div
+              className={cn(
+                "grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4",
+                totalPages > 1 && "mb-6"
+              )}
+            >
               {consultations.map((consultation: ConsultationProps) => (
                 <ConsultationCardComponent
                   key={consultation._id}
@@ -123,54 +120,12 @@ export default function ConsultationsContentComponent({
       )}
 
       {totalPages > 1 && (
-        <div className="mt-6 flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={() => {
-                    setCurrentPage(Math.max(1, currentPage - 1));
-                    handleScroll();
-                  }}
-                  className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
-                  }
-                  content="Anterior"
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      onClick={() => {
-                        setCurrentPage(page);
-                        handleScroll();
-                      }}
-                      isActive={currentPage === page}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={() => {
-                    setCurrentPage(Math.min(totalPages, currentPage + 1));
-                    handleScroll();
-                  }}
-                  className={
-                    currentPage === totalPages
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <div className="mt-auto flex justify-center">
+          <BottomPagination
+            totalPages={totalPages}
+            page={currentPage}
+            setPage={setCurrentPage}
+          />
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ const selections = ["selection", "obstetric", "gynecological"];
 export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
   const queryClient = useQueryClient();
   const [currentSelection, setCurrentSelection] = React.useState<
-    typeof selections[number]
+    (typeof selections)[number]
   >(selections[0]);
 
   const [inputs, setInputs] = React.useState<ConsultationProps>({
@@ -59,40 +59,6 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
     setInputs((prevInputs) => ({
       ...prevInputs,
       [name]: value,
-    }));
-  };
-
-  const handleOnlyNumberChange = (e: any) => {
-    const isControlKey = e.ctrlKey || e.metaKey;
-
-    const isNumberKey = /^[0-9]$/.test(e.key);
-
-    if (
-      !isNumberKey &&
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !isControlKey &&
-      e.key !== "ArrowLeft" &&
-      e.key !== "ArrowRight" &&
-      e.key !== "Home" &&
-      e.key !== "End"
-    ) {
-      e.preventDefault();
-    }
-
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
-  };
-
-  const handleInputBooleanChange = (name: string, value: boolean) => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      obstetric_information: {
-        ...prevInputs.obstetric_information,
-        [name]: value,
-      },
     }));
   };
 
@@ -278,7 +244,6 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
         handleSelectAppointment={handleSelectAppointment}
         inputs={inputs}
         handleInputChange={handleInputChange}
-        handleInputBooleanChange={handleInputBooleanChange}
         handleLaboratoryStudiesDescriptionChange={
           handleLaboratoryStudiesDescriptionChange
         }
@@ -291,7 +256,6 @@ export default function AddConsultationComponent({ isOpen, setIsOpen }: Props) {
         handleImagesStudiesImagesChange={handleImagesStudiesImagesChange}
         handleInputLMPChange={handleInputLMPChange}
         createConsultation={createConsultation}
-        handleOnlyNumberChange={handleOnlyNumberChange}
         handleInputObstetricInformationChange={
           handleInputObstetricInformationChange
         }

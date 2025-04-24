@@ -3,11 +3,6 @@ import axios from "axios";
 
 const base = "auth";
 
-ipcMain.handle(`${base}-sign-up`, async (_event: IpcMainInvokeEvent, data) => {
-  const success = { message: "Data saved", data: data };
-  return success;
-});
-
 ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
   try {
     const result = await axios.post(
@@ -17,17 +12,35 @@ ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
     return result.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      const status = error.response.status;
+      const message = error.response.data.message;
 
-      if (status >= 400 && status < 500) {
+      if (message.includes("Invalid email or password")) {
         return {
-          errorType: "user",
-          message:
-            error.response.data.message === "Supscription inactive"
-              ? "Usuario no autorizado, tu suscripción ha expirado"
-              : "Correo electrónico o contraseña inválidos",
+          errorType: "invalid-credentials",
+          message: "Correo electrónico o contraseña inválidos",
         };
       }
+
+      if (message.includes("Subscription inactive")) {
+        return {
+          errorType: "subscription-inactive",
+          message: "Suscripción inactiva",
+          data: error.response.data,
+        };
+      }
+
+      if (message.includes("Email not verified")) {
+        return {
+          errorType: "email-not-verified",
+          message: "Email no verificado",
+          data: error.response.data,
+        };
+      }
+
+      return {
+        errorType: "server",
+        message: "Error interno del servidor. Inténtelo más tarde.",
+      };
     }
 
     return {
@@ -49,5 +62,30 @@ ipcMain.handle(
       }
     );
     return result.data;
+  }
+);
+
+ipcMain.handle(
+  `${base}-resend-verification`,
+  async (_event: IpcMainInvokeEvent, data) => {
+    try {
+      const result = await axios.post(
+        `${import.meta.env.VITE_API_URL}auth/resend-email-verification`,
+        data
+      );
+      return result.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return {
+          errorType: "server",
+          message: "Error interno del servidor. Inténtelo más tarde.",
+        };
+      }
+
+      return {
+        errorType: "server",
+        message: "Error interno del servidor. Inténtelo más tarde.",
+      };
+    }
   }
 );

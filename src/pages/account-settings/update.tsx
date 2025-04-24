@@ -28,7 +28,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Eye, EyeClosed, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Props = {
   isOpen: boolean;
@@ -77,24 +78,12 @@ export default function AccountSettingsUpdateComponent({
     }));
   };
 
-  const [passwordInputs, setPasswordInputs] = React.useState<
-    PasswordInputsProps
-  >({
-    old_password: undefined,
-    new_password: undefined,
-    confirm_new_password: undefined,
-  });
-
-  const handleInputPasswordsChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setPasswordInputs((prevInputs) => ({
-      ...prevInputs,
-      [name]: value,
-    }));
-  };
+  const [passwordInputs, setPasswordInputs] =
+    React.useState<PasswordInputsProps>({
+      old_password: undefined,
+      new_password: undefined,
+      confirm_new_password: undefined,
+    });
 
   const handleRefetchUserSession = async () => {
     await queryClient.refetchQueries({ queryKey: ["session"] });
@@ -188,7 +177,7 @@ export default function AccountSettingsUpdateComponent({
                       name="email"
                       value={inputs.email}
                       onChange={(e) => handleInputChange(e)}
-                      placeholder="Ej: m@dominio.com"
+                      placeholder="Ej: c@dominio.com"
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
@@ -252,12 +241,15 @@ export default function AccountSettingsUpdateComponent({
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
                     <Label className="text-right">Contraseña actual </Label>{" "}
-                    <Input
+                    <PasswordInput
                       name="old_password"
                       value={passwordInputs.old_password}
-                      onChange={(e) => handleInputPasswordsChange(e)}
-                      placeholder="••••••••"
-                      type="password"
+                      onChange={(value) =>
+                        setPasswordInputs((prev) => ({
+                          ...prev,
+                          old_password: value,
+                        }))
+                      }
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
@@ -275,13 +267,15 @@ export default function AccountSettingsUpdateComponent({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <Input
+                    <PasswordInput
                       name="new_password"
                       value={passwordInputs.new_password}
-                      onChange={(e) => handleInputPasswordsChange(e)}
-                      placeholder="••••••••"
-                      type="password"
-                      disabled={!passwordInputs.old_password}
+                      onChange={(value) =>
+                        setPasswordInputs((prev) => ({
+                          ...prev,
+                          new_password: value,
+                        }))
+                      }
                     />
                   </div>
                   <div className="flex flex-col gap-2.5 items-start">
@@ -301,13 +295,15 @@ export default function AccountSettingsUpdateComponent({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <Input
+                    <PasswordInput
                       name="confirm_new_password"
                       value={passwordInputs.confirm_new_password}
-                      onChange={(e) => handleInputPasswordsChange(e)}
-                      placeholder="••••••••"
-                      type="password"
-                      disabled={!passwordInputs.old_password}
+                      onChange={(value) =>
+                        setPasswordInputs((prev) => ({
+                          ...prev,
+                          confirm_new_password: value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -329,5 +325,53 @@ export default function AccountSettingsUpdateComponent({
         </AlertDialogContent>
       </AlertDialog>
     </>
+  );
+}
+
+function PasswordInput({
+  name,
+  value,
+  onChange,
+  disabled,
+}: {
+  name: string;
+  value: string | undefined;
+  onChange: (value: string | undefined) => void;
+  disabled?: boolean;
+}) {
+  const [showPassword, setShowPassword] = React.useState(false);
+  return (
+    <div className="relative">
+      <Input
+        id={name}
+        type={showPassword ? "text" : "password"}
+        required
+        placeholder="••••••••"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="transition-all duration-200 focus:ring-2 focus:ring-black pr-10"
+        autoComplete="off"
+        disabled={disabled}
+      />
+      {showPassword ? (
+        <EyeClosed
+          className={cn(
+            "absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer h-4 w-4",
+            disabled && "opacity-50"
+          )}
+          strokeWidth={1.5}
+          onClick={() => setShowPassword(!showPassword)}
+        />
+      ) : (
+        <Eye
+          className={cn(
+            "absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer h-4 w-4",
+            disabled && "opacity-50"
+          )}
+          strokeWidth={1.5}
+          onClick={() => setShowPassword(!showPassword)}
+        />
+      )}
+    </div>
   );
 }

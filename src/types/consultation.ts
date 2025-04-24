@@ -17,12 +17,12 @@ export type ConsultationProps = {
   };
   treatment: string;
   obstetric_information?: {
-    blood_pressure?: number;
-    weight?: number;
-    fundal_height?: number;
-    fcf_mfa?: number;
-    edema?: boolean;
-    varices?: boolean;
+    blood_pressure?: string;
+    weight?: string;
+    fundal_height?: string;
+    fcf_mfa?: string;
+    edema?: string;
+    varices?: string;
   };
   gynecological_information?: {
     last_menstrual_period?: Date;
@@ -30,7 +30,7 @@ export type ConsultationProps = {
     gestational_age?: number;
   };
   notes?: string;
-  type?: string;
+  type?: "gynecological" | "obstetric";
   patient_id: PatientProps | string;
   user_id?: UserProps | string;
   appointment_id?: AppointmentProps | string;

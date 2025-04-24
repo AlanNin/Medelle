@@ -34,10 +34,8 @@ export default function SelectedDayAppointmentsComponent({
 
   const [isUpdating, setIsUpdating] = React.useState(false);
 
-  const [
-    selectedAppointmentToUpdate,
-    setSelectedAppointmentToUpdate,
-  ] = React.useState<AppointmentProps>({} as AppointmentProps);
+  const [selectedAppointmentToUpdate, setSelectedAppointmentToUpdate] =
+    React.useState<AppointmentProps>({} as AppointmentProps);
 
   const isLate = (appointmentDate: Date) =>
     new Date(appointmentDate) < new Date();
@@ -46,7 +44,7 @@ export default function SelectedDayAppointmentsComponent({
     <>
       <Card className="w-full h-full lg:w-auto lg:flex-grow">
         <CardHeader className="bg-secondary text-secondary-foreground p-6">
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className="flex items-center justify-between gap-20">
             <div className="flex items-center space-x-4 text-2xl">
               <Clock className="h-6 w-6" />
               <span>
@@ -104,10 +102,10 @@ export default function SelectedDayAppointmentsComponent({
                           alt={appointment.patient_id.name}
                         />
                         <AvatarFallback className="uppercase">
-                          {appointment.patient_id.name
-                            .split(" ")
-                            .map((name: string) => name.charAt(0))
-                            .join("")}
+                          {appointment.patient_id && appointment.patient_id.name
+                            ? appointment.patient_id.name[0] +
+                              (appointment.patient_id.name[1] || "")
+                            : ""}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1  space-y-1">

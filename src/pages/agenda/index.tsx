@@ -23,17 +23,15 @@ export default function AgendaPage() {
     );
   };
 
-  const {
-    data: fetchedUserAppointments,
-    refetch: refetchUserAppointments,
-  } = useQuery({
-    queryKey: ["user_appointments"],
-    queryFn: async () => {
-      return await window.ipcRenderer.invoke("appointment-get-from-user", {
-        token: localStorage.getItem("session_token"),
-      });
-    },
-  });
+  const { data: fetchedUserAppointments, refetch: refetchUserAppointments } =
+    useQuery({
+      queryKey: ["user_appointments"],
+      queryFn: async () => {
+        return await window.ipcRenderer.invoke("appointment-get-from-user", {
+          token: localStorage.getItem("session_token"),
+        });
+      },
+    });
 
   const selectedDayAppointments = fetchedUserAppointments?.data?.filter(
     (appointment: AppointmentProps) =>
@@ -55,7 +53,7 @@ export default function AgendaPage() {
   return (
     <main className="min-h-page bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 p-6">
       <div className="space-y-8">
-        <div className="flex flex-wrap lg:flex-auto gap-8 max-lg:justify-center">
+        <div className="flex  lg:flex-auto gap-8 max-lg:justify-center">
           <motion.div
             key="calendar"
             initial={{ opacity: 0, y: 20 }}
@@ -69,7 +67,7 @@ export default function AgendaPage() {
             />
           </motion.div>
           <motion.div
-            className="w-full lg:h-[427px] lg:w-auto lg:flex-grow"
+            className="w-full lg:w-auto lg:flex-grow"
             key="today-appointments"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

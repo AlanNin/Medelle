@@ -1,8 +1,8 @@
-# PatientCare
+# Médelle
 
-![PatientCare](./public/example.png)
+![Médelle](./public/example.png)
 
-**PatientCare** es una aplicación de escritorio construida con Electron, Vite y React que permite a los médicos gestionar sus pacientes, citas y consultas de manera eficiente. La aplicación ofrece una interfaz de usuario intuitiva para interactuar con la API de PatientCare, almacenar imágenes en Cloudinary y realizar solicitudes HTTP con Axios.
+**Médelle** es una aplicación de escritorio construida con Electron, Vite y React que permite a los médicos gestionar sus pacientes, citas y consultas de manera eficiente. La aplicación ofrece una interfaz de usuario intuitiva para interactuar con la API de Médelle, almacenar imágenes en Cloudinary y realizar solicitudes HTTP con Axios.
 
 ## Características
 
@@ -27,7 +27,7 @@
 
 ### 5. **Integración con API**
 
-- Interactuar con la API de PatientCare para realizar operaciones CRUD utilizando Axios.
+- Interactuar con la API de Médelle para realizar operaciones CRUD utilizando Axios.
 
 ## Tecnologías Usadas
 
@@ -39,7 +39,7 @@
 
 ## Cómo Funciona
 
-1. **Configuración Inicial**: La aplicación se conecta a la API de PatientCare para obtener datos de pacientes, citas y consultas.
+1. **Configuración Inicial**: La aplicación se conecta a la API de Médelle para obtener datos de pacientes, citas y consultas.
 2. **Gestión de Datos**: Los médicos pueden agregar, editar y eliminar registros desde la interfaz.
 3. **Almacenamiento de Imágenes**: Las imágenes se cargan en Cloudinary y se vinculan con los registros de pacientes.
 
@@ -47,8 +47,8 @@
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/AlanNin/PatientCare
-   cd patientcare
+   git clone https://github.com/AlanNin/Médelle
+   cd medelle
    ```
 
 ## Contact

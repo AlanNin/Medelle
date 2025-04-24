@@ -11,13 +11,24 @@ import { RootState } from "@/providers/react-redux/store";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { UserProps } from "@/types/user";
+import IsOfflineChecker from "@/lib/offline-checker";
 
 type SessionResponse = {
   data?: {
     user: UserProps;
     token?: string;
+    subscription_data?: {
+      links: {
+        href: string;
+        rel: string;
+      }[];
+    };
   };
-  errorType?: "user" | "server" | "network";
+  errorType?:
+    | "server"
+    | "subscription-inactive"
+    | "invalid-credentials"
+    | "email-not-verified";
   message?: string;
 };
 
@@ -29,6 +40,10 @@ function useAuth() {
   const checkCurrentSession = async () => {
     const session_token = localStorage.getItem("session_token");
     if (!session_token) return null;
+
+    if (IsOfflineChecker()) {
+      return null;
+    }
 
     try {
       const response: SessionResponse = await window.ipcRenderer.invoke(
@@ -70,6 +85,37 @@ function useAuth() {
     }
   }, [sessionUser, dispatch]);
 
+  async function openSubscription(subscription_link: string) {
+    await window.ipcRenderer.invoke("external-link-open", subscription_link);
+  }
+
+  async function resendEmailVerification({ email }: { email: string }) {
+    toast.promise(
+      window.ipcRenderer.invoke("auth-resend-verification", { email }),
+      {
+        id: "email-not-verified",
+        description: "",
+        loading: "Reenviando correo de verificación...",
+        success: "Correo de verificación reenviado",
+        error: "Ocurrió un error al reenviar correo de verificación",
+      }
+    );
+  }
+
+  const handleSignUp = async () => {
+    await window.ipcRenderer.invoke(
+      "external-link-open",
+      `${process.env.VITE_PUBLIC_SITE_URL}/sign-up`
+    );
+  };
+
+  const handleRecoverPassword = async () => {
+    await window.ipcRenderer.invoke(
+      "external-link-open",
+      `${process.env.VITE_PUBLIC_SITE_URL}/recover-password`
+    );
+  };
+
   const handleLogin = async (
     email: string,
     password: string,
@@ -103,6 +149,53 @@ function useAuth() {
       );
 
       if (response.errorType) {
+        if (response.errorType === "subscription-inactive") {
+          const subscription_link =
+            response.data?.subscription_data?.links?.find(
+              (link) => link.rel === "approve"
+            )?.href;
+
+          if (!subscription_link) {
+            throw new Error("Ocurrió un error al iniciar sesión");
+          }
+
+          toast.dismiss("logging-in");
+          toast.error(response.message, {
+            description: "Por favor, active su suscripción para continuar",
+            action: {
+              label: "Activar",
+              onClick: () => {
+                if (subscription_link) {
+                  openSubscription(subscription_link);
+                }
+              },
+            },
+            actionButtonStyle: {
+              padding: 16,
+            },
+          });
+          return;
+        }
+
+        if (response.errorType === "email-not-verified") {
+          toast.dismiss("logging-in");
+          toast.error("Correo electrónico no verificado", {
+            id: "email-not-verified",
+            description:
+              "Por favor, verifique su correo electrónico para continuar",
+            action: {
+              label: "Reenviar",
+              onClick: async () => {
+                await resendEmailVerification({ email });
+              },
+            },
+            actionButtonStyle: {
+              padding: 16,
+            },
+          });
+          return;
+        }
+
         throw new Error(response.message);
       }
 
@@ -149,8 +242,10 @@ function useAuth() {
   };
 
   return {
+    handleSignUp,
     handleLogin,
     handleLogout,
+    handleRecoverPassword,
     session_exists: !!localStorage.getItem("session_token") && !!currentUser,
     handlePersistentSession,
   };

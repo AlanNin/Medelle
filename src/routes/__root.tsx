@@ -16,7 +16,9 @@ function RootComponent() {
   return (
     <>
       <Layout />
-      <main className={`${router.location.pathname !== "/" && "mt-11"}`}>
+      <main
+        className={`${router.location.pathname !== "/" && "mt-11"}`}
+      >
         <Outlet />
       </main>
 

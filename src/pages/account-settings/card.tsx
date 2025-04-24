@@ -237,12 +237,9 @@ export default function AccountSettingsCardComponent() {
                       alt={`${currentUser?.name} - Work Logo`}
                     />
                     <AvatarFallback className="text-3xl font-bold text-primary">
-                      {currentUser?.name
-                        .split(" ")
-                        .map((name: string) => name.charAt(0))
-                        .join("")
-                        .toUpperCase()
-                        .slice(0, 2)}
+                      {currentUser && currentUser.name
+                        ? currentUser.name[0] + (currentUser.name[1] || "")
+                        : ""}
                     </AvatarFallback>
                   </Avatar>
                 </UploadImageInheritComponent>

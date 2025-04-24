@@ -50,7 +50,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Switch } from "../ui/switch";
 
 type Props = {
   consultation: ConsultationProps;
@@ -66,7 +65,7 @@ export default function UpdateConsultationComponent({
   const queryClient = useQueryClient();
 
   const [inputs, setInputs] = React.useState<ConsultationProps>({
-    type: consultation.type,
+    type: consultation.type ?? "gynecological",
     reason: consultation.reason,
     symptoms: consultation.symptoms,
     diagnosis: consultation.diagnosis,
@@ -86,23 +85,36 @@ export default function UpdateConsultationComponent({
       gestational_age: consultation.gynecological_information?.gestational_age,
     },
     obstetric_information: {
-      blood_pressure: consultation.obstetric_information?.blood_pressure,
-      weight: consultation.obstetric_information?.weight,
-      fundal_height: consultation.obstetric_information?.fundal_height,
-      fcf_mfa: consultation.obstetric_information?.fcf_mfa,
-      edema: consultation.obstetric_information?.edema,
-      varices: consultation.obstetric_information?.varices,
+      blood_pressure: consultation.obstetric_information?.blood_pressure
+        ? String(consultation.obstetric_information?.blood_pressure)
+        : undefined,
+      weight: consultation.obstetric_information?.weight
+        ? String(consultation.obstetric_information?.weight)
+        : undefined,
+      fundal_height: consultation.obstetric_information?.fundal_height
+        ? String(consultation.obstetric_information?.fundal_height)
+        : undefined,
+      fcf_mfa: consultation.obstetric_information?.fcf_mfa
+        ? String(consultation.obstetric_information?.fcf_mfa)
+        : undefined,
+      edema: consultation.obstetric_information?.edema
+        ? String(consultation.obstetric_information?.edema)
+        : undefined,
+      varices: consultation.obstetric_information?.varices
+        ? String(consultation.obstetric_information?.varices)
+        : undefined,
     },
     notes: consultation.notes,
     treatment: consultation.treatment,
     patient_id: consultation.patient_id,
     appointment_id: consultation.appointment_id ?? undefined,
   });
+  console.log(consultation.obstetric_information?.weight);
 
   const handleConsultationTypeChange = (value: string) => {
     setInputs((prevInputs) => ({
       ...prevInputs,
-      type: value,
+      type: value as "gynecological" | "obstetric",
     }));
   };
 
@@ -311,40 +323,6 @@ export default function UpdateConsultationComponent({
         [name]: value,
       },
     }));
-  };
-
-  const handleInputBooleanChange = (name: string, value: boolean) => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      obstetric_information: {
-        ...prevInputs.obstetric_information,
-        [name]: value,
-      },
-    }));
-  };
-
-  const handleOnlyNumberChange = (e: any) => {
-    const isControlKey = e.ctrlKey || e.metaKey;
-
-    const isNumberKey = /^[0-9]$/.test(e.key);
-
-    if (
-      !isNumberKey &&
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !isControlKey &&
-      e.key !== "ArrowLeft" &&
-      e.key !== "ArrowRight" &&
-      e.key !== "Home" &&
-      e.key !== "End"
-    ) {
-      e.preventDefault();
-    }
-
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
   };
 
   return (
@@ -579,11 +557,8 @@ export default function UpdateConsultationComponent({
                           onChange={(e) =>
                             handleInputObstetricInformationChange(e)
                           }
-                          onKeyDown={(e) => {
-                            handleOnlyNumberChange(e);
-                          }}
                           value={inputs.obstetric_information?.blood_pressure}
-                          placeholder="Escribe un número aquí..."
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                       <div className="flex flex-col gap-2.5 items-start">
@@ -593,11 +568,8 @@ export default function UpdateConsultationComponent({
                           onChange={(e) =>
                             handleInputObstetricInformationChange(e)
                           }
-                          onKeyDown={(e) => {
-                            handleOnlyNumberChange(e);
-                          }}
                           value={inputs.obstetric_information?.fundal_height}
-                          placeholder="Escribe un número aquí..."
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                       <div className="flex flex-col gap-2.5 items-start">
@@ -607,11 +579,8 @@ export default function UpdateConsultationComponent({
                           onChange={(e) =>
                             handleInputObstetricInformationChange(e)
                           }
-                          onKeyDown={(e) => {
-                            handleOnlyNumberChange(e);
-                          }}
                           value={inputs.obstetric_information?.fcf_mfa}
-                          placeholder="Escribe un número aquí..."
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                     </div>
@@ -625,33 +594,30 @@ export default function UpdateConsultationComponent({
                           onChange={(e) =>
                             handleInputObstetricInformationChange(e)
                           }
-                          onKeyDown={(e) => {
-                            handleOnlyNumberChange(e);
-                          }}
                           value={inputs.obstetric_information?.weight}
-                          placeholder="Escribe un número aquí..."
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                       <div className="flex flex-col gap-2.5 items-start">
                         <Label className="text-right">Edema</Label>
-                        <Switch
+                        <Input
                           name="edema"
-                          className="my-2"
-                          checked={inputs.obstetric_information?.edema}
-                          onCheckedChange={(value: boolean) =>
-                            handleInputBooleanChange("edema", value)
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
                           }
+                          value={inputs.obstetric_information?.edema}
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                       <div className="flex flex-col gap-2.5 items-start">
                         <Label className="text-right">Varices</Label>
-                        <Switch
+                        <Input
                           name="varices"
-                          className="my-2"
-                          checked={inputs.obstetric_information?.varices}
-                          onCheckedChange={(value: boolean) =>
-                            handleInputBooleanChange("varices", value)
+                          onChange={(e) =>
+                            handleInputObstetricInformationChange(e)
                           }
+                          value={inputs.obstetric_information?.varices}
+                          placeholder="Escribe aquí..."
                         />
                       </div>
                     </div>

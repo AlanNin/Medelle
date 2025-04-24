@@ -71,6 +71,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.74.2
         version: 1.74.2(@tanstack/router-generator@1.74.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/zod-adapter':
+        specifier: ^1.114.25
+        version: 1.114.25(@tanstack/react-router@1.74.2(@tanstack/router-generator@1.74.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(zod@3.24.2)
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -140,6 +143,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14)
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@tanstack/router-devtools':
         specifier: ^1.74.2
@@ -178,7 +184,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       electron:
-        specifier: ^30.0.1
+        specifier: ^30.5.1
         version: 30.5.1
       electron-builder:
         specifier: 24.9.1
@@ -1591,6 +1597,13 @@ packages:
   '@tanstack/virtual-file-routes@1.64.0':
     resolution: {integrity: sha512-soW+gE9QTmMaqXM17r7y1p8NiQVIIECjdTaYla8BKL5Flj030m3KuxEQoiG1XgjtA0O7ayznFz2YvPcXIy3qDg==}
     engines: {node: '>=12'}
+
+  '@tanstack/zod-adapter@1.114.25':
+    resolution: {integrity: sha512-zO1TTCShkapWNKQ5f81bih3W72VPNVmZBFw9sFlTLJcyVXT5EGIrUZpV0VlAlx8X3O8seDiltsknSwtodeQRCQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      '@tanstack/react-router': '>=1.43.2'
+      zod: ^3.23.8
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -3702,8 +3715,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
 snapshots:
 
@@ -4949,7 +4962,7 @@ snapshots:
       '@tanstack/virtual-file-routes': 1.64.0
       prettier: 3.3.3
       tsx: 4.19.1
-      zod: 3.23.8
+      zod: 3.24.2
 
   '@tanstack/router-plugin@1.74.2(vite@5.4.9(@types/node@22.7.7))':
     dependencies:
@@ -4970,7 +4983,7 @@ snapshots:
       babel-dead-code-elimination: 1.0.6
       chokidar: 3.6.0
       unplugin: 1.14.1
-      zod: 3.23.8
+      zod: 3.24.2
     optionalDependencies:
       vite: 5.4.9(@types/node@22.7.7)
     transitivePeerDependencies:
@@ -4980,6 +4993,11 @@ snapshots:
   '@tanstack/store@0.5.5': {}
 
   '@tanstack/virtual-file-routes@1.64.0': {}
+
+  '@tanstack/zod-adapter@1.114.25(@tanstack/react-router@1.74.2(@tanstack/router-generator@1.74.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(zod@3.24.2)':
+    dependencies:
+      '@tanstack/react-router': 1.74.2(@tanstack/router-generator@1.74.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      zod: 3.24.2
 
   '@tootallnate/once@2.0.0': {}
 
@@ -7195,4 +7213,4 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.23.8: {}
+  zod@3.24.2: {}
