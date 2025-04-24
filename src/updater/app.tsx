@@ -85,10 +85,10 @@ export default function UpdaterApp() {
       <div className="flex items-center gap-4">
         <img
           src={AppLogo}
-          className="w-10 h-10 invert dark:invert-0"
+          className="w-10 h-10 invert dark:invert-0 object-contain"
           alt="Logo"
         />
-        <h1 className="text-4xl font-medium">Médelle</h1>
+        <h1 className="text-4xl font-medium">Medelle</h1>
       </div>
       <div className="flex flex-col items-center gap-6">
         {renderUpdateStatus()}

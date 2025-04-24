@@ -32,8 +32,8 @@ let updatePopupWin: BrowserWindow | undefined;
 
 function createWindow() {
   win = new BrowserWindow({
-    title: "Médelle",
-    icon: path.join(__dirname, "../build/icon.png"),
+    title: "Medelle",
+    icon: path.join(__dirname, "../build/icon.ico"),
     frame: true,
     show: false,
     resizable: true,
@@ -59,8 +59,8 @@ function createWindow() {
 
 function createUpdatePopup() {
   updatePopupWin = new BrowserWindow({
-    title: "Médelle - Actualización",
-    icon: path.join(__dirname, "../build/icon.png"),
+    title: "Medelle - Actualización",
+    icon: path.join(__dirname, "../build/icon.ico"),
     width: 400,
     height: 250,
     show: false,

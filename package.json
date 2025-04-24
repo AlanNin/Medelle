@@ -3,7 +3,7 @@
   "description": "App for Doctors. Take care of your patients.",
   "author": "Alan Nin",
   "license": "ISC",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite",
@@ -18,7 +18,7 @@
   },
   "build": {
     "appId": "com.medelle.app",
-    "productName": "Médelle",
+    "productName": "Medelle",
     "directories": {
       "output": "dist"
     },
@@ -34,7 +34,7 @@
       "icon": "build/icon.ico"
     },
     "linux": {
-      "icon": "build/icon.png"
+      "icon": "build/icon.ico"
     }
   },
   "dependencies": {

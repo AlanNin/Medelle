@@ -236,7 +236,7 @@ export default function AccountSettingsCardComponent() {
                       src={currentUser?.photo_url}
                       alt={`${currentUser?.name} - Work Logo`}
                     />
-                    <AvatarFallback className="text-3xl font-bold text-primary">
+                    <AvatarFallback className="text-3xl font-bold text-primary uppercase">
                       {currentUser && currentUser.name
                         ? currentUser.name[0] + (currentUser.name[1] || "")
                         : ""}

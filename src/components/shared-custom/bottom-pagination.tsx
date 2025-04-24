@@ -8,7 +8,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import React from "react";
 
 export default function BottomPagination({
   totalPages,

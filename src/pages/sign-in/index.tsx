@@ -65,7 +65,7 @@ export default function SignInPage() {
             className="relative z-10 w-32 h-auto mx-auto invert dark:invert-0"
           />
           <h1 className="text-4xl font-extrabold text-center mt-6 mb-2">
-            Médelle
+            Medelle
           </h1>
           <Label className="text-primary/85 text-center">
             Mejor atención, mejores resultados.
