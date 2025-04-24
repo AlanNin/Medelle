@@ -62,7 +62,7 @@ export default function SignInPage() {
           <img
             src={AppLogo}
             alt="App Logo"
-            className="relative z-10 w-32 h-auto mx-auto invert dark:invert-0"
+            className="relative z-10 w-32 h-auto mx-auto dark:invert"
           />
           <h1 className="text-4xl font-extrabold text-center mt-6 mb-2">
             Medelle

@@ -85,7 +85,7 @@ export default function UpdaterApp() {
       <div className="flex items-center gap-4">
         <img
           src={AppLogo}
-          className="w-10 h-10 invert dark:invert-0 object-contain"
+          className="w-10 h-10 dark:invert object-contain"
           alt="Logo"
         />
         <h1 className="text-4xl font-medium">Medelle</h1>

@@ -39,7 +39,12 @@ function useAuth() {
 
   const checkCurrentSession = async () => {
     const session_token = localStorage.getItem("session_token");
-    if (!session_token) return null;
+    if (!session_token) {
+      if (currentUser) {
+        dispatch(logout());
+      }
+      return null;
+    }
 
     if (IsOfflineChecker()) {
       return null;
@@ -64,6 +69,7 @@ function useAuth() {
       return response.data?.user;
     } catch (error) {
       localStorage.removeItem("session_token");
+      dispatch(logout());
       return null;
     }
   };

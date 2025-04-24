@@ -64,7 +64,7 @@ export default function Layout() {
         <div className="flex items-center gap-1">
           <Link to="/agenda">
             <img
-              className="w-5 h-5 ml-3 mr-2 object-contain invert dark:invert-0"
+              className="w-5 h-5 ml-3 mr-2 object-contain dark:invert"
               src={AppLogo}
               alt="AppLogo"
             />
