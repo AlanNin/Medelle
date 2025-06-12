@@ -215,7 +215,8 @@ export default function AccountSettingsCardComponent() {
                     <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
                       <AvatarImage
                         src={currentUser?.work_logo_url}
-                        alt={`${currentUser?.name} - Avatar`}
+                        alt={`${currentUser?.name} - Work Logo`}
+                        className="object-cover"
                       />
                       <AvatarFallback className="text-3xl font-bold text-primary bg-primary/0">
                         <Plus className="h-4 w-4 text-primary/35" />
@@ -234,7 +235,8 @@ export default function AccountSettingsCardComponent() {
                   <Avatar className="h-24 w-24 ring-4 ring-primary/10 cursor-pointer">
                     <AvatarImage
                       src={currentUser?.photo_url}
-                      alt={`${currentUser?.name} - Work Logo`}
+                      alt={`${currentUser?.name} - Avatar`}
+                      className="object-cover"
                     />
                     <AvatarFallback className="text-3xl font-bold text-primary uppercase">
                       {currentUser && currentUser.name

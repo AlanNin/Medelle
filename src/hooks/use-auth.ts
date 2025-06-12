@@ -68,8 +68,10 @@ function useAuth() {
 
       return response.data?.user;
     } catch (error) {
-      localStorage.removeItem("session_token");
       dispatch(logout());
+      localStorage.removeItem("session_token");
+      navigate({ to: "/" });
+      toast.success("Sesión Terminada");
       return null;
     }
   };
@@ -77,7 +79,7 @@ function useAuth() {
   const { data: sessionUser, refetch } = useQuery({
     queryKey: ["session"],
     queryFn: checkCurrentSession,
-    enabled: !!localStorage.getItem("session_token"),
+    enabled: true,
     refetchOnWindowFocus: true,
     refetchInterval: 5 * 60 * 1000,
     retry: 1,
@@ -90,6 +92,16 @@ function useAuth() {
       dispatch(logout());
     }
   }, [sessionUser, dispatch]);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "session_token" && e.newValue === null) {
+        dispatch(logout());
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [dispatch]);
 
   async function openSubscription(subscription_link: string) {
     await window.ipcRenderer.invoke("external-link-open", subscription_link);
@@ -156,10 +168,9 @@ function useAuth() {
 
       if (response.errorType) {
         if (response.errorType === "subscription-inactive") {
-          const subscription_link =
-            response.data?.subscription_data?.links?.find(
-              (link) => link.rel === "approve"
-            )?.href;
+          const subscription_link = response.data?.subscription_data?.links?.find(
+            (link) => link.rel === "approve"
+          )?.href;
 
           if (!subscription_link) {
             throw new Error("Ocurrió un error al iniciar sesión");
