@@ -4,7 +4,7 @@
   "description": "App for Doctors. Take care of your patients.",
   "author": "Alan Nin",
   "license": "ISC",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite",
