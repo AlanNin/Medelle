@@ -48,6 +48,7 @@ import {
 export default function AccountSettingsCardComponent() {
   const queryClient = useQueryClient();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const role = currentUser?.role;
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
@@ -197,33 +198,35 @@ export default function AccountSettingsCardComponent() {
 
             <div className="flex flex-col items-center gap-4">
               <div className="relative w-full flex items-center justify-center">
-                <div className="flex flex-col items-start absolute left-0 top-[50%] translate-y-[-50%] text-center text-sm text-muted-foreground">
-                  <UploadImageInheritComponent
-                    onComplete={updateUserWorkLogo}
-                    onDelete={
-                      currentUser?.work_logo_url
-                        ? deleteUserWorkLogo
-                        : undefined
-                    }
-                    pencil_height={3}
-                    pencil_width={3}
-                    component_height="small"
-                    folder="work_logos"
-                    tooltip_title="Logo de trabajo"
-                    tooptip_show_prescription={true}
-                  >
-                    <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
-                      <AvatarImage
-                        src={currentUser?.work_logo_url}
-                        alt={`${currentUser?.name} - Work Logo`}
-                        className="object-cover"
-                      />
-                      <AvatarFallback className="text-3xl font-bold text-primary bg-primary/0">
-                        <Plus className="h-4 w-4 text-primary/35" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </UploadImageInheritComponent>
-                </div>
+                {role && role !== "assistant" && (
+                  <div className="flex flex-col items-start absolute left-0 top-[50%] translate-y-[-50%] text-center text-sm text-muted-foreground">
+                    <UploadImageInheritComponent
+                      onComplete={updateUserWorkLogo}
+                      onDelete={
+                        currentUser?.work_logo_url
+                          ? deleteUserWorkLogo
+                          : undefined
+                      }
+                      pencil_height={3}
+                      pencil_width={3}
+                      component_height="small"
+                      folder="work_logos"
+                      tooltip_title="Logo de trabajo"
+                      tooptip_show_prescription={true}
+                    >
+                      <Avatar className="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center cursor-pointer">
+                        <AvatarImage
+                          src={currentUser?.work_logo_url}
+                          alt={`${currentUser?.name} - Work Logo`}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="text-3xl font-bold text-primary bg-primary/0">
+                          <Plus className="h-4 w-4 text-primary/35" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </UploadImageInheritComponent>
+                  </div>
+                )}
                 <UploadImageInheritComponent
                   onComplete={updateUserPhoto}
                   onDelete={
@@ -257,7 +260,13 @@ export default function AccountSettingsCardComponent() {
                       ? "Administrador"
                       : currentUser?.role === "privileged"
                       ? "Privilegiado"
+                      : role === "assistant"
+                      ? "Asistente"
                       : "Usuario"}
+
+                    {role && role === "assistant" && (
+                      <span>{` de ${currentUser?.assists?.name}`}</span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -270,11 +279,15 @@ export default function AccountSettingsCardComponent() {
               label="ID"
               value={currentUser?._id}
             />
-            <ProfileInfoItem
-              icon={GraduationCap}
-              label="Especialidad"
-              value={currentUser?.speciality || "No registrada"}
-            />
+
+            {role && role !== "assistant" && (
+              <ProfileInfoItem
+                icon={GraduationCap}
+                label="Especialidad"
+                value={currentUser?.speciality || "No registrada"}
+              />
+            )}
+
             <ProfileInfoItem
               icon={Mail}
               label="Correo"
@@ -331,21 +344,24 @@ export default function AccountSettingsCardComponent() {
                   value={currentUser?.work_address || "No registrada"}
                   tooltip="Esta dirección se podrá mostrar al imprimir una prescripción"
                 />
-                <ProfileInfoItem
-                  icon={DollarSign}
-                  label="Suscripción"
-                  value={
-                    currentUser?.subscription?.type === "single-purchase"
-                      ? "Compra única"
-                      : currentUser?.subscription?.type === "active"
-                      ? `Activa - Hasta el ${formatDate(
-                          currentUser?.subscription.due_date!
-                        )}`
-                      : currentUser?.subscription?.type === "inactive"
-                      ? "Inactiva"
-                      : "No registrada"
-                  }
-                />
+
+                {role && role !== "assistant" && (
+                  <ProfileInfoItem
+                    icon={DollarSign}
+                    label="Suscripción"
+                    value={
+                      currentUser?.subscription?.type === "single-purchase"
+                        ? "Compra única"
+                        : currentUser?.subscription?.type === "active"
+                        ? `Activa - Hasta el ${formatDate(
+                            currentUser?.subscription.due_date!
+                          )}`
+                        : currentUser?.subscription?.type === "inactive"
+                        ? "Inactiva"
+                        : "No registrada"
+                    }
+                  />
+                )}
               </CollapsibleContent>
             </Collapsible>
           </CardContent>
@@ -358,10 +374,13 @@ export default function AccountSettingsCardComponent() {
             >
               <LogOut className="mr-2 h-4 w-4" /> Cerrar Sesión
             </Button>
+
             <div className="flex gap-2 w-full">
-              <Button variant="outline" className="w-full rounded-md">
-                <ShieldX className="mr-2 h-4 w-4" /> Terminar Suscripción
-              </Button>
+              {role && role !== "assistant" && (
+                <Button variant="outline" className="w-full rounded-md">
+                  <ShieldX className="mr-2 h-4 w-4" /> Terminar Suscripción
+                </Button>
+              )}
               <Button
                 variant="default"
                 className="w-full rounded-md"

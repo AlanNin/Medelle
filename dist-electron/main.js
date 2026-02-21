@@ -29256,6 +29256,29 @@ ipcMain.handle(`${base$a}-sign-in`, async (_event, data) => {
           data: error2.response.data
         };
       }
+      if (message.includes("Assistant has no assigned doctor")) {
+        return {
+          errorType: "doctor-not-assigned",
+          message: "Asistente sin doctor asignado",
+          data: error2.response.data
+        };
+      }
+      if (message.includes("Assigned doctor not found")) {
+        return {
+          errorType: "doctor-not-found",
+          message: "Doctor asignado no encontrado",
+          data: error2.response.data
+        };
+      }
+      if (message.includes(
+        "Doctor subscription inactive. Assistant cannot access."
+      )) {
+        return {
+          errorType: "doctor-not-active",
+          message: "Doctor asginado sin subscripción activa. Asistente no puede acceder.",
+          data: error2.response.data
+        };
+      }
       return {
         errorType: "server",
         message: "Error interno del servidor. Inténtelo más tarde."
@@ -38102,7 +38125,7 @@ ipcMain.handle(
       const pdfBuffer = await win2.webContents.printToPDF(pdfOptions);
       const lastPath = appConfig$2.get("lastSavePath") || app.getPath("documents");
       const { canceled, filePath } = await dialog.showSaveDialog({
-        defaultPath: require$$1$4.join(lastPath, "Prescription - Patient Care.pdf"),
+        defaultPath: require$$1$4.join(lastPath, "Prescription - Medelle.pdf"),
         filters: [{ name: "PDF", extensions: ["pdf"] }],
         properties: ["createDirectory"]
       });

@@ -13,10 +13,6 @@ export default function AboutPage() {
             Medelle es la solución ideal para que los médicos gestionen citas,
             consultas y pacientes de manera eficiente y segura.
           </p>
-          <p className="mt-6 text-sm text-gray-600 italic mx-4">
-            Por favor, tener en cuenta que esta es una versión{" "}
-            <span className="font-medium">Alpha</span> de la aplicación
-          </p>
           <div className="mt-6 flex flex-col items-center gap-2">
             <h3 className="text-base font-medium text-gray-800">Contáctanos</h3>
             <div className="flex items-center gap-2">

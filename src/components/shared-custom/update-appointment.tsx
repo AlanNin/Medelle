@@ -27,6 +27,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/providers/react-redux/store";
 
 type Props = {
   appointment: AppointmentProps;
@@ -40,6 +42,8 @@ export function UpdateAppointmentComponent({
   setIsOpen,
 }: Props) {
   const queryClient = useQueryClient();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const role = currentUser?.role;
 
   const previous_date_time = new Date(appointment.date_time);
   let previous_hours = previous_date_time.getHours();
@@ -57,12 +61,10 @@ export function UpdateAppointmentComponent({
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
   >(previous_date_time);
-  const [appointmentHour, setAppointmentHour] = React.useState<string>(
-    formattedHours
-  );
-  const [appointmentMinute, setAppointmentMinute] = React.useState<string>(
-    formattedMinutes
-  );
+  const [appointmentHour, setAppointmentHour] =
+    React.useState<string>(formattedHours);
+  const [appointmentMinute, setAppointmentMinute] =
+    React.useState<string>(formattedMinutes);
   const [amPm, setAmPm] = React.useState<string>(previous_amPm);
 
   const hours = Array.from({ length: 12 }, (_, i) =>
@@ -229,8 +231,9 @@ export function UpdateAppointmentComponent({
           <AlertDialogHeader className="space-y-0">
             <AlertDialogTitle>Actualizar cita</AlertDialogTitle>
             <AlertDialogDescription>
-              Actualiza la cita de tu agenda. Al terminar haz click en
-              actualizar.
+              Actualiza la cita de{" "}
+              {role === "assistant" ? "la agenda" : "tu agenda"}. Al terminar
+              haz click en actualizar.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex gap-8 py-4">

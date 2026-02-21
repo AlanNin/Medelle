@@ -37,6 +37,35 @@ ipcMain.handle(`${base}-sign-in`, async (_event: IpcMainInvokeEvent, data) => {
         };
       }
 
+      if (message.includes("Assistant has no assigned doctor")) {
+        return {
+          errorType: "doctor-not-assigned",
+          message: "Asistente sin doctor asignado",
+          data: error.response.data,
+        };
+      }
+
+      if (message.includes("Assigned doctor not found")) {
+        return {
+          errorType: "doctor-not-found",
+          message: "Doctor asignado no encontrado",
+          data: error.response.data,
+        };
+      }
+
+      if (
+        message.includes(
+          "Doctor subscription inactive. Assistant cannot access."
+        )
+      ) {
+        return {
+          errorType: "doctor-not-active",
+          message:
+            "Doctor asginado sin subscripción activa. Asistente no puede acceder.",
+          data: error.response.data,
+        };
+      }
+
       return {
         errorType: "server",
         message: "Error interno del servidor. Inténtelo más tarde.",

@@ -64,7 +64,7 @@ ipcMain.handle(
       const lastPath =
         appConfig.get("lastSavePath") || app.getPath("documents");
       const { canceled, filePath } = await dialog.showSaveDialog({
-        defaultPath: path.join(lastPath, "Prescription - Patient Care.pdf"),
+        defaultPath: path.join(lastPath, "Prescription - Medelle.pdf"),
         filters: [{ name: "PDF", extensions: ["pdf"] }],
         properties: ["createDirectory"],
       });

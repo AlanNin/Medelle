@@ -27,6 +27,9 @@ import ConsultationDetailsComponent from "@/components/shared-custom/details-con
 import { ConsultationProps } from "@/types/consultation";
 import { AppointmentProps } from "@/types/appointment";
 import { AppointmentDetailsComponent } from "@/components/shared-custom/details-appointment";
+import { useSelector } from "react-redux";
+import { RootState } from "@/providers/react-redux/store";
+import { cn } from "@/lib/utils";
 
 type Props = {
   patient: PatientProps;
@@ -41,6 +44,10 @@ export default function PatientCardComponent({
   setIsUpdating,
   setSelectedPatientToUpdate,
 }: Props) {
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const role = currentUser?.role;
+
   const [isShowing, setIsShowing] = React.useState(false);
 
   const [selectedAppointment, setSelectedAppointment] =
@@ -112,8 +119,9 @@ export default function PatientCardComponent({
               <Calendar className="h-3.5 w-3.5" />
               {patient.next_appointment ? (
                 <p>
-                  {formatDateShort(patient.next_appointment.date_time)} -{" "}
-                  {patient.next_appointment.reason}
+                  {formatDateShort(patient.next_appointment.date_time)}
+                  {patient.next_appointment.reason &&
+                    ` - ${patient.next_appointment.reason}`}
                 </p>
               ) : (
                 <span className="text-yellow-600 dark:text-yellow-500">
@@ -159,7 +167,12 @@ export default function PatientCardComponent({
               transition={{ duration: 0.3 }}
             >
               <CardContent>
-                <div className="gap-x-32 gap-y-8 grid md:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div
+                  className={cn(
+                    "gap-x-32 gap-y-8 grid md:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
+                    role && role === "assistant" && "2xl:grid-cols-3"
+                  )}
+                >
                   <div className="space-y-4">
                     <h4 className="text-sm font-semibold uppercase text-muted-foreground">
                       Información de contacto
@@ -276,51 +289,55 @@ export default function PatientCardComponent({
                       </p>
                     )}
                   </div>
-                  <div className="space-y-4 md:col-span-2 lg:col-span-1">
-                    <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                      Consultas
-                    </h4>
-                    {patient.consultations &&
-                    patient.consultations.length > 0 ? (
-                      <ScrollArea
-                        className={`${
-                          patient.consultations.length > 1
-                            ? "h-[86px]"
-                            : "h-[70px]"
-                        } w-max rounded-md border p-4`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="space-y-0">
-                          {patient.consultations.map((consultation, index) => (
-                            <div
-                              key={index}
-                              className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                              onClick={() =>
-                                showConsultationDetails(consultation)
-                              }
-                            >
-                              <span>
-                                {formatDateShort(consultation.updatedAt!)}
-                              </span>
-                              <span className="text-muted-foreground max-w-[120px] truncate">
-                                {consultation.reason}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        No existen consultas aún
-                      </p>
-                    )}
-                  </div>
+                  {role && role !== "assistant" && (
+                    <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                      <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                        Consultas
+                      </h4>
+                      {patient.consultations &&
+                      patient.consultations.length > 0 ? (
+                        <ScrollArea
+                          className={`${
+                            patient.consultations.length > 1
+                              ? "h-[86px]"
+                              : "h-[70px]"
+                          } w-max rounded-md border p-4`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="space-y-0">
+                            {patient.consultations.map(
+                              (consultation, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
+                                  onClick={() =>
+                                    showConsultationDetails(consultation)
+                                  }
+                                >
+                                  <span>
+                                    {formatDateShort(consultation.updatedAt!)}
+                                  </span>
+                                  <span className="text-muted-foreground max-w-[120px] truncate">
+                                    {consultation.reason}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </ScrollArea>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No existen consultas aún
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <Separator className="mt-10 mb-8" />
                 <div className="space-y-2">
                   <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                    Notas del doctor
+                    Notas
                   </h4>
                   {patient.doctor_notes ? (
                     <p className="text-sm text-muted-foreground">
@@ -464,53 +481,55 @@ export default function PatientCardComponent({
                         </p>
                       )}
                     </div>
-                    <div className="space-y-4 md:col-span-2 lg:col-span-1">
-                      <h4 className="text-sm font-semibold uppercase text-muted-foreground">
-                        Consultas
-                      </h4>
-                      {patient.consultations &&
-                      patient.consultations.length > 0 ? (
-                        <ScrollArea
-                          className={`${
-                            patient.consultations.length > 1
-                              ? "h-[86px]"
-                              : "h-[70px]"
-                          } w-full rounded-md border p-4`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="space-y-0">
-                            {patient.consultations.map(
-                              (consultation, index) => (
-                                <div
-                                  key={index}
-                                  className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
-                                  onClick={() =>
-                                    showConsultationDetails(consultation)
-                                  }
-                                >
-                                  <span>
-                                    {formatDateShort(consultation.updatedAt!)}
-                                  </span>
-                                  <span className="text-muted-foreground max-w-[200px] truncate">
-                                    {consultation.reason}
-                                  </span>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </ScrollArea>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          No existen consultas aún
-                        </p>
-                      )}
-                    </div>
+                    {role && role !== "assistant" && (
+                      <div className="space-y-4 md:col-span-2 lg:col-span-1">
+                        <h4 className="text-sm font-semibold uppercase text-muted-foreground">
+                          Consultas
+                        </h4>
+                        {patient.consultations &&
+                        patient.consultations.length > 0 ? (
+                          <ScrollArea
+                            className={`${
+                              patient.consultations.length > 1
+                                ? "h-[86px]"
+                                : "h-[70px]"
+                            } w-full rounded-md border p-4`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="space-y-0">
+                              {patient.consultations.map(
+                                (consultation, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex justify-between text-sm gap-4 hover:bg-primary/5 p-2 px-4 rounded-md cursor-pointer"
+                                    onClick={() =>
+                                      showConsultationDetails(consultation)
+                                    }
+                                  >
+                                    <span>
+                                      {formatDateShort(consultation.updatedAt!)}
+                                    </span>
+                                    <span className="text-muted-foreground max-w-[200px] truncate">
+                                      {consultation.reason}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </ScrollArea>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">
+                            No existen consultas aún
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <Separator className="my-8" />
                   <div className="space-y-2">
                     <h4 className="text-xs font-semibold uppercase text-muted-foreground">
-                      Notas del doctor
+                      Notas
                     </h4>
                     {patient.doctor_notes ? (
                       <p className="text-sm text-muted-foreground">

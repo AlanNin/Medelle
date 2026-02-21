@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Eye, EyeClosed, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/providers/react-redux/store";
 
 type Props = {
   isOpen: boolean;
@@ -48,6 +50,10 @@ export default function AccountSettingsUpdateComponent({
   setIsOpen,
   user,
 }: Props) {
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const role = currentUser?.role;
+
   const queryClient = useQueryClient();
 
   const [inputs, setInputs] = React.useState<UserProps>({
@@ -230,15 +236,17 @@ export default function AccountSettingsUpdateComponent({
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex flex-col gap-2.5 items-start">
-                    <Label className="text-right">Especialidad</Label>
-                    <Input
-                      name="speciality"
-                      value={inputs.speciality}
-                      onChange={(e) => handleInputChange(e)}
-                      placeholder="Escribe aquí..."
-                    />
-                  </div>
+                  {role && role !== "assistant" && (
+                    <div className="flex flex-col gap-2.5 items-start">
+                      <Label className="text-right">Especialidad</Label>
+                      <Input
+                        name="speciality"
+                        value={inputs.speciality}
+                        onChange={(e) => handleInputChange(e)}
+                        placeholder="Escribe aquí..."
+                      />
+                    </div>
+                  )}
                   <div className="flex flex-col gap-2.5 items-start">
                     <Label className="text-right">Contraseña actual </Label>{" "}
                     <PasswordInput

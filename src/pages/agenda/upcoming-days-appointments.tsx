@@ -204,10 +204,10 @@ export default function UpcomingDaysAppointmentsComponent({
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <div className="my-10 flex items-center gap-4">
-                <CloudSun className="h-8 w-8 text-primary" strokeWidth={1.2} />
+              <div className="my-10 flex items-center gap-4 text-muted-foreground">
+                <CloudSun className="h-8 w-8 " strokeWidth={1.2} />
                 <Label className="text-center text-xl font-medium">
-                  ¡Sin prisa! No hay citas en los próximos días
+                  No hay citas en los próximos días
                 </Label>
               </div>
             </div>

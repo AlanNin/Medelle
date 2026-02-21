@@ -149,15 +149,12 @@ export default function SelectedDayAppointmentsComponent({
             </ScrollArea>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <div className="mb-20 lg:mb-28 flex items-center gap-4">
-                <CalendarCheck
-                  className="h-8 w-8 text-primary"
-                  strokeWidth={1.2}
-                />
-                <Label className="text-center text-xl font-medium">
+              <div className="mb-20 lg:mb-28 flex items-center gap-4 text-muted-foreground">
+                <CalendarCheck className="h-8 w-8" strokeWidth={1.2} />
+                <Label className="text-center text-xl font-medium ">
                   {isSelectedDateInThePast(selectedDate)
-                    ? "¡Woah, cero estrés! No tuviste citas este día"
-                    : "¡Día libre! Relájate, no tienes citas pendientes."}
+                    ? "No hubieron citas este día"
+                    : "No hay citas pendientes"}
                 </Label>
               </div>
             </div>

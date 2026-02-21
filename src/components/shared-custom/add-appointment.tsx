@@ -23,6 +23,8 @@ import {
 import { SearchPatientComponent } from "./search-patient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import { RootState } from "@/providers/react-redux/store";
 
 type Props = {
   isOpen: boolean;
@@ -31,6 +33,8 @@ type Props = {
 
 export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
   const queryClient = useQueryClient();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const role = currentUser?.role;
 
   const [appointmentDate, setAppointmentDate] = React.useState<
     Date | undefined
@@ -40,9 +44,8 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
     return date;
   });
   const [appointmentHour, setAppointmentHour] = React.useState<string>("01");
-  const [appointmentMinute, setAppointmentMinute] = React.useState<string>(
-    "00"
-  );
+  const [appointmentMinute, setAppointmentMinute] =
+    React.useState<string>("00");
   const [amPm, setAmPm] = React.useState<string>("AM");
 
   const hours = Array.from({ length: 12 }, (_, i) =>
@@ -192,7 +195,8 @@ export function AddAppointmentComponent({ isOpen, setIsOpen }: Props) {
         <AlertDialogHeader className="space-y-0">
           <AlertDialogTitle>Añadir cita</AlertDialogTitle>
           <AlertDialogDescription>
-            Añade un cita a tu agenda. Al terminar haz click en guardar.
+            Añade un cita a {role === "assistant" ? "la agenda" : "tu agenda"}.
+            Al terminar haz click en guardar.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex gap-8 py-4">

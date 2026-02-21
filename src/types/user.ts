@@ -13,8 +13,12 @@ export type UserProps = {
   work_phone?: string;
   speciality?: string;
   work_address?: string;
+  assists?: {
+    name: string;
+    id: string;
+  };
   gender?: "male" | "female" | "other";
-  role?: "user" | "administrator" | "privileged";
+  role?: "user" | "administrator" | "privileged" | "assistant";
   subscription?: {
     type?: "single-purchase" | "active" | "inactive";
     due_date?: Date;

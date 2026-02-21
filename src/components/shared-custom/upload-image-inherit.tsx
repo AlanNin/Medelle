@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -37,6 +37,7 @@ export default function UploadImageInheritComponent({
   tooptip_show_prescription,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleUploadImage = async (file: File | null) => {
     if (!file || !onComplete) {
@@ -76,6 +77,7 @@ export default function UploadImageInheritComponent({
                 ? "top-0 right-0"
                 : "-top-1 -right-1"
             }  z-10 p-1.5 bg-white/90 group-hover:bg-white/60 rounded-full transition-all duration-300 group-hover:shadow-xl flex items-center justify-center`}
+            onClick={() => setDropdownOpen(true)}
           >
             <Pencil
               className={`w-${pencil_width} h-${pencil_height} text-muted-foreground`}
@@ -83,7 +85,7 @@ export default function UploadImageInheritComponent({
           </div>
         )}
 
-        <DropdownMenu>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel

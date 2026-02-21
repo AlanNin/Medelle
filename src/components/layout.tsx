@@ -27,6 +27,8 @@ import AddPatientComponent from "./shared-custom/add-patient";
 import AddConsultationComponent from "./shared-custom/add-consultation";
 import useKeyboardShortcuts from "@/lib/keyboard-shortcuts";
 import IsOfflineChecker from "@/lib/offline-checker";
+import { RootState } from "@/providers/react-redux/store";
+import { useSelector } from "react-redux";
 
 export default function Layout() {
   const router = useRouterState();
@@ -34,6 +36,10 @@ export default function Layout() {
   if (router.location.pathname === "/") {
     return null;
   }
+
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const role = currentUser?.role;
 
   const { handleLogout } = useAuth();
 
@@ -123,33 +129,53 @@ export default function Layout() {
               </MenubarSub>
             </MenubarContent>
           </MenubarMenu>
+          {role && role !== "assistant" && (
+            <>
+              <MenubarMenu>
+                <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
+                  Consultas
+                </MenubarTrigger>
+                <MenubarContent>
+                  <Link to="/consultations">
+                    <MenubarItem className="cursor-pointer">
+                      Ver <MenubarShortcut>Ctrl+3</MenubarShortcut>
+                    </MenubarItem>
+                  </Link>
+                  <MenubarItem disabled>Otros</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarSub>
+                    <MenubarSubTrigger className="cursor-pointer">
+                      Acceso Rápido
+                    </MenubarSubTrigger>
+                    <MenubarSubContent>
+                      <MenubarItem
+                        className="cursor-pointer"
+                        onClick={() => setIsConsultationNewRegisterOpen(true)}
+                      >
+                        Nueva Consulta
+                      </MenubarItem>
+                    </MenubarSubContent>
+                  </MenubarSub>
+                </MenubarContent>
+              </MenubarMenu>
+            </>
+          )}
+
           <MenubarMenu>
             <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
-              Consultas
+              Mi cuenta
             </MenubarTrigger>
             <MenubarContent>
-              <Link to="/consultations">
-                <MenubarItem className="cursor-pointer">
-                  Ver <MenubarShortcut>Ctrl+3</MenubarShortcut>
-                </MenubarItem>
+              <Link to="/account-settings">
+                <MenubarItem className="cursor-pointer">Ajustes</MenubarItem>
               </Link>
-              <MenubarItem disabled>Otros</MenubarItem>
               <MenubarSeparator />
-              <MenubarSub>
-                <MenubarSubTrigger className="cursor-pointer">
-                  Acceso Rápido
-                </MenubarSubTrigger>
-                <MenubarSubContent>
-                  <MenubarItem
-                    className="cursor-pointer"
-                    onClick={() => setIsConsultationNewRegisterOpen(true)}
-                  >
-                    Nueva Consulta
-                  </MenubarItem>
-                </MenubarSubContent>
-              </MenubarSub>
+              <MenubarItem className="cursor-pointer" onClick={handleLogout}>
+                Cerrar Sesión
+              </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
+
           <MenubarMenu>
             <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
               Vista
@@ -167,20 +193,7 @@ export default function Layout() {
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
-              Mi cuenta
-            </MenubarTrigger>
-            <MenubarContent>
-              <Link to="/account-settings">
-                <MenubarItem className="cursor-pointer">Ajustes</MenubarItem>
-              </Link>
-              <MenubarSeparator />
-              <MenubarItem className="cursor-pointer" onClick={handleLogout}>
-                Cerrar Sesión
-              </MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
+
           <MenubarMenu>
             <MenubarTrigger className="cursor-pointer hover:bg-primary/5">
               Configuración
